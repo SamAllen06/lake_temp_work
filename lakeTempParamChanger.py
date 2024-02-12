@@ -15,13 +15,12 @@ def main():
 
     # get the change that is to be made
     change = pc.getChange(input("Which parameter do you want to change: "), input(
-        "Input the value to change to: "))
+        "Input the value to change to: ") + "\n")
 
     changeIndex = (pc.findChangeIndex(dupedFile, ogFile, change))
 
-    print(changeIndex)
-
-    # TODO: write the code to make the changes
+    # make the change in the copied file
+    pc.makeChange(dupedFile, changeIndex, str(change[1]))
 
 
 if __name__ == "__main__":
