@@ -43,3 +43,6 @@ class paramChanger():
 
         with open(fileName, 'w') as file:
             file.writelines(fileData)
+
+
+# TODO make this run as a cmd line command that also runs the lake temperature module
