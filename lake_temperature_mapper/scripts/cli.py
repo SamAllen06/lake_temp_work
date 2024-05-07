@@ -26,7 +26,6 @@ def main():
 
     param_editor = ParamEditor(args.params_path)
     param_editor.modify_parameter("betavis", 0.5)
-    param_editor.modify_parameter("bleh", 0.0034)
 
 
 if __name__ == "__main__":
