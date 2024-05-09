@@ -9,3 +9,6 @@ needed to replace it, it could.
 CLI does not contain any functionality other than accepting user input and
 executing mapping scripts accordingly. It should not be opening files, running
 a binary, etc.
+
+It can optionally accept an alternative configuration file, but defaults to
+using scripts/config/mapper.conf

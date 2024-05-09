@@ -1,0 +1,4 @@
+fakevar%sum
+  314.000075 628.000150
+fakevar%product
+  2.835937 8.042542
