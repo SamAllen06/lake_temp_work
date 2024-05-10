@@ -1,11 +1,8 @@
 import argparse
 from pathlib import Path
 
-from mapping.binary_runner import BinaryRunner
-from mapping.config_reader import ConfigReader
-from mapping.difference_analyzer import DifferenceAnalyzer
-from mapping.param_editor import ParamEditor
-from mapping.range_reader import RangeReader
+from mapping.mapper import Mapper
+
 
 PARENT_DIRECTORY = Path(__file__).resolve().parent
 DEFAULT_CONFIG_PATH = PARENT_DIRECTORY / "config" / "mapper.conf"
@@ -28,27 +25,10 @@ def main():
     else:
         absolute_config_path = Path.cwd() / args.config_path
 
-    config_reader = ConfigReader(absolute_config_path)
+    mapper = Mapper(absolute_config_path)
+    mapper.map()
 
-    if not config_reader.config_exists():
-        raise FileNotFoundError(f"Could not find config file {absolute_config_path}.")
-
-    runner = BinaryRunner(PARENT_DIRECTORY / config_reader.get_path_of("binary_path"))
-    runner.run()
-
-    range_reader = RangeReader(PARENT_DIRECTORY / config_reader.get_path_of("range_path"))
-    print(range_reader.read_ranges())
-
-    param_editor = ParamEditor(PARENT_DIRECTORY / config_reader.get_path_of("params_path"))
-    param_editor.modify_parameter("betavis", 0.5)
-
-    difference_analyzer = DifferenceAnalyzer(
-        PARENT_DIRECTORY / config_reader.get_path_of("ref_output"),
-        PARENT_DIRECTORY / config_reader.get_path_of("test_output")
-    )
-
-    print(difference_analyzer.compare_outputs())
-
+    
 
 if __name__ == "__main__":
     main()

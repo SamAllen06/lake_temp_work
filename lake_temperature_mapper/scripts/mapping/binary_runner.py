@@ -1,9 +1,10 @@
 from pathlib import Path
 import subprocess
+import sys
 
 
 class BinaryRunner:
-    def __init__(self, binary_path: str):
+    def __init__(self, binary_path: Path):
         self.binary_path = Path(binary_path)
         self._validate_path()
 
@@ -14,4 +15,8 @@ class BinaryRunner:
             )
 
     def run(self):
-        subprocess.Popen(str(self.binary_path))
+        output = subprocess.run(
+            self.binary_path,
+            capture_output=True,
+            text=True,
+            cwd=self.binary_path.parent)

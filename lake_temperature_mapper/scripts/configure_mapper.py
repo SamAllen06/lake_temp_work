@@ -1,38 +1,38 @@
 from pathlib import Path
 from typing import Mapping
 
-PARENT = Path(__file__).resolve().parent
-CONFIG_FILE = PARENT / "config" / "mapper.conf"
-KEYS = [
-    "binary_path",
-    "range_path",
-    "params_path",
-    "ref_output",
-    "test_output"
-]
-KEY_PROMPTS = [
-    "binary to test",
-    "range file",
-    "parameters file",
-    "reference output file",
-    "test output file"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+CONFIG_FILE = PROJECT_ROOT / "scripts" / "config" / "mapper.conf"
+KEY_INFO = [
+    ("binary_path", "binary to test", True, True),
+    ("range_path", "range file", True, True),
+    ("params_path", "parameters file", True, True),
+    ("ref_output", "reference output file", True, True),
+    ("test_output", "test output file", False, True),
+    ("order_directory", "order directory", True, False),
 ]
 
 
 def _prompt_for_selections() -> Mapping[str, Path]:
     selections = {}
 
-    for key, key_file_name in zip(KEYS, KEY_PROMPTS):
+    for key, key_prompt, must_exist, is_file in KEY_INFO:
         while True:
-            input_path = input(f"Please enter the path to the {key_file_name}: ")
+            input_path = input(f"Please enter the path to the {key_prompt}: ")
 
             path = Path.cwd() / input_path
 
-            if path.exists() and path.is_file():
-                selections[key] = path.relative_to(PARENT, walk_up=True)
-                break
+            if must_exist and not path.exists():
+                print(f"Could not find {str(path)}")
+                continue
 
-            print(f"Could not find file at {str(path)}")
+            if path.exists() and not path.is_file() == is_file:
+                print(f"{str(path)} is not a "
+                    f"{"file" if is_file else "directory"}.")
+                continue
+
+            selections[key] = path.relative_to(PROJECT_ROOT)
+            break
 
     return selections
 

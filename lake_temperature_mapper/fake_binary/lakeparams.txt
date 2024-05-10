@@ -1,5 +1,5 @@
 betavis
-0.5
+1.0
 za_lake
 2.0
 n2min
