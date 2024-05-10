@@ -7,8 +7,15 @@ class RangeReader:
 
     def __init__(self, file_path: os.PathLike):
         self.file_path = file_path
+        self.ranges = self._read_ranges()
 
-    def read_ranges(self) -> Mapping[str, tuple[float, float]]:
+    def get_min(self, parameter: str) -> float:
+        return self.ranges[parameter][0]
+
+    def get_max(self, parameter: str) -> float:
+        return self.ranges[parameter][1]
+
+    def _read_ranges(self) -> Mapping[str, tuple[float, float]]:
         ranges = {}
 
         with open(self.file_path, "r") as file:
