@@ -13,14 +13,14 @@ class Mapper:
     def __init__(self, config_path: Path):
         self.config_reader = ConfigReader(config_path)
         self.param_editor = ParamEditor(
-            self.config_reader.get_path_of("params_path")
+            self.config_reader.get("params_path")
         )
         self.binary_runner = BinaryRunner(
-            self.config_reader.get_path_of("binary_path")
+            self.config_reader.get("binary_path")
         )
         self.difference_analyzer = DifferenceAnalyzer(
-            self.config_reader.get_path_of("ref_output"),
-            self.config_reader.get_path_of("test_output")
+            self.config_reader.get("ref_output"),
+            self.config_reader.get("test_output")
         )
 
     def map(self):
@@ -32,8 +32,8 @@ class Mapper:
 
     def _read_orders(self) -> list[Order]:
         order_reader = OrderReader(
-            self.config_reader.get_path_of("order_directory"),
-            self.config_reader.get_path_of("range_path")
+            self.config_reader.get("order_directory"),
+            self.config_reader.get("range_path")
         )
 
         return order_reader.read_orders()
@@ -46,9 +46,16 @@ class Mapper:
         sampler = Sampler(order.start, order.end, order.sample_count)
         for sample_value in sampler.get_samples():
             self.param_editor.modify_parameter(order.parameter, sample_value)
-            self.binary_runner.run()
+            self.binary_runner.run_binary()
             diffs = self.difference_analyzer.compare_outputs()
-            print(diffs)
+            self._print_diffs(diffs)
+
+    def _print_diffs(self, diffs) -> None:
+        for key in diffs.keys():
+            print("\033[94m" + key + "\033[0m")
+            for difference in diffs[key]:
+                print(str(difference))
+        print("")
 
 
 
