@@ -7,6 +7,7 @@ KEY_INFO = [
     ("binary_path", "binary to test", True, True),
     ("range_path", "range file", True, True),
     ("params_path", "parameters file", True, True),
+    ("defaults_path", "parameter defaults file", True, True),
     ("ref_output", "reference output file", True, True),
     ("test_output", "test output file", False, True),
     ("order_directory", "order directory", True, False),

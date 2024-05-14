@@ -2,6 +2,7 @@ from pathlib import Path
 
 from mapping.binary_runner import BinaryRunner
 from mapping.config_reader import ConfigReader
+from mapping.defaults_writer import DefaultsWriter
 from mapping.difference_analyzer import DifferenceAnalyzer
 from mapping.order import Order
 from mapping.order_reader import OrderReader
@@ -12,6 +13,10 @@ from mapping.sampler import Sampler
 class Mapper:
     def __init__(self, config_path: Path):
         self.config_reader = ConfigReader(config_path)
+        self.defaults_writer = DefaultsWriter(
+            self.config_reader.get("defaults_path"),
+            self.config_reader.get("params_path")
+        )
         self.param_editor = ParamEditor(
             self.config_reader.get("params_path")
         )
@@ -43,6 +48,7 @@ class Mapper:
             self._execute_order(order)
 
     def _execute_order(self, order: Order) -> None:
+        self.defaults_writer.write_defaults()
         sampler = Sampler(order.start, order.end, order.sample_count)
         for sample_value in sampler.get_samples():
             self.param_editor.modify_parameter(order.parameter, sample_value)
