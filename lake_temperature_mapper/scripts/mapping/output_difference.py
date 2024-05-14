@@ -1,3 +1,5 @@
+import math
+
 class OutputDifference:
     def __init__(self, index: int, ref: float, test: float):
         self._index = index
@@ -6,6 +8,8 @@ class OutputDifference:
         self._difference = test - ref
 
     def get_difference(self) -> float:
+        if math.isnan(self._ref) and math.isnan(self._test):
+            return 0.0
         return self._difference
 
     def __str__(self):
