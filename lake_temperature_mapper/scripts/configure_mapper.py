@@ -29,7 +29,7 @@ def _prompt_for_selections() -> Mapping[str, Path]:
 
             if path.exists() and not path.is_file() == is_file:
                 print(f"{str(path)} is not a "
-                    f"{"file" if is_file else "directory"}.")
+                    f"{'file' if is_file else 'directory'}.")
                 continue
 
             selections[key] = path.relative_to(PROJECT_ROOT)
