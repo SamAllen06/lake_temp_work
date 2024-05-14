@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Mapping
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-CONFIG_FILE = PROJECT_ROOT / "scripts" / "config" / "mapper.conf"
+CONFIG_FILE = PROJECT_ROOT / "config" / "mapper.conf"
 KEY_INFO = [
     ("binary_path", "binary to test", True, True),
     ("range_path", "range file", True, True),

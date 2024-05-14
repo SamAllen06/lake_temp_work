@@ -3,8 +3,8 @@ from pathlib import Path
 
 from mapping.mapper import Mapper
 
-PARENT_DIRECTORY = Path(__file__).resolve().parent
-DEFAULT_CONFIG_PATH = PARENT_DIRECTORY / "config" / "mapper.conf"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "mapper.conf"
 
 
 def _initialize_cli_arguments():
