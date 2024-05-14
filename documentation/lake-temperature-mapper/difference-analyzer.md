@@ -5,25 +5,15 @@ DifferenceAnalyzer compares a two output files and returns a map of differences
 between the two.
 
 ## Functionality
-Output files compared by DifferenceAnalyzer are in the format:
-
-```
-parameter1
-    num1 num2 ... numN
-parameter2
-    num1 num2 ... numN
-...
-parameterN
-    num1 num2 ... numN
-```
+Output files are read using OutputFileData.
 
 Differences between a reference file (default: cpu_LakeTemperatureRef.txt) and
-a test file (default: cpu_LakeTemperatureTest.txt). Differences are returned
-as a map with parameter names as keys and a list of differences as values.
-Differences are in this form:
+a test file (default: cpu_LakeTemperatureTest.txt) are computed and stored using
+OutputDifference(s). Then, non-zero differences between output variables are
+stored in a map like so:
 
 ```
-(num_index, ref_num, test_num, test_num - ref_num)
+{output_variable_name: [Difference(index, ref, test), ...]}
 ```
 
 For example, these files:
@@ -43,6 +33,6 @@ cool%var
 Would result in this difference map:
 ```
 {
-    cool%var: [(0, 2.0, 3.0, 1.0)]
+    cool%var: [OutputDifference(0, 2.0, 3.0)]
 }
 ```
