@@ -7,14 +7,19 @@ class OutputDifference:
         self._test = test
         self._difference = test - ref
 
-    def get_difference(self) -> float:
+    def is_nonzero_difference(self) -> bool:
         if math.isnan(self._ref) and math.isnan(self._test):
-            return 0.0
+            return False
+        return not self._difference == 0.0
+
+    def get_index(self) -> int:
+        return self._index
+
+    def get_reference(self) -> float:
+        return self._ref
+
+    def get_test(self) -> float:
+        return self._test
+
+    def get_difference(self) -> float:
         return self._difference
-
-    def __str__(self):
-        return (
-            f"{self._ref:<20} -> {self._test:<20} "
-            f"by {self._difference:<20} at {self._index}"
-        )
-

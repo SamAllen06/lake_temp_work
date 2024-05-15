@@ -36,8 +36,7 @@ class OutputFileData:
                     test_output,
                 )
 
-                # Ignore values with no difference.
-                if output_difference.get_difference() == 0:
+                if not output_difference.is_nonzero_difference():
                     continue
 
                 output_differences[parameter].append(output_difference)

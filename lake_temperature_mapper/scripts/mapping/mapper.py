@@ -8,11 +8,13 @@ from mapping.order import Order
 from mapping.order_reader import OrderReader
 from mapping.param_editor import ParamEditor
 from mapping.sampler import Sampler
+from output.output_writer import OutputWriter
 
 
 class Mapper:
-    def __init__(self, config_path: Path):
+    def __init__(self, config_path: Path, output_writer: OutputWriter):
         self.config_reader = ConfigReader(config_path)
+        self.output_writer = output_writer
         self.defaults_writer = DefaultsWriter(
             self.config_reader.get_path("defaults_path"),
             self.config_reader.get_path("params_path")
@@ -53,35 +55,13 @@ class Mapper:
     def _execute_order(self, order: Order) -> None:
         self.defaults_writer.write_defaults()
         sampler = Sampler(order.start, order.end, order.sample_count)
-        self._print_order_header(order)
+        self.output_writer.write_order_header(order)
         for sample_value in sampler.get_samples():
-            self._print_input_sample(order.parameter, sample_value)
+            self.output_writer.write_parameter_sample(
+                order.parameter,
+                sample_value
+            )
             self.param_editor.modify_parameter(order.parameter, sample_value)
             self.binary_runner.run_binary()
-            diffs = self.difference_analyzer.compare_outputs()
-            self._print_diffs(diffs)
-
-    def _print_order_header(self, order: Order) -> None:
-        print("\033[95m" + f"Executing order: {order.name}")
-        print(
-            f"{order.parameter}: {order.start} -> {order.end}, "
-            f"{order.sample_count} samples" + "\033[0m\n"
-        )
-
-    def _print_input_sample(self, parameter: str, value: float) -> None:
-        print("\033[96m" + f"{parameter}:{str(value)}" + "\033[0m")
-
-    def _print_diffs(self, diffs) -> None:
-        for key in diffs.keys():
-            print("\033[94m" + key + "\033[0m")
-            for difference in diffs[key]:
-                print(str(difference))
-        print("")
-
-
-
-
-
-
-
-
+            difference_map = self.difference_analyzer.compare_outputs()
+            self.output_writer.write_difference_map(difference_map)

@@ -2,6 +2,7 @@ import argparse
 from pathlib import Path
 
 from mapping.mapper import Mapper
+from output.console_output_writer import ConsoleOutputWriter
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "mapper.conf"
@@ -35,7 +36,7 @@ def main():
 
     config_path = _resolve_config_path(args.config_path)
 
-    mapper = Mapper(config_path)
+    mapper = Mapper(config_path, ConsoleOutputWriter())
     mapper.map()
 
 
