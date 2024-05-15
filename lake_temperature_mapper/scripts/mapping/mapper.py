@@ -21,7 +21,8 @@ class Mapper:
             self.config_reader.get_path("params_path")
         )
         self.binary_runner = BinaryRunner(
-            self.config_reader.get_path("binary_path")
+            self.config_reader.get_path("binary_path"),
+            self.config_reader.get("binary_args")
         )
         self.difference_analyzer = DifferenceAnalyzer(
             self.config_reader.get_path("ref_output"),
