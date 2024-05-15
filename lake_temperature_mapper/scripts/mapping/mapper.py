@@ -14,18 +14,18 @@ class Mapper:
     def __init__(self, config_path: Path):
         self.config_reader = ConfigReader(config_path)
         self.defaults_writer = DefaultsWriter(
-            self.config_reader.get("defaults_path"),
-            self.config_reader.get("params_path")
+            self.config_reader.get_path("defaults_path"),
+            self.config_reader.get_path("params_path")
         )
         self.param_editor = ParamEditor(
-            self.config_reader.get("params_path")
+            self.config_reader.get_path("params_path")
         )
         self.binary_runner = BinaryRunner(
-            self.config_reader.get("binary_path")
+            self.config_reader.get_path("binary_path")
         )
         self.difference_analyzer = DifferenceAnalyzer(
-            self.config_reader.get("ref_output"),
-            self.config_reader.get("test_output")
+            self.config_reader.get_path("ref_output"),
+            self.config_reader.get_path("test_output")
         )
 
     def map(self):
@@ -37,8 +37,8 @@ class Mapper:
 
     def _read_orders(self) -> list[Order]:
         order_reader = OrderReader(
-            self.config_reader.get("order_directory"),
-            self.config_reader.get("range_path")
+            self.config_reader.get_path("order_directory"),
+            self.config_reader.get_path("range_path")
         )
 
         return order_reader.read_orders()

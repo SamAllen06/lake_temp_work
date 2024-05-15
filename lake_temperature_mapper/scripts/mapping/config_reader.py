@@ -10,8 +10,11 @@ class ConfigReader:
         self._config_path = config_path
         self._config_map = self._read_config()
     
-    def get(self, config_key: str) -> Path:
-        return PROJECT_ROOT / self._config_map[config_key]
+    def get_path(self, config_key: str) -> Path:
+        return PROJECT_ROOT / self.get(config_key)
+
+    def get(self, config_key: str) -> str:
+        return self._config_map[config_key]
 
     def _read_config(self):
         with open(self._config_path, "r") as config_file:
@@ -20,9 +23,9 @@ class ConfigReader:
         selections = {}
 
         for line in lines:
-            split_line = line.strip().split(": ")
+            split_line = line.strip("\n").split(": ")
             config_key = split_line[0]
             config_value = split_line[1]
-            selections[config_key] = Path(config_value)
+            selections[config_key] = config_value
 
         return selections

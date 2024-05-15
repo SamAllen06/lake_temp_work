@@ -1,44 +1,32 @@
 from pathlib import Path
 from typing import Mapping
 
+from config.fields import FIELDS
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_FILE = PROJECT_ROOT / "config" / "mapper.conf"
-KEY_INFO = [
-    ("binary_path", "binary to test", True, True),
-    ("range_path", "range file", True, True),
-    ("params_path", "parameters file", True, True),
-    ("defaults_path", "parameter defaults file", True, True),
-    ("ref_output", "reference output file", True, True),
-    ("test_output", "test output file", False, True),
-    ("order_directory", "order directory", True, False),
-]
 
 
-def _prompt_for_selections() -> Mapping[str, Path]:
+def _prompt_for_selections() -> Mapping[str, str]:
     selections = {}
 
-    for key, key_prompt, must_exist, is_file in KEY_INFO:
+    for field in FIELDS:
         while True:
-            input_path = input(f"Please enter the path to the {key_prompt}: ")
+            field_input = input(field.prompt)
 
-            path = Path.cwd() / input_path
+            error_message = field.verifier.verify_input(field_input)
 
-            if must_exist and not path.exists():
-                print(f"Could not find {str(path)}")
+            if error_message:
+                print(error_message)
                 continue
 
-            if path.exists() and not path.is_file() == is_file:
-                print(f"{str(path)} is not a "
-                    f"{'file' if is_file else 'directory'}.")
-                continue
-
-            selections[key] = path.relative_to(PROJECT_ROOT)
+            selections[field.key] = field.verifier.format_input(field_input)
             break
 
     return selections
 
 
-def _write_config_file(selections: Mapping[str, Path]) -> None:
+def _write_config_file(selections: Mapping[str, str]) -> None:
     lines = []
 
     for key in selections.keys():
