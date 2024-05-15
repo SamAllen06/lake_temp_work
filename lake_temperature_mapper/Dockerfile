@@ -21,7 +21,7 @@ WORKDIR /app
 
 COPY ./elmtest/ /app/elmtest/
 COPY ./scripts/ /app/scripts/
-COPY ./config/ /app/config/
+COPY ./config/elmtest_mapper.conf /app/config/mapper.conf
 COPY ./elmtest_mapping_orders/ /app/mapping_orders/
 
 #RUN pip3 install wheel numpy scipy netCDF4 h5py configparser cftime
