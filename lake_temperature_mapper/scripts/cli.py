@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 
+from mapping.config_reader import ConfigReader
 from mapping.mapper import Mapper
 from output.console_output_writer import ConsoleOutputWriter
 
@@ -36,7 +37,7 @@ def main():
 
     config_path = _resolve_config_path(args.config_path)
 
-    mapper = Mapper(config_path, ConsoleOutputWriter())
+    mapper = Mapper(ConfigReader(config_path), ConsoleOutputWriter())
     mapper.map()
 
 

@@ -12,8 +12,12 @@ from output.output_writer import OutputWriter
 
 
 class Mapper:
-    def __init__(self, config_path: Path, output_writer: OutputWriter):
-        self.config_reader = ConfigReader(config_path)
+    def __init__(
+            self,
+            config_reader: ConfigReader,
+            output_writer: OutputWriter
+    ):
+        self.config_reader = config_reader
         self.output_writer = output_writer
         self.defaults_writer = DefaultsWriter(
             self.config_reader.get_path("defaults_path"),
