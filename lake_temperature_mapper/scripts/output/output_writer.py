@@ -20,3 +20,7 @@ class OutputWriter(ABC):
             difference_map: Mapping[str, OutputDifference]
     ) -> None:
         pass
+
+    @abstractmethod
+    def finish(self) -> None:
+        pass

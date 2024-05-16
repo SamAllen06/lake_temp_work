@@ -55,6 +55,7 @@ class Mapper:
             self._execute_order(order)
 
         self.defaults_writer.write_defaults()
+        self.output_writer.finish()
 
     def _execute_order(self, order: Order) -> None:
         self.defaults_writer.write_defaults()

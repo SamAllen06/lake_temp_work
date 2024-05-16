@@ -42,6 +42,10 @@ class ConsoleOutputWriter(OutputWriter):
 
         print("")
 
+    def finish(self) -> None:
+        # Could put a summary here later.
+        pass
+
     def _write_output_variable_header(self, name: str):
         self._color_print(name, AnsiCode.BRIGHT_BLUE)
 

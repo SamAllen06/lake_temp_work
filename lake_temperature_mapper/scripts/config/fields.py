@@ -39,6 +39,11 @@ FIELDS = [
         PathInputVerifier(True, False)
     ),
     Field(
+        "output_directory",
+        "Enter the path to the directory storing mapper output files (Ex: mapping_output/): ",
+        PathInputVerifier(False, False)
+    ),
+    Field(
         "binary_args",
         "Enter the arguments you'd like to pass to the binary (optional) (Ex: 1): ",
         NoCheckInputVerifier()
