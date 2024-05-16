@@ -32,7 +32,7 @@ def _resolve_config_path(config_path_arg: str) -> Path:
     if not config_path_arg:
         config_path = DEFAULT_CONFIG_PATH
     else:
-        config_path = Path.cwd() / args.config_path
+        config_path = Path.cwd() / config_path_arg
 
     if not config_path.exists() or not config_path.is_file():
         raise FileNotFoundError(
