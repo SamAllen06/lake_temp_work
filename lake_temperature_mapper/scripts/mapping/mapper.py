@@ -1,7 +1,7 @@
 from pathlib import Path
 
+from config.config_reader import ConfigReader
 from mapping.binary_runner import BinaryRunner
-from mapping.config_reader import ConfigReader
 from mapping.defaults_writer import DefaultsWriter
 from mapping.difference_analyzer import DifferenceAnalyzer
 from mapping.order import Order

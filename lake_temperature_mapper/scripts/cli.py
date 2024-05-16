@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from mapping.config_reader import ConfigReader
+from config.config_reader import ConfigReader
 from mapping.mapper import Mapper
 from output.console_output_writer import ConsoleOutputWriter
 

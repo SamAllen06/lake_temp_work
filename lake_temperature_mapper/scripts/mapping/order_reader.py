@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-from mapping.config_reader import ConfigReader
 from mapping.order import Order
 from mapping.range_reader import RangeReader
 
