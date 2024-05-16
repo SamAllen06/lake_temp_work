@@ -22,10 +22,18 @@ Additionally, fake_binary reads in the values from lakeparams.txt and uses them
 to compute outputs, which are stored in fake_LakeTemperatureTest.txt. The
 outputs are computed as follows:
 
-| Parameter     | First                 | Second                                  |
-|---------------|-----------------------|-----------------------------------------|
-|fakevar%sum    | sum of all inputs     | double the sum of all inputs            |
-|favevar%product| product of all inputs | the square of the product of all inputs |
+```
+key:
+s = sum of all inputs
+p = product of all inputs
+```
+
+| Parameter       | First Column | Second Column |
+|-----------------|--------------|---------------|
+| fakevar%sum     | s            | s * 2         |
+| (Second Row)    | s * 0.1      | s * 0.5       |
+| favevar%product | p            | p * p         |
+| (Second Row)    | p * s        | p * p * s     |
 
 fake_LakeTemperatureRef.txt is the output file (fake_LakeTemperatureTest.txt)
 from fake_binary when it is run on the default values in lakeparams.txt. It can
