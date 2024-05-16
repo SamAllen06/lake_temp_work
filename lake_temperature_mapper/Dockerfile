@@ -23,6 +23,7 @@ COPY ./elmtest/ /app/elmtest/
 COPY ./scripts/ /app/scripts/
 COPY ./config/elmtest_mapper.conf /app/config/mapper.conf
 COPY ./elmtest_mapping_orders/ /app/mapping_orders/
+RUN mkdir /app/mapping_output/
 
 #RUN pip3 install wheel numpy scipy netCDF4 h5py configparser cftime
 #RUN CFLAGS=-noswitcherror pip install mpi4py
