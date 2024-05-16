@@ -12,3 +12,5 @@ a binary, etc.
 
 It can optionally accept an alternative configuration file, but defaults to
 using scripts/config/mapper.conf
+
+It also constructs a GroupOutputWriter, providing console and/or file output.
