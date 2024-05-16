@@ -11,14 +11,16 @@ void save_outputs_to_file(
 {
   FILE* output_file = fopen(output_file_name, "w");
 
-  for (int output_var_index = 0; output_var_index < output_count / 2; output_var_index++)
+  for (int output_var_index = 0; output_var_index < output_count / 4; output_var_index++)
   {
     const char *NAME = output_names[output_var_index];
     fprintf(
-      output_file, "%s\n  %lf %lf\n",
+      output_file, "%s\n  %lf %lf\n  %lf %lf\n",
       NAME,
       outputs[output_var_index * 2],
-      outputs[output_var_index * 2 + 1]
+      outputs[output_var_index * 2 + 1],
+      outputs[output_var_index * 2 + 2],
+      outputs[output_var_index * 2 + 3]
     );
   }
 
