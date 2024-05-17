@@ -28,6 +28,6 @@ class PathInputVerifier(InputVerifier):
 
     def format_input(self, input: str) -> str:
         path = Path.cwd() / input
-        return str(path.relative_to(PROJECT_ROOT))
+        return str(path.resolve().relative_to(PROJECT_ROOT))
 
 
