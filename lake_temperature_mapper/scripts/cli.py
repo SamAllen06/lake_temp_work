@@ -62,8 +62,6 @@ def _generate_output_writer(
 def main():
     args = _initialize_cli_arguments()
 
-    print(PROJECT_ROOT)
-
     config_path = _resolve_config_path(args.config_path)
     config_reader = ConfigReader(config_path)
 
