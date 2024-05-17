@@ -1,8 +1,6 @@
 from pathlib import Path
 
-# /.../lake_temperature_mapper/ if in the repository,
-# /app/ if in the docker image.
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+from config.project_root import PROJECT_ROOT
 
 
 class ConfigReader:

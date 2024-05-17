@@ -1,8 +1,7 @@
 from pathlib import Path
 
 from config.input_verifier import InputVerifier
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+from config.project_root import PROJECT_ROOT
 
 
 class PathInputVerifier(InputVerifier):

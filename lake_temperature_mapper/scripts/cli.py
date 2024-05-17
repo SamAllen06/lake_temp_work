@@ -2,13 +2,13 @@ import argparse
 from pathlib import Path
 
 from config.config_reader import ConfigReader
+from config.project_root import PROJECT_ROOT
 from mapping.mapper import Mapper
 from output.console_output_writer import ConsoleOutputWriter
 from output.csv_output_writer import CSVOutputWriter
 from output.group_output_writer import GroupOutputWriter
 from output.output_writer import OutputWriter
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "mapper.conf"
 
 
@@ -61,6 +61,8 @@ def _generate_output_writer(
 
 def main():
     args = _initialize_cli_arguments()
+
+    print(PROJECT_ROOT)
 
     config_path = _resolve_config_path(args.config_path)
     config_reader = ConfigReader(config_path)

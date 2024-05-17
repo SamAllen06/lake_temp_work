@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import Mapping
 
 from config.fields import FIELDS
+from config.project_root import PROJECT_ROOT
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_FILE = PROJECT_ROOT / "config" / "mapper.conf"
 
 
