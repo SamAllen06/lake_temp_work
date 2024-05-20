@@ -1,6 +1,8 @@
 from pathlib import Path
 from typing import Mapping
 
+import numpy as np
+
 from mapping.output_difference import OutputDifference
 
 
@@ -43,7 +45,7 @@ class OutputFileData:
 
         return output_differences
 
-    def _read_data(self) -> Mapping[str, list[float]]:
+    def _read_data(self) -> Mapping[str, np.ndarray[np.float64]]:
         with open(self._file_path, "r") as file:
             lines = file.readlines()
 
@@ -53,11 +55,13 @@ class OutputFileData:
             stripped_line = line.strip()
             if "%" in stripped_line:
                 parameter_name = stripped_line
-                data[parameter_name] = []
+                data_list = []
                 continue
 
-            data[parameter_name] += [
+            data_list += [
                 float(value) for value in stripped_line.split()
             ]
+
+            data[parameter_name] = np.array(data_list)
 
         return data

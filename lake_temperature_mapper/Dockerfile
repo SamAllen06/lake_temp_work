@@ -3,6 +3,7 @@ FROM nvcr.io/nvidia/nvhpc:23.5-devel-cuda_multi-ubuntu22.04
 RUN apt-get update -y && \
     apt-get install -y \
     python3 \
+    python3-pip \
     vim && \
     apt-get clean all
 
@@ -25,5 +26,6 @@ COPY ./config/elmtest_mapper.conf /app/config/mapper.conf
 COPY ./elmtest_mapping_orders/ /app/mapping_orders/
 RUN mkdir /app/mapping_output/
 
+RUN pip3 install numpy
 #RUN pip3 install wheel numpy scipy netCDF4 h5py configparser cftime
 #RUN CFLAGS=-noswitcherror pip install mpi4py
