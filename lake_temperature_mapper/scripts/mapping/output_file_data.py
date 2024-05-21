@@ -59,6 +59,6 @@ class OutputFileData:
             data[parameter_name].append(np.fromstring(line, sep=" "))
 
         for parameter in data.keys():
-            data[parameter] = np.array(data[parameter])
+            data[parameter] = np.concatenate(data[parameter])
 
         return data
