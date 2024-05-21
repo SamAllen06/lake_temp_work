@@ -14,13 +14,13 @@ class ConsoleOutputWriter(OutputWriter):
             f", {order.sample_count} samples\n"
         )
 
-        self._color_print(name_line, AnsiCode.BRIGHT_MAGENTA)
-        self._color_print(info_line, AnsiCode.BRIGHT_MAGENTA)
+        self._ansi_print(name_line, AnsiCode.BRIGHT_MAGENTA)
+        self._ansi_print(info_line, AnsiCode.BRIGHT_MAGENTA)
 
     def write_parameter_sample(self, parameter_name: str, value: float) -> None:
         text = f"Set {parameter_name} to {value}"
 
-        self._color_print(text, AnsiCode.BRIGHT_CYAN)
+        self._ansi_print(text, AnsiCode.BRIGHT_CYAN)
 
     def write_difference_map(
             self,
@@ -34,11 +34,12 @@ class ConsoleOutputWriter(OutputWriter):
 
             empty_flag = False
             self._write_output_variable_header(key)
+            self._write_difference_header()
             for difference in difference_map[key]:
                 self._write_difference(difference)
 
         if empty_flag:
-            self._color_print("No differences", AnsiCode.BRIGHT_YELLOW)
+            self._ansi_print("No differences", AnsiCode.BRIGHT_YELLOW)
 
         print("")
 
@@ -47,7 +48,7 @@ class ConsoleOutputWriter(OutputWriter):
         pass
 
     def _write_output_variable_header(self, name: str):
-        self._color_print(name, AnsiCode.BRIGHT_BLUE)
+        self._ansi_print(name, AnsiCode.BRIGHT_BLUE)
 
     def _write_difference(self, difference: OutputDifference):
         print(
@@ -55,6 +56,14 @@ class ConsoleOutputWriter(OutputWriter):
             f"by {difference.get_difference():<25} at {difference.get_indices()}"
         )
 
+    def _write_difference_header(self):
+        self._ansi_print(
+            (
+                f"{'reference_value':<25} -> {'test_value':<25} "
+                f"by {'difference':<25} at indecies"
+            ),
+            AnsiCode.UNDERLINE
+        )
 
-    def _color_print(self, text: str, ansi_code: AnsiCode):
+    def _ansi_print(self, text: str, ansi_code: AnsiCode):
         print(f"\033[{ansi_code.value}m{text}\033[0m")
