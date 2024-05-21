@@ -32,7 +32,7 @@ p = product of all inputs
 |-----------------|--------------|---------------|
 | fakevar%sum     | s            | s * 2         |
 | (Second Row)    | s * 0.1      | s * 0.5       |
-| favevar%product | p            | p * p         |
+| fakevar%product | p            | p * p         |
 | (Second Row)    | p * s        | p * p * s     |
 
 fake_LakeTemperatureRef.txt is the output file (fake_LakeTemperatureTest.txt)

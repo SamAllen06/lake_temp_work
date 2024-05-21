@@ -1,7 +1,7 @@
 # Difference Analyzer (difference_analyzer.py)
 
 ## Purpose
-DifferenceAnalyzer compares a two output files and returns a map of differences
+DifferenceAnalyzer compares two output files and returns a map of differences
 between the two.
 
 ## Functionality
