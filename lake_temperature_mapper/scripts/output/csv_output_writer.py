@@ -39,7 +39,7 @@ class CSVOutputWriter(OutputWriter):
                     difference.get_reference(),
                     difference.get_test(),
                     difference.get_difference(),
-                    difference.get_index(),
+                    difference.get_indices(),
                 ))
 
     def finish(self) -> None:

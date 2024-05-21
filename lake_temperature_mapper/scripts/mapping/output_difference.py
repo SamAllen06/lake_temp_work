@@ -3,8 +3,13 @@ import math
 import numpy as np
 
 class OutputDifference:
-    def __init__(self, index: int, ref: np.float64, test: np.float64):
-        self._index = index
+    def __init__(
+            self,
+            indices: tuple[int, ...],
+            ref: np.float64,
+            test: np.float64
+    ):
+        self._indices = indices
         self._ref = ref
         self._test = test
         self._difference = test - ref
@@ -14,8 +19,8 @@ class OutputDifference:
             return False
         return not self._difference == 0.0
 
-    def get_index(self) -> int:
-        return self._index
+    def get_indices(self) -> tuple[int, ...]:
+        return self._indices
 
     def get_reference(self) -> np.float64:
         return self._ref

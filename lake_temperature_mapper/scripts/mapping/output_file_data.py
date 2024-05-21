@@ -19,7 +19,7 @@ class OutputFileData:
             if not key in output_file_data._data:
                 return False
             
-            if not len(self._data[key]) == len(output_file_data._data[key]):
+            if not self._data[key].shape == output_file_data._data[key].shape:
                 return False
 
         return True
@@ -29,13 +29,11 @@ class OutputFileData:
 
         for parameter in self._data.keys():
             output_differences[parameter] = []
-            for index, (ref_output, test_output) in enumerate(
-                zip(self._data[parameter], test_file_data._data[parameter])
-            ):
+            for indecies in np.ndindex(self._data[parameter].shape):
                 output_difference = OutputDifference(
-                    index,
-                    ref_output,
-                    test_output,
+                    indecies,
+                    self._data[parameter][indecies],
+                    test_file_data._data[parameter][indecies]
                 )
 
                 if not output_difference.is_nonzero_difference():
@@ -55,13 +53,12 @@ class OutputFileData:
             stripped_line = line.strip()
             if "%" in stripped_line:
                 parameter_name = stripped_line
-                data_list = []
+                data[parameter_name] = []
                 continue
 
-            data_list += [
-                float(value) for value in stripped_line.split()
-            ]
+            data[parameter_name].append(np.fromstring(line, sep=" "))
 
-            data[parameter_name] = np.array(data_list)
+        for parameter in data.keys():
+            data[parameter] = np.array(data[parameter])
 
         return data

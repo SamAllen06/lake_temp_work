@@ -52,7 +52,7 @@ class ConsoleOutputWriter(OutputWriter):
     def _write_difference(self, difference: OutputDifference):
         print(
             f"{difference.get_reference():<25} -> {difference.get_test():<25} "
-            f"by {difference.get_difference():<25} at {difference.get_index()}"
+            f"by {difference.get_difference():<25} at {difference.get_indices()}"
         )
 
 
