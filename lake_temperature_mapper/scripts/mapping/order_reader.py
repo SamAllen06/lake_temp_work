@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import re
 
 from mapping.order import Order
 from mapping.range_reader import RangeReader
@@ -8,7 +9,7 @@ from mapping.range_reader import RangeReader
 class OrderReader:
     def __init__(self, order_directory: Path, range_path: Path):
         self.order_directory = order_directory
-        self.range_reader = RangeReader(range_path)
+        self._range_reader = RangeReader(range_path)
 
     def read_orders(self) -> list[Order]:
         order_paths = list(self.order_directory.glob("*.json"))
@@ -44,11 +45,54 @@ class OrderReader:
         )
 
     def _translate_bound_value(self, parameter: str, value: str) -> float:
-        match (value):
-            case "m":
-                return self.range_reader.get_min(parameter)
-            case "M":
-                return self.range_reader.get_max(parameter)
-            case other:
-                return float(value)
+        expression_string = self._translate_shorthand(parameter, value)
+        numbers = [float(number) for number in re.findall(
+            r"(?<!\d)-?[\d.]+", expression_string
+        )]
+        operators = re.findall(r"[+\*\/]|(?<=\s)-(?=\s)|(?<=\d)-(?=\d)", expression_string)
+
+        for index, operator in reversed(list(enumerate(operators))):
+            match operator:
+                case "*":
+                    numbers[index] = numbers[index] * numbers[index + 1]
+                case "/":
+                    numbers[index] = numbers[index] / numbers[index + 1]
+                case other:
+                    continue
+            numbers.pop(index + 1)
+            operators.pop(index)
+
+        for index, operator in reversed(list(enumerate(operators))):
+            match operator:
+                case "+":
+                    numbers[index] = numbers[index] + numbers[index + 1]
+                case "-":
+                    numbers[index] = numbers[index] - numbers[index + 1]
+            numbers.pop(index + 1)
+            operators.pop(index)
+
+        return numbers[0]
+
+
+    def _translate_shorthand(self, parameter: str, value: str) -> str:
+        range_strings = set(re.findall(r"r\(-?[\d.]+\)", value))
+
+        final_string = value
+
+        for range_string in range_strings:
+            time = float(range_string[2:-1])
+            translated_value = str(
+                self._linear_interpolate_range(parameter, time)
+            )
+            final_string = final_string.replace(range_string, translated_value)
+
+        return final_string
+
+    def _linear_interpolate_range(self, parameter: str, time: float) -> float:
+        min = self._range_reader.get_min(parameter)
+        max = self._range_reader.get_max(parameter)
+
+        return min * (1.0 - time) + max * time
+
+
 
