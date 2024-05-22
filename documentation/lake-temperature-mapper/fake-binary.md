@@ -35,6 +35,9 @@ p = product of all inputs
 | fakevar%product | p            | p * p         |
 | (Second Row)    | p * s        | p * p * s     |
 
+If any of the inputs is a zero, the program will exit with exit code 1. 
+(Ensuring the mapping script can handle program crashes.)
+
 fake_LakeTemperatureRef.txt is the output file (fake_LakeTemperatureTest.txt)
 from fake_binary when it is run on the default values in lakeparams.txt. It can
 be used to note differences in outputs when it is compared to an output file

@@ -12,6 +12,9 @@ double *generate_outputs(double *inputs, int param_count)
 
   for (int param_index = 0; param_index < param_count; param_index++)
   {
+    if (inputs[param_index] == 0){
+      exit(1);
+    }
     sum += inputs[param_index];
     product *= inputs[param_index];
   }
