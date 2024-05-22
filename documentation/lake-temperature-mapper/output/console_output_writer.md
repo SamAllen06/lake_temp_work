@@ -18,12 +18,18 @@ Prints changes to the output variables like so (only variable *with* changes
 are printed):
 ```
 [variable_name]
-[reference_value] -> [test_value] by [difference] at [index]
-[reference_value] -> [test_value] by [difference] at [index]
+reference_value   -> test_value   by difference   at indices
+[reference_value] -> [test_value] by [difference] at [indices]
+[reference_value] -> [test_value] by [difference] at [indices]
 ...
 ```
 
 Or, if no output variables changed:
 ```
 "No differences"
+```
+
+If the binary crashed (returned an exit code other than 0):
+```
+Binary exited with code [code]
 ```

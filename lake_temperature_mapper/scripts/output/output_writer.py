@@ -15,6 +15,10 @@ class OutputWriter(ABC):
         pass
 
     @abstractmethod
+    def write_binary_exit(self, exit_code: int) -> None:
+        pass
+
+    @abstractmethod
     def write_difference_map(
             self,
             difference_map: Mapping[str, OutputDifference]

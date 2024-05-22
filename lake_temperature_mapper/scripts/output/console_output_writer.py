@@ -22,6 +22,11 @@ class ConsoleOutputWriter(OutputWriter):
 
         self._ansi_print(text, AnsiCode.BRIGHT_CYAN)
 
+    def write_binary_exit(self, exit_code: int) -> None:
+        text = f"Binary exited with code {exit_code}"
+
+        self._ansi_print(text, AnsiCode.BRIGHT_RED)
+
     def write_difference_map(
             self,
             difference_map: Mapping[str, list[OutputDifference]]

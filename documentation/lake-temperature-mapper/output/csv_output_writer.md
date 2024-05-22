@@ -31,5 +31,10 @@ Rows are created in this format:
 ...
 ```
 
+If the binary crashes, the differences are replaced with this row:
+```
+EXIT [exit_code]
+```
+
 These rows are passed to Python's csv module to write to the file, so specific
 details about the csv have been left out of the above format.

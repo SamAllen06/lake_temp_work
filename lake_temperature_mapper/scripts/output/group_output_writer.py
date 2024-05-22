@@ -20,6 +20,10 @@ class GroupOutputWriter(OutputWriter):
         for writer in self._writers:
             writer.write_parameter_sample(parameter_name, value)
 
+    def write_binary_exit(self, exit_code: int) -> None:
+        for writer in self._writers:
+            writer.write_binary_exit(exit_code)
+
     def write_difference_map(
             self,
             difference_map: Mapping[str, OutputDifference]

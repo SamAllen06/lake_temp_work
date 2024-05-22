@@ -67,6 +67,11 @@ class Mapper:
                 sample_value
             )
             self._param_editor.modify_parameter(order.parameter, sample_value)
-            self._binary_runner.run_binary()
+
+            exit_code = self._binary_runner.run_binary()
+            if exit_code:
+                self._output_writer.write_binary_exit(exit_code)
+                continue
+
             difference_map = self._difference_analyzer.compare_outputs()
             self._output_writer.write_difference_map(difference_map)

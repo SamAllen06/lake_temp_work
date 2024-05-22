@@ -25,6 +25,9 @@ class CSVOutputWriter(OutputWriter):
     def write_parameter_sample(self, parameter_name: str, value: float) -> None:
         self._order_data.append((parameter_name, value))
 
+    def write_binary_exit(self, exit_code: int) -> None:
+        self._order_data.append(("EXIT", exit_code))
+
     def write_difference_map(
             self,
             difference_map: Mapping[str, OutputDifference]

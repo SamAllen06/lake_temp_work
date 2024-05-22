@@ -9,7 +9,7 @@ class BinaryRunner:
         self._binary_path = Path(binary_path)
         self._binary_args = shlex.split(binary_args)
 
-    def run_binary(self) -> None:
+    def run_binary(self) -> int:
         text_files_directory = self._binary_path.parent
         output = subprocess.run(
             [self._binary_path] + self._binary_args,
@@ -18,5 +18,4 @@ class BinaryRunner:
             cwd=text_files_directory
         )
 
-        # "output" can later be used to access stdout and stderr output from
-        # the binary.
+        return output.returncode
