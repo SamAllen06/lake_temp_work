@@ -30,19 +30,22 @@ class OrderReader:
         return self._construct_order(order_name, order_data)
 
     def _construct_order(self, order_name: str, order_data) -> Order:
-        return Order(
-            order_name,
-            order_data["param"],
-            order_data["samples"],
-            self._translate_bound_value(
+        try:
+            return Order(
+                order_name,
                 order_data["param"],
-                order_data["start"]
-            ),
-            self._translate_bound_value(
-                order_data["param"],
-                order_data["end"]
+                order_data["samples"],
+                self._translate_bound_value(
+                    order_data["param"],
+                    order_data["start"]
+                ),
+                self._translate_bound_value(
+                    order_data["param"],
+                    order_data["end"]
+                )
             )
-        )
+        except KeyError:
+            raise KeyError(f"Invalid order format in order {order_name}")
 
     def _translate_bound_value(self, parameter: str, value: str) -> float:
         expression_string = self._translate_shorthand(parameter, value)
