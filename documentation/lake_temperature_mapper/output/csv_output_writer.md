@@ -6,7 +6,7 @@ Writes mapping data to a CSV file in a specified directory.
 ## Functionality
 Csv files are named after the order they represent the data for. Each file is 
 written to after its respective order completes, meaning, if the program were
-interupted in the middle of an order, all previous orders would be stored, but
+interrupted in the middle of an order, all previous orders would be stored, but
 the current one would not.
 
 Rows are created in this format:

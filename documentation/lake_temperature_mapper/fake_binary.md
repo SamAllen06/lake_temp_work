@@ -14,7 +14,7 @@ them the same way.
 fake_binary.exe outputs a line to stdout and stderr, allowing us to
 to test output stream filtering. (For example, we may decide to disregard
 output to stdout, as we don't want our mapping process to spam the console with
-output, but perhapts we want to print or parse the output to stderr, because it
+output, but perhaps we want to print or parse the output to stderr, because it
 can contain important information about the program's response to certain
 inputs.)
 

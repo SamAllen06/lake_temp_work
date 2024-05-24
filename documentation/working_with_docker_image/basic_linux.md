@@ -1,7 +1,7 @@
 # Some Linux Basics
 
 ## Reasoning
-The docker image for this project is derived from Ubuntu (linux distribution), and it is headless, meaning it does not have a GUI, and you will be interacting with it in the command line.
+The docker image for this project is derived from Ubuntu (Linux distribution), and it is headless, meaning it does not have a GUI, and you will be interacting with it in the command line.
 
 ## Reading the Bash prompt
 Bash is the command line interpreter you are using inside of this image.
@@ -19,11 +19,11 @@ However, keep in mind that you are working on a Docker container, meaning everyt
 This should prevent damage to your host.
 
 ### Hostname (container ID)
-Typically "hostname" refers to a network hostname (something you could see on your wifi router's settings), but in this case it has been set to your container id.
+Typically "hostname" refers to a network hostname (something you could see on your WiFi router's settings), but in this case it has been set to your container id.
 This is useful when you need to run docker commands on the container while it is running. (For instance, copying files to and from the container and your computer's filesystems.)
 
 ### Directory
-Directories on a file system are a tree. The root node (directory) on linux (and other unix-based OSes like MacOS) is the directory "/". (On Windows the root directory is "C:\\" or similar.)
+Directories on a file system are a tree. The root node (directory) on Linux (and other UNIX-based OSes like MacOS) is the directory "/". (On Windows the root directory is "C:\\" or similar.)
 From here, you have a combination of directories and files. Directories (aka folders) contain references to other directories and files.
 Files are always leaves on the tree. (For the most part, technically if you get into links this gets a little more complex.)
 
@@ -45,7 +45,7 @@ Flags specify an alternate behavior of the command you are running and are often
 --form
 ```
 Commonly used flags will usually have a one-letter one-dash form, and all flags will typically have a two-dash longer form.
-If a command supports both, they can be used interchangably.
+If a command supports both, they can be used interchangeably.
 
 ### Help
 Most commands, and often scripts (executable files), will support a help page.
@@ -83,7 +83,7 @@ A local path starts at your current directory. Say we have this directory struct
 
 And say that we are in the directory "/home/turt/". One way to write a local path is to just type a path from your current directory.
 We can access the path "/home/turt/cool-stuff/" from our current directory with the path "cool-stuff/". Additionally, "." acts as a 
-placeholder for your current directory, so an equivilant local path would be "./cool-stuff/".
+placeholder for your current directory, so an equivalent local path would be "./cool-stuff/".
 
 However, what if we want to go to a parent directory? We can do that too, using "..". ".." represents the parent directory
 of our current directory, so, if we are in "/home/turt/cool-stuff/" and we want to access the directory "/home/turt/fancy-files",
@@ -117,7 +117,7 @@ Usage `cat [file path]`
 
 ### cp (copy)
 
-Copys files or directories from the first path to the second.
+Copies files or directories from the first path to the second.
 Can also be used to rename the copy.
 
 Usage `cp [path1] [path2]`

@@ -3,15 +3,15 @@
 ## What is a container?
 A container is an isolated environment, similar (though not the same as) a
 virtual machine. Both isolate the application from the host system (your 
-computer) by virtualizing the filesystem, network, process IDs, and user IDs,
+computer) by virtualizing the file system, network, process IDs, and user IDs,
 however, a virtual machine also virtualizes the operating system, whereas docker
 does not. For example, docker images for windows require that Windows be
-installed, and images for linux use the host's linux kernel (or Windows
+installed, and images for Linux use the host's Linux kernel (or Windows
 Subsystem for Linux when run on Windows).
 
 ## What is an image?
 An image is essentially a blueprint for a container. It contains everything the
-container needs to run, including any dependancies or other files. This image
+container needs to run, including any dependencies or other files. This image
 can then be shared with others, usually through Docker Hub.
 
 ## What is a Dockerfile
@@ -55,7 +55,7 @@ ENV LANGUAGE en_US.UTF-8
 ```
 
 "ENV" sets an environment variable. You can access and modify environment
-variables in linux using `echo $VAR` and `export VAR=value`. In this case, we
+variables in Linux using `echo $VAR` and `export VAR=value`. In this case, we
 are setting the locale we want Ubuntu to use (UTF-8).
 
 ```
@@ -102,7 +102,7 @@ Lists the currently running containers on your machine, along with their IDs.
 docker run -it [image_name or image_id]
 ```
 Runs a container interactively, meaning you can type commands inside it, and
-recieve output from it directly on your terminal. This is how you should run
+receive output from it directly on your terminal. This is how you should run
 the image from the Dockerfile in this repository.
 
 ```

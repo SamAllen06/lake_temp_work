@@ -7,7 +7,7 @@ order.
 ## Functionality
 Takes in a list of ranges and a sample count. Generates a linear sequence of
 values between the starting ranges and ending ranges. It is important to clarify
-that this effectively represents a line segment in the multidimentional input
+that this effectively represents a line segment in the multidimensional input
 space, as opposed to a box. Samples generated take the form of a dictionary
 mapping the input parameter name to its generated value.
 
