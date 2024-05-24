@@ -1,6 +1,10 @@
 {
-  "param":"betavis",
   "samples":11,
-  "start":"r(0)",
-  "end":"r(1)"
+  "ranges":[
+    {
+      "param":"betavis",
+      "start":"r(0)",
+      "end":"r(1)"
+    }
+  ]
 }
