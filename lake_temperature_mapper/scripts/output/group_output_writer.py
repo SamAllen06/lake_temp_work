@@ -16,9 +16,9 @@ class GroupOutputWriter(OutputWriter):
         for writer in self._writers:
             writer.write_order_header(order)
 
-    def write_parameter_sample(self, parameter_name: str, value: float) -> None:
+    def write_sample(self, value_map: Mapping[str, float]) -> None:
         for writer in self._writers:
-            writer.write_parameter_sample(parameter_name, value)
+            writer.write_sample(value_map)
 
     def write_binary_exit(self, exit_code: int) -> None:
         for writer in self._writers:

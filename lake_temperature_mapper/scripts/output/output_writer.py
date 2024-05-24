@@ -11,7 +11,7 @@ class OutputWriter(ABC):
         pass
 
     @abstractmethod
-    def write_parameter_sample(self, parameter_name: str, value: float) -> None:
+    def write_sample(self, sample: Mapping[str, float]) -> None:
         pass
 
     @abstractmethod

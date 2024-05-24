@@ -10,7 +10,7 @@ DefaultsWriter.
 Uses OrderReader to read in orders stored in a directory specified by a config
 file. Executes the order, following this cycle:
 
-- Change the value of the specified parameter using ParamEditor to the value
+- Change the value of the specified parameters using ParamEditor to the values
 returned by the Sampler.
 - Run the binary using BinaryRunner.
 - Compare the differences between the reference and test file using

@@ -1,13 +1,15 @@
 # Sampler (sampler.py)
 
 ## Purpose
-Generates a list of values for an input parameter to pass to the binary being
-tested.
+Is an iterable class that generates sample values for each parameter in the 
+order.
 
 ## Functionality
-Takes in a starting value (from), and an ending value (to), and a sample count.
-Generates a list inclusively linear interpolating between the values. The size
-of the list is equal to the sample count.
+Takes in a list of ranges and a sample count. Generates a linear sequence of
+values between the starting ranges and ending ranges. It is important to clarify
+that this effectively represents a line segment in the multidimentional input
+space, as opposed to a box. Samples generated take the form of a dictionary
+mapping the input parameter name to its generated value.
 
 While it currently only does linear interpolation, it will likely be extended
 in the future to include other sampling methods.
@@ -15,9 +17,21 @@ in the future to include other sampling methods.
 Example:
 
 ```
+param: "A"
 from: 5.0
 to: 7.0
+
+param: "B"
+from: 2.0
+to: -2.0
+
 samples: 5
 
-[5.0, 5.5, 6.0, 6.5, 7.0]
+[
+  {"A": 5.0, "B": 2.0},
+  {"A": 5.5, "B": 1.0},
+  {"A": 6.0, "B": 0.0},
+  {"A": 6.5, "B":-1.0},
+  {"A": 7.0, "B":-2.0}
+]
 ```

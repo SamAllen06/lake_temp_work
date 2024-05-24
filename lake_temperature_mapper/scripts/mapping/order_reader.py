@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
 import re
+from typing import Mapping
 
 from mapping.order import Order
+from mapping.parameter_range import ParameterRange
 from mapping.range_reader import RangeReader
 
 
@@ -23,7 +25,10 @@ class OrderReader:
 
     def _read_order(self, order_path: Path) -> Order:
         with open(order_path) as order_file:
-            order_data = json.loads(order_file.read())
+            try:
+                order_data = json.loads(order_file.read())
+            except json.JSONDecodeError as error:
+                raise RuntimeError(f"Invalid json in order {str(order_path)}", error)
 
         order_name = order_path.name.removesuffix(".json")
 
@@ -31,26 +36,35 @@ class OrderReader:
 
     def _construct_order(self, order_name: str, order_data) -> Order:
         try:
+            ranges = self._construct_order_ranges(order_data)
+            sample_count = order_data["samples"]
+
             return Order(
                 order_name,
-                order_data["param"],
-                order_data["samples"],
-                self._translate_bound_value(
-                    order_data["param"],
-                    order_data["start"]
-                ),
-                self._translate_bound_value(
-                    order_data["param"],
-                    order_data["end"]
-                )
+                ranges,
+                sample_count
             )
         except KeyError:
             raise KeyError(f"Invalid order format in order {order_name}")
 
+    def _construct_order_ranges(self, order_data) -> Mapping[str, ParameterRange]:
+        ranges = {}
+        for range_data in order_data["ranges"]:
+            ranges[range_data["param"]] = ParameterRange(
+                self._translate_bound_value(
+                    range_data["param"], range_data["start"]
+                ),
+                self._translate_bound_value(
+                    range_data["param"], range_data["end"]
+                )
+            )
+
+        return ranges
+
     def _translate_bound_value(self, parameter: str, value: str) -> float:
         expression_string = self._translate_shorthand(parameter, value)
-        numbers = [float(number) for number in re.findall(
-            r"(?<!\d)-?[\d.]+", expression_string
+        numbers = [float(number_match[0]) for number_match in re.findall(
+            r"((?<!\d)(-?[\d.]+)(e(-?[\d.]+))?)", expression_string
         )]
         operators = re.findall(r"[+\*\/]|(?<=\s)-(?=\s)|(?<=\d)-(?=\d)", expression_string)
 

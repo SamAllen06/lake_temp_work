@@ -8,22 +8,32 @@ from output.ansi_code import AnsiCode
 
 class ConsoleOutputWriter(OutputWriter):
     def write_order_header(self, order: Order) -> None:
-        name_line = f"Executing order: {order.name}"
-        info_line = (
-            f"{order.parameter}: {order.start} -> {order.end}"
-            f", {order.sample_count} samples\n"
-        )
+        name_line = f"Executing order: {order.name}\n"
+        samples_line = f"{order.sample_count} linear samples using ranges:\n"
+        info_lines = []
 
-        self._ansi_print(name_line, AnsiCode.BRIGHT_MAGENTA)
-        self._ansi_print(info_line, AnsiCode.BRIGHT_MAGENTA)
+        for parameter in order.ranges.keys():
+            parameter_range = order.ranges[parameter]
+            info_lines.append(
+                f"{parameter}: {parameter_range.start} -> {parameter_range.end}"
+            )
 
-    def write_parameter_sample(self, parameter_name: str, value: float) -> None:
-        text = f"Set {parameter_name} to {value}"
+        text = name_line + samples_line + "\n".join(info_lines) + "\n"
+
+        self._ansi_print(text, AnsiCode.BRIGHT_MAGENTA)
+
+    def write_sample(self, sample: Mapping[str, float]) -> None:
+        lines = []
+
+        for parameter in sample:
+            lines.append(f"Set {parameter} to {sample[parameter]}")
+
+        text = "\n".join(lines)
 
         self._ansi_print(text, AnsiCode.BRIGHT_CYAN)
 
     def write_binary_exit(self, exit_code: int) -> None:
-        text = f"Binary exited with code {exit_code}"
+        text = f"Binary exited with code {exit_code}\n"
 
         self._ansi_print(text, AnsiCode.BRIGHT_RED)
 

@@ -7,6 +7,11 @@ Writes output from the Mapper to the console.
 Prints the order being executed in this format:
 ```
 Executing order: [order_name]
+# linear samples using ranges:
+param1: start -> end
+param2: start -> end
+...
+paramN: start -> end
 ```
 
 Prints each change to an input parameter's value as so:

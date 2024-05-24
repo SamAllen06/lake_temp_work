@@ -22,8 +22,9 @@ class CSVOutputWriter(OutputWriter):
         self._order_data = []
         self._order_name = order.name
 
-    def write_parameter_sample(self, parameter_name: str, value: float) -> None:
-        self._order_data.append((parameter_name, value))
+    def write_sample(self, value_map: Mapping[str, float]) -> None:
+        for parameter in value_map.keys():
+            self._order_data.append((parameter, value_map[parameter]))
 
     def write_binary_exit(self, exit_code: int) -> None:
         self._order_data.append(("EXIT", exit_code))

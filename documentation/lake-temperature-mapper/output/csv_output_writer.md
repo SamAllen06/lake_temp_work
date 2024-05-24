@@ -11,7 +11,10 @@ the current one would not.
 
 Rows are created in this format:
 ```
-[input_parameter_name] [input_parameter_value1]
+[input_parameter1_name] [input_parameter1_value1]
+[input_parameter2_name] [input_parameter2_value1]
+...
+[input_parameterN_name] [input_parameterN_value1]
 [output_variable_name1]
 [reference_value1] [test_value1] [difference1] [index1]
 [reference_value2] [test_value2] [difference2] [index2]

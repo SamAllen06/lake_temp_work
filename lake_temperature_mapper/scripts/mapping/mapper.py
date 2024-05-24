@@ -59,14 +59,13 @@ class Mapper:
 
     def _execute_order(self, order: Order) -> None:
         self._defaults_writer.write_defaults()
-        sampler = Sampler(order.start, order.end, order.sample_count)
+        sampler = Sampler(order.ranges, order.sample_count)
         self._output_writer.write_order_header(order)
-        for sample_value in sampler.get_samples():
-            self._output_writer.write_parameter_sample(
-                order.parameter,
-                sample_value
+        for sample in sampler:
+            self._output_writer.write_sample(
+                sample
             )
-            self._param_editor.modify_parameter(order.parameter, sample_value)
+            self._param_editor.modify_parameters(sample)
 
             exit_code = self._binary_runner.run_binary()
             if exit_code:

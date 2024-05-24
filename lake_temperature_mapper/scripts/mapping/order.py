@@ -1,15 +1,13 @@
+from mapping.parameter_range import ParameterRange
+
+
 class Order:
     def __init__(
             self,
             name: str,
-            parameter: str,
-            sample_count: int,
-            start: float,
-            end: float
+            ranges: list[ParameterRange],
+            sample_count: int
     ):
         self.name = name
-        self.parameter = parameter
+        self.ranges = ranges
         self.sample_count = sample_count
-        self.start = start
-        self.end = end
-
