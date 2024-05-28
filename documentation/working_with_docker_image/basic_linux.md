@@ -171,7 +171,7 @@ Works the same way as `cp`, but deletes the original. Can be used similarly to r
 
 ### file
 
-Analyses the contents of a file and prints what it type of file it is. (Not the extension.)
+Analyses the contents of a file and prints what type of file it is. (Not the extension.)
 
 Usage: `file [file path]`
 

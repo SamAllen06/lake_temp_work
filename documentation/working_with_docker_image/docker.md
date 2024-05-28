@@ -1,7 +1,7 @@
 # Working with Docker
 
 ## What is a container?
-A container is an isolated environment, similar (though not the same as) a
+A container is an isolated environment, similar to (though not the same as) a
 virtual machine. Both isolate the application from the host system (your 
 computer) by virtualizing the file system, network, process IDs, and user IDs,
 however, a virtual machine also virtualizes the operating system, whereas docker
@@ -14,9 +14,9 @@ An image is essentially a blueprint for a container. It contains everything the
 container needs to run, including any dependencies or other files. This image
 can then be shared with others, usually through Docker Hub.
 
-## What is a Dockerfile
+## What is a Dockerfile?
 A Dockerfile specifies how to build an image. It is the highest level of
-abstraction in the docker workflow. You can think of a Dockerfile similar to the
+abstraction in the docker workflow. You can think of a Dockerfile as similar to the
 source code of a program, an image as similar to a compiled binary from that
 source code, and a container as similar to that program while it is running.
 

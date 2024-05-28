@@ -1,4 +1,4 @@
-# Field {field.py}
+# Field (field.py)
 
 ## Purpose
 Stores information about a field in the mapper's configuration file.
