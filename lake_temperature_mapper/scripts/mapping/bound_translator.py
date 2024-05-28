@@ -1,0 +1,58 @@
+import re
+
+from mapping.range_reader import RangeReader
+
+
+class BoundTranslator:
+    def __init__(self, range_reader: RangeReader):
+        self._range_reader = range_reader
+
+    def translate_bound(self, parameter: str, value: str) -> float:
+        expression_string = self._translate_shorthand(parameter, value)
+        numbers = [float(number_match[0]) for number_match in re.findall(
+            r"((?<!\d)(-?[\d.]+)(e(-?[\d.]+))?)", expression_string
+        )]
+        operators = re.findall(r"[+\*\/]|(?<=\s)-(?=\s)|(?<=\d)-(?=\d)", expression_string)
+
+        for index, operator in reversed(list(enumerate(operators))):
+            match operator:
+                case "*":
+                    numbers[index] = numbers[index] * numbers[index + 1]
+                case "/":
+                    numbers[index] = numbers[index] / numbers[index + 1]
+                case other:
+                    continue
+            numbers.pop(index + 1)
+            operators.pop(index)
+
+        for index, operator in reversed(list(enumerate(operators))):
+            match operator:
+                case "+":
+                    numbers[index] = numbers[index] + numbers[index + 1]
+                case "-":
+                    numbers[index] = numbers[index] - numbers[index + 1]
+            numbers.pop(index + 1)
+            operators.pop(index)
+
+        return numbers[0]
+
+    def _translate_shorthand(self, parameter: str, value: str) -> str:
+        range_strings = set(re.findall(r"r\(-?[\d.]+\)", value))
+
+        final_string = value
+
+        for range_string in range_strings:
+            time = float(range_string[2:-1])
+            translated_value = str(
+                self._linear_interpolate_range(parameter, time)
+            )
+            final_string = final_string.replace(range_string, translated_value)
+
+        return final_string
+
+    def _linear_interpolate_range(self, parameter: str, time: float) -> float:
+        min = self._range_reader.get_min(parameter)
+        max = self._range_reader.get_max(parameter)
+
+        return min * (1.0 - time) + max * time
+
