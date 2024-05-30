@@ -7,7 +7,7 @@ from mapping.output_difference import OutputDifference
 
 class OutputWriter(ABC):
     @abstractmethod
-    def write_order_header(self, order: Order) -> None:
+    def write_order_header(self, order_name: str, order: Order) -> None:
         pass
 
     @abstractmethod

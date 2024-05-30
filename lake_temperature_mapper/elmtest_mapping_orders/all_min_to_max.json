@@ -1,40 +1,12 @@
 {
   "samples":11,
-  "ranges": [
-    {
-      "param":"betavis",
-      "start":"r(0)",
-      "end":"r(1)"
-    },
-    {
-      "param":"za_lake",
-      "start":"r(0)",
-      "end":"r(1)"
-    },
-    {
-      "param":"n2min",
-      "start":"r(0)",
-      "end":"r(1)"
-    },
-    {
-      "param":"tdmax",
-      "start":"r(0)",
-      "end":"r(1)"
-    },
-    {
-      "param":"pudz",
-      "start":"r(0)",
-      "end":"r(1)"
-    },
-    {
-      "param":"mixfact",
-      "start":"r(0)",
-      "end":"r(1)"
-    },
-    {
-      "param":"depthcrit",
-      "start":"r(0)",
-      "end":"r(1)"
-    }
-  ]
+  "ranges": {
+    "betavis":["r(0)", "r(1)"],
+    "za_lake":["r(0)", "r(1)"],
+    "n2min":["r(0)", "r(1)"],
+    "tdmax":["r(0)", "r(1)"],
+    "pudz":["r(0)", "r(1)"],
+    "mixfact":["r(0)", "r(1)"],
+    "depthcrit":["r(0)", "r(1)"]
+  }
 }

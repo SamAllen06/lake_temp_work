@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Mapping
 
 from config.config_reader import ConfigReader
 from mapping.binary_runner import BinaryRunner
@@ -7,7 +8,6 @@ from mapping.difference_analyzer import DifferenceAnalyzer
 from mapping.order import Order
 from mapping.order_reader import OrderReader
 from mapping.param_editor import ParamEditor
-from mapping.sampler import Sampler
 from output.output_writer import OutputWriter
 
 
@@ -37,12 +37,9 @@ class Mapper:
 
     def map(self):
         orders = self._read_orders()
-
-        # TODO: Reset the input file to defaults
-        
         self._execute_orders(orders)
 
-    def _read_orders(self) -> list[Order]:
+    def _read_orders(self) -> Mapping[str, Order]:
         order_reader = OrderReader(
             self._config_reader.get_path("order_directory"),
             self._config_reader.get_path("range_path")
@@ -50,8 +47,10 @@ class Mapper:
 
         return order_reader.read_orders()
 
-    def _execute_orders(self, orders: list[Order]) -> None:
-        for order in orders:
+    def _execute_orders(self, orders: Mapping[str, Order]) -> None:
+        for order_name in orders.keys():
+            order = orders[order_name]
+            self._output_writer.write_order_header(order_name, order)
             self._execute_order(order)
 
         self._defaults_writer.write_defaults()
@@ -59,9 +58,7 @@ class Mapper:
 
     def _execute_order(self, order: Order) -> None:
         self._defaults_writer.write_defaults()
-        sampler = Sampler(order.ranges, order.sample_count)
-        self._output_writer.write_order_header(order)
-        for sample in sampler:
+        for sample in order:
             self._output_writer.write_sample(
                 sample
             )

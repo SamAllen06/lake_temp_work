@@ -15,12 +15,12 @@ class CSVOutputWriter(OutputWriter):
         self._order_data = []
         self._order_name = ""
 
-    def write_order_header(self, order: Order) -> None:
+    def write_order_header(self, order_name: str, order: Order) -> None:
         if self._order_name:
             self._write_order_to_file()
 
         self._order_data = []
-        self._order_name = order.name
+        self._order_name = order_name
 
     def write_sample(self, value_map: Mapping[str, float]) -> None:
         for parameter in value_map.keys():

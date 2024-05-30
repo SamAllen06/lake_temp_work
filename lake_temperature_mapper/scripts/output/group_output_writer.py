@@ -12,9 +12,9 @@ class GroupOutputWriter(OutputWriter):
     def add_writer(self, writer: OutputWriter) -> None:
         self._writers.append(writer)
 
-    def write_order_header(self, order: Order) -> None:
+    def write_order_header(self, order_name: str, order: Order) -> None:
         for writer in self._writers:
-            writer.write_order_header(order)
+            writer.write_order_header(order_name, order)
 
     def write_sample(self, value_map: Mapping[str, float]) -> None:
         for writer in self._writers:

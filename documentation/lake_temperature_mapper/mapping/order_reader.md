@@ -5,24 +5,34 @@ Reads in orders from a specified order directory. Orders provide instructions
 for how to sample an input parameter.
 
 ## Functionality
-Reads order files (json) in the specified directory. Order files use the
-following format:
+Reads order files (JSON) in the specified directory. Order files use one of the
+following formats:
+
+Line Order:
 ```
 {
-  "param":"param_name",
   "samples": # of samples,
-  "ranges": [
-    {
-      "param":"param_name",
-      "start":"start_value",
-      "end":"end_value"
-    }
-  ]
+  "ranges": {
+    "param1":["start_value", "end_value"]
+    "param2":["start_value", "end_value"]
+    ...
+    "paramN":["start_value", "end_value"]
+  }
 }
 ```
 
-This, along with the filename (minus the .json extension) is stored in an Order.
+Box Order:
+```
+{
+  "ranges": {
+    "param1":["start_value", "end_value", sample_count]
+    "param2":["start_value", "end_value", sample_count]
+    ...
+    "paramN":["start_value", "end_value", sample_count]
+  }
+}
+```
 
-The values of the start and end fields are converted into a float using 
-BoundTranslator.
-
+This data is then given to OrderFactory to create an Order. The resulting order
+is stored in a dictionary, with the filename (minus the .json extension) as its
+key.

@@ -1,13 +1,26 @@
-from mapping.parameter_range import ParameterRange
+from abc import ABC, abstractmethod
+from typing import Mapping
+
+from mapping.bound_translator import BoundTranslator
 
 
-class Order:
+class Order(ABC):
+    @abstractmethod
     def __init__(
             self,
-            name: str,
-            ranges: list[ParameterRange],
-            sample_count: int
+            order_data,
+            bound_translator: BoundTranslator
     ):
-        self.name = name
-        self.ranges = ranges
-        self.sample_count = sample_count
+        pass
+
+    @abstractmethod
+    def get_sample_count(self) -> int:
+        pass
+
+    @abstractmethod
+    def get_ranges(self) -> Mapping[str, tuple]:
+        pass
+
+    @abstractmethod
+    def __iter__(self):
+        pass
