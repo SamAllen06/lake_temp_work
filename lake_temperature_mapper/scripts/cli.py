@@ -3,7 +3,7 @@ from pathlib import Path
 
 from config.config_reader import ConfigReader
 from config.project_root import PROJECT_ROOT
-from mapping.mapper import Mapper
+from testing.mapper import Mapper
 from output.console_output_writer import ConsoleOutputWriter
 from output.csv_output_writer import CSVOutputWriter
 from output.group_output_writer import GroupOutputWriter

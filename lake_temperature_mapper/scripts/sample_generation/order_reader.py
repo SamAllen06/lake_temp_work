@@ -2,10 +2,10 @@ import json
 from pathlib import Path
 from typing import Mapping
 
-from mapping.bound_translator import BoundTranslator
-from mapping.order import Order
-from mapping.order_factory import OrderFactory
-from mapping.range_reader import RangeReader
+from sample_generation.bound_translator import BoundTranslator
+from sample_generation.order import Order
+from sample_generation.order_factory import OrderFactory
+from sample_generation.range_reader import RangeReader
 
 
 class OrderReader:

@@ -1,7 +1,7 @@
 from typing import Mapping
 
-from mapping.bound_translator import BoundTranslator
-from mapping.order import Order
+from sample_generation.bound_translator import BoundTranslator
+from sample_generation.order import Order
 
 
 class BoxOrder(Order):

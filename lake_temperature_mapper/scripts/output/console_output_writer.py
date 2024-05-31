@@ -1,9 +1,9 @@
 from output.output_writer import OutputWriter
 from typing import Mapping
 
-from mapping.box_order import BoxOrder
-from mapping.order import Order
-from mapping.output_difference import OutputDifference
+from sample_generation.box_order import BoxOrder
+from sample_generation.order import Order
+from analysis.output_difference import OutputDifference
 from output.ansi_code import AnsiCode
 
 

@@ -1,7 +1,7 @@
-from mapping.bound_translator import BoundTranslator
-from mapping.box_order import BoxOrder
-from mapping.line_order import LineOrder
-from mapping.order import Order
+from sample_generation.bound_translator import BoundTranslator
+from sample_generation.box_order import BoxOrder
+from sample_generation.line_order import LineOrder
+from sample_generation.order import Order
 
 
 class OrderFactory:

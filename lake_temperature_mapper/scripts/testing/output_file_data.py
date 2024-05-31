@@ -3,7 +3,7 @@ from typing import Mapping
 
 import numpy as np
 
-from mapping.output_difference import OutputDifference
+from analysis.output_difference import OutputDifference
 
 
 class OutputFileData:

@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Mapping
 
-from mapping.output_difference import OutputDifference
-from mapping.output_file_data import OutputFileData
+from analysis.output_difference import OutputDifference
+from testing.output_file_data import OutputFileData
 
 
 class DifferenceAnalyzer:

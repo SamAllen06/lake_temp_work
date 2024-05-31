@@ -2,12 +2,12 @@ from pathlib import Path
 from typing import Mapping
 
 from config.config_reader import ConfigReader
-from mapping.binary_runner import BinaryRunner
-from mapping.defaults_writer import DefaultsWriter
-from mapping.difference_analyzer import DifferenceAnalyzer
-from mapping.order import Order
-from mapping.order_reader import OrderReader
-from mapping.param_editor import ParamEditor
+from testing.binary_runner import BinaryRunner
+from testing.defaults_writer import DefaultsWriter
+from analysis.difference_analyzer import DifferenceAnalyzer
+from sample_generation.order import Order
+from sample_generation.order_reader import OrderReader
+from testing.param_editor import ParamEditor
 from output.output_writer import OutputWriter
 
 

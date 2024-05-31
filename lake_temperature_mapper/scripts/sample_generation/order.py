@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Mapping
 
-from mapping.bound_translator import BoundTranslator
+from sample_generation.bound_translator import BoundTranslator
 
 
 class Order(ABC):
