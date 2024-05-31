@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from config.project_root import PROJECT_ROOT
+from config.root import SCRIPT_ROOT
 
 
 class ConfigReader:
@@ -9,7 +9,7 @@ class ConfigReader:
         self._config_map = self._read_config()
     
     def get_path(self, config_key: str) -> Path:
-        return PROJECT_ROOT / self.get(config_key)
+        return SCRIPT_ROOT / self.get(config_key)
 
     def get(self, config_key: str) -> str:
         return self._config_map[config_key]

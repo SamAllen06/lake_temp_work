@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from config.input_verifier import InputVerifier
-from config.project_root import PROJECT_ROOT
+from config.root import APP_ROOT
 
 
 class PathInputVerifier(InputVerifier):
@@ -27,6 +27,6 @@ class PathInputVerifier(InputVerifier):
 
     def format_input(self, input: str) -> str:
         path = Path.cwd() / input
-        return str(path.resolve().relative_to(PROJECT_ROOT))
+        return str(path.resolve().relative_to(APP_ROOT))
 
 
