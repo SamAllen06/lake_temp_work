@@ -39,5 +39,7 @@ class ConfigWriter:
         for key in selections.keys():
             lines.append(f"{key}: {str(selections[key])}\n")
 
+        self._file_path.parent.mkdir(parents=True, exist_ok=True)
+
         with open(self._file_path, "w") as config_file:
             config_file.writelines(lines)

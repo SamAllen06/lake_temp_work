@@ -1,4 +1,4 @@
-from config.input_verifier import InputVerifier
+from config.input_verifiers.input_verifier import InputVerifier
 
 
 class NoCheckInputVerifier(InputVerifier):

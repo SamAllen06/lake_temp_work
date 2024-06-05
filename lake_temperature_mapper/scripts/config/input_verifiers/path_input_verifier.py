@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from config.input_verifier import InputVerifier
+from config.input_verifiers.input_verifier import InputVerifier
 from config.root import APP_ROOT
 
 
@@ -24,6 +24,8 @@ class PathInputVerifier(InputVerifier):
                 path=path,
                 expected_type="file" if self._is_file else "directory"
             )
+        
+        return None
 
     def format_input(self, input: str) -> str:
         path = Path.cwd() / input
