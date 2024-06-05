@@ -14,6 +14,10 @@ class DifferenceAnalyzer:
         ref_data = OutputFileData(self._ref_file_path)
         test_data = OutputFileData(self._test_file_path)
 
-        assert ref_data.is_same_format_as(test_data)
+        if not ref_data.is_same_format_as(test_data):
+            raise RuntimeError(
+                "Format of reference and test output files "
+                "do not match."
+            )
 
         return ref_data.compare_to(test_data)

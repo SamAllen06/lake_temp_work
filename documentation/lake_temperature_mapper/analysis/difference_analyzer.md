@@ -8,12 +8,12 @@ between the two.
 Output files are read using OutputFileData.
 
 Differences between a reference file (default: cpu_LakeTemperatureRef.txt) and
-a test file (default: cpu_LakeTemperatureTest.txt) are computed and stored using
-OutputDifference(s). Then, non-zero differences between output variables are
-stored in a map like so:
+a test file (default: cpu_LakeTemperatureDockerTest.txt) are computed and
+stored using OutputDifference(s). Then, non-zero differences between output
+variables are stored in a map like so:
 
 ```
-{output_variable_name: [Difference(index, ref, test), ...]}
+{output_variable_name: [OutputDifference(index, ref, test), ...]}
 ```
 
 For example, these files:
