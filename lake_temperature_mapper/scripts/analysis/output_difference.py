@@ -2,6 +2,7 @@ import math
 
 import numpy as np
 
+
 class OutputDifference:
     def __init__(
             self,

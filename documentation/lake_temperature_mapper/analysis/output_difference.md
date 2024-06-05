@@ -1,7 +1,7 @@
 # Output Difference (output_difference.py)
 
 ## Purpose
-Compares and stores a reference value and a test value for an output variable.
+Stores and compares a reference value and test value for an output variable.
 
 ## Functionality
 get_difference() returns the difference between the reference and test value.
@@ -12,5 +12,5 @@ test_value - ref_value
 ```
 
 It is possible for an OutputDifference object to store an identical reference
-and test value, though typically these differences are not stored by the
-program.
+and test value, though DifferenceAnalyzer will not store these. A reference
+value of NaN and a test value of NaN are considered to have a difference of 0.
