@@ -1,11 +1,11 @@
-import os
+from pathlib import Path
 from typing import TextIO, Mapping
 
 
 class RangeReader:
     RANGE_DELIMITER = " - "
 
-    def __init__(self, file_path: os.PathLike):
+    def __init__(self, file_path: Path):
         self.file_path = file_path
         self.ranges = self._read_ranges()
 

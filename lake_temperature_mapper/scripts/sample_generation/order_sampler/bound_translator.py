@@ -1,6 +1,6 @@
 import re
 
-from sample_generation.range_reader import RangeReader
+from sample_generation.order_sampler.range_reader import RangeReader
 
 
 class BoundTranslator:

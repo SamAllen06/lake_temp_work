@@ -1,7 +1,8 @@
 from typing import Mapping
 
-from sample_generation.bound_translator import BoundTranslator
-from sample_generation.order import Order
+from sample_generation.order_sampler.bound_translator import BoundTranslator
+from sample_generation.order_sampler.order import Order
+from sample_generation.sample_group import SampleGroupIterable
 
 
 class BoxOrder(Order):
@@ -22,8 +23,14 @@ class BoxOrder(Order):
 
         return sample_count
 
-    def get_ranges(self) -> Mapping[str, tuple]:
-        return self._ranges
+    def get_ranges(self) -> Mapping[str, tuple[float, float]]:
+        bound_ranges: dict[str, tuple[float, float]] = {}
+
+        for key in self._ranges.keys():
+            key_range = self._ranges[key]
+            bound_ranges[key] = (key_range[0], key_range[1])
+
+        return bound_ranges
 
     def __iter__(self):
         return BoxOrderIterable(self._ranges)
@@ -48,7 +55,7 @@ class BoxOrder(Order):
         return ranges
 
 
-class BoxOrderIterable:
+class BoxOrderIterable(SampleGroupIterable):
     def __init__(
             self, ranges: Mapping[str, tuple[float, float, int]]
     ):
@@ -56,7 +63,7 @@ class BoxOrderIterable:
         self._parameter_order = [parameter for parameter in self._ranges.keys()]
         self._indices = {parameter: 0 for parameter in self._ranges.keys()}
         self._last_changed_index = len(self._ranges) - 1
-        self._current_sample = {}
+        self._current_sample: dict[str, float] = {}
         self._update_sample()
 
     def __next__(self) -> Mapping[str, float]:

@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Mapping
 
 import numpy as np
+import numpy.typing as npt
 
 from analysis.output_difference import OutputDifference
 
@@ -24,8 +25,8 @@ class OutputFileData:
 
         return True
 
-    def compare_to(self, test_file_data) -> Mapping[str, list[OutputDifference]]:
-        output_differences = {}
+    def compare_to(self, test_file_data) -> dict[str, list[OutputDifference]]:
+        output_differences: dict[str, list[OutputDifference]] = {}
 
         for parameter in self._data.keys():
             output_differences[parameter] = []
@@ -43,11 +44,11 @@ class OutputFileData:
 
         return output_differences
 
-    def _read_data(self) -> Mapping[str, np.ndarray[np.float64]]:
+    def _read_data(self) -> dict[str, npt.NDArray[np.float64]]:
         with open(self._file_path, "r") as file:
             lines = file.readlines()
 
-        data = {}
+        data: dict[str, list[npt.NDArray[np.float64]]] = {}
 
         for line in lines:
             stripped_line = line.strip()
@@ -58,7 +59,8 @@ class OutputFileData:
 
             data[parameter_name].append(np.fromstring(line, sep=" "))
 
+        combined_data: dict[str, npt.NDArray[np.float64]] = {}
         for parameter in data.keys():
-            data[parameter] = np.concatenate(data[parameter])
+            combined_data[parameter] = np.concatenate(data[parameter])
 
-        return data
+        return combined_data

@@ -2,15 +2,29 @@
 
 ## Purpose
 The CLI script acts as the interface between the user and our mapping scripts.
-It is the sole entry point to the program, however, if another interface was
-needed to replace it, it could.
-
+It is the sole entry point to the program, however, the mapping scripts are 
+entirely independant of this script.
 ## Functionality
-CLI does not contain any functionality other than accepting user input and
-executing mapping scripts accordingly. It should not be opening files, running
-a binary, etc.
+The CLI does not contain any functionality other than accepting command line 
+input and executing mapping scripts accordingly.
 
-It can optionally accept an alternative configuration file, but defaults to
-using scripts/config/mapper.conf
+Currently, it is responsible for creating a GroupOutputWriter, adding 
+OutputWriter(s) depending on the flags.
 
-It also constructs a GroupOutputWriter, providing console and/or file output.
+## Flags
+
+### Help (-h, --help)
+Display information about the usage of the script and exit.
+
+### Config Path (-c, --config_path)
+Override the path to the testing module's configuration file.
+(This functionality will be removed in a future update, since it is not useful
+in context and the configuration system is being refactored to handle the more
+modular structure of the mapping scripts.)
+
+### Store (-s, --store)
+Store the output of each SampleGroup in a csv file, inside the output
+directory (typically mapping_output/).
+
+### Quiet (-q, --quiet)
+Prevents the script from printing any console output.

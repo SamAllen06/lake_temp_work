@@ -1,20 +1,18 @@
 from output.output_writer import OutputWriter
 from typing import Mapping
 
-from sample_generation.box_order import BoxOrder
-from sample_generation.order import Order
+from sample_generation import SampleGroup
 from analysis.output_difference import OutputDifference
 from output.ansi_code import AnsiCode
 
 
 class ConsoleOutputWriter(OutputWriter):
-    def write_order_header(self, order_name: str, order: Order) -> None:
-        name_line = f"Executing order: {order_name}\n"
-        samples_line = (
-            f"{order.get_sample_count()} total samples "
-            "using ranges:\n"
-        )
-        info_lines = self._generate_header_info_lines(order)
+    def write_sample_group_header(
+            self, sample_group_name: str, sample_group: SampleGroup
+        ) -> None:
+        name_line = f"Sampling group: {sample_group_name}\n"
+        samples_line = f"{sample_group.get_sample_count()} total samples\n"
+        info_lines = self._generate_header_info_lines(sample_group)
 
         text = name_line + samples_line + "\n".join(info_lines) + "\n"
 
@@ -60,23 +58,19 @@ class ConsoleOutputWriter(OutputWriter):
         # Could put a summary here later.
         pass
 
-    def _generate_header_info_lines(self, order: Order) -> list[str]:
+    def _generate_header_info_lines(self, sample_group: SampleGroup) -> list[str]:
         info_lines = []
 
-        ranges = order.get_ranges()
-        box_flag = type(order) is BoxOrder
+        ranges = sample_group.get_ranges()
 
         for parameter in ranges.keys():
             parameter_range = ranges[parameter]
 
             range_line = (
                 f"{parameter}: {parameter_range[0]} "
-                f"-> {parameter_range[1]}"
+                f"- {parameter_range[1]}"
             )
 
-            if box_flag:
-                range_line += f", {parameter_range[2]} samples"
-            
             info_lines.append(range_line)
 
         return info_lines

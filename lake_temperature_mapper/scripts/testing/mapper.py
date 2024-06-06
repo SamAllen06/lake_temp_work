@@ -1,14 +1,13 @@
 from pathlib import Path
 from typing import Mapping
 
+from analysis.difference_analyzer import DifferenceAnalyzer
 from config.config_reader import ConfigReader
+from output.output_writer import OutputWriter
+from sample_generation import SampleGroup, Sampler
 from testing.binary_runner import BinaryRunner
 from testing.defaults_writer import DefaultsWriter
-from analysis.difference_analyzer import DifferenceAnalyzer
-from sample_generation.order import Order
-from sample_generation.order_reader import OrderReader
 from testing.param_editor import ParamEditor
-from output.output_writer import OutputWriter
 
 
 class Mapper:
@@ -36,29 +35,31 @@ class Mapper:
         )
 
     def map(self):
-        orders = self._read_orders()
-        self._execute_orders(orders)
+        sample_groups = self._read_sample_groups()
+        self._execute_sample_groups(sample_groups)
 
-    def _read_orders(self) -> Mapping[str, Order]:
-        order_reader = OrderReader(
-            self._config_reader.get_path("order_directory"),
-            self._config_reader.get_path("range_path")
-        )
+    def _read_sample_groups(self) -> Mapping[str, SampleGroup]:
+        SamplerClass = self._config_reader.get_class("sampler_class")
+        sampler: Sampler = SamplerClass()
 
-        return order_reader.read_orders()
+        return sampler.get_sample_groups()
 
-    def _execute_orders(self, orders: Mapping[str, Order]) -> None:
-        for order_name in orders.keys():
-            order = orders[order_name]
-            self._output_writer.write_order_header(order_name, order)
-            self._execute_order(order)
+    def _execute_sample_groups(
+            self, sample_groups: Mapping[str, SampleGroup]
+    ) -> None:
+        for sample_group_name in sample_groups.keys():
+            sample_group = sample_groups[sample_group_name]
+            self._output_writer.write_sample_group_header(
+                sample_group_name, sample_group
+            )
+            self._execute_sample_group(sample_group)
 
         self._defaults_writer.write_defaults()
         self._output_writer.finish()
 
-    def _execute_order(self, order: Order) -> None:
+    def _execute_sample_group(self, sample_group: SampleGroup) -> None:
         self._defaults_writer.write_defaults()
-        for sample in order:
+        for sample in sample_group:
             self._output_writer.write_sample(
                 sample
             )

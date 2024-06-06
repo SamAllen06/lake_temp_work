@@ -2,24 +2,28 @@ import argparse
 from pathlib import Path
 
 from config.config_reader import ConfigReader
-from config.project_root import PROJECT_ROOT
+from config.root import APP_ROOT
 from testing.mapper import Mapper
 from output.console_output_writer import ConsoleOutputWriter
 from output.csv_output_writer import CSVOutputWriter
 from output.group_output_writer import GroupOutputWriter
 from output.output_writer import OutputWriter
 
-DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "mapper.conf"
+DEFAULT_CONFIG_PATH = APP_ROOT / "config" / "mapper.conf"
 
 
 def _initialize_cli_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-c", "--config_path",
-                        help="The path to the config file. Default: scripts/config/mapper.conf",
-                        type=str, default="")
+    parser.add_argument(
+        "-c", "--config_path",
+        help=(
+            "The path to the config file. "
+            f"Default: {str(DEFAULT_CONFIG_PATH)}"
+        ),
+        type=str, default=str(DEFAULT_CONFIG_PATH))
     parser.add_argument("-s", "--store",
-                        help="Store mapping data in csv files.",
+                        help="Store mapping output in csv files.",
                         action="store_true")
     parser.add_argument("-q", "--quiet",
                         help="Prevent printing of mapping data to stdout.",
@@ -36,7 +40,7 @@ def _resolve_config_path(config_path_arg: str) -> Path:
 
     if not config_path.exists() or not config_path.is_file():
         raise FileNotFoundError(
-            f"Could not find config file {str(self._config_path)}"
+            f"Could not find config file {str(config_path)}"
         )
 
     return config_path

@@ -4,10 +4,11 @@
 Writes mapping data to a CSV file in a specified directory.
 
 ## Functionality
-Csv files are named after the order they represent the data for. Each file is 
-written to after its respective order completes, meaning, if the program were
-interrupted in the middle of an order, all previous orders would be stored, but
-the current one would not.
+Csv files are named after the sample group that they represent the data for. 
+Each file is written to after its respective sample group has been fully tested,
+meaning, if the program were interrupted in the middle of testing the samples of
+a group, all previous groups' output would be stored, but the current group
+would not store any output.
 
 Rows are created in this format:
 ```
@@ -40,4 +41,4 @@ EXIT [exit_code]
 ```
 
 These rows are passed to Python's csv module to write to the file, so specific
-details about the csv have been left out of the above format.
+details about the csv have been left out of this documentation.

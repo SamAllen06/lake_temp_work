@@ -1,7 +1,8 @@
 from typing import Mapping
 
-from sample_generation.bound_translator import BoundTranslator
-from sample_generation.order import Order
+from sample_generation.order_sampler.bound_translator import BoundTranslator
+from sample_generation.order_sampler.order import Order
+from sample_generation.sample_group import SampleGroupIterable
 
 
 class LineOrder(Order):
@@ -17,7 +18,7 @@ class LineOrder(Order):
     def get_sample_count(self) -> int:
         return self._samples
     
-    def get_ranges(self) -> Mapping[str, tuple]:
+    def get_ranges(self) -> Mapping[str, tuple[float, float]]:
         return self._ranges
 
     def __iter__(self):
@@ -40,7 +41,7 @@ class LineOrder(Order):
         return ranges
 
 
-class LineOrderIterable:
+class LineOrderIterable(SampleGroupIterable):
     def __init__(
             self, sample_count: int, ranges: Mapping[str, tuple[float, float]]
     ):

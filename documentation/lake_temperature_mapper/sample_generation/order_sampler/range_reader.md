@@ -10,5 +10,5 @@ parameter
 min - max
 ```
 
-It returns a dictionary linking the parameter to its minimum and maximum, paired
-in a tuple.
+After reading the file, the minimum and maximum of a specified input parameter
+can be obtained using the get_min and get_max methods.

@@ -1,13 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import Mapping
 
-from sample_generation.order import Order
+from sample_generation import SampleGroup
 from analysis.output_difference import OutputDifference
 
 
 class OutputWriter(ABC):
     @abstractmethod
-    def write_order_header(self, order_name: str, order: Order) -> None:
+    def write_sample_group_header(
+            self, sample_group_name: str, sample_group: SampleGroup 
+    ) -> None:
         pass
 
     @abstractmethod
@@ -21,7 +23,7 @@ class OutputWriter(ABC):
     @abstractmethod
     def write_difference_map(
             self,
-            difference_map: Mapping[str, OutputDifference]
+            difference_map: Mapping[str, list[OutputDifference]]
     ) -> None:
         pass
 

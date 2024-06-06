@@ -4,14 +4,14 @@
 Writes output from the Mapper to the console.
 
 ## Functionality
-Prints the order being executed in this format:
+Prints the samples being tested in this format:
 ```
-Executing order: [order_name]
-# linear samples using ranges:
-param1: start -> end
-param2: start -> end
+Sampling group: [sample_group_name]
+[sample_count] total samples
+param1: min - max 
+param2: min - max
 ...
-paramN: start -> end
+paramN: min - max
 ```
 
 Prints each change to an input parameter's value as so:
@@ -31,7 +31,7 @@ reference_value   -> test_value   by difference   at indices
 
 Or, if no output variables changed:
 ```
-"No differences"
+No differences
 ```
 
 If the binary crashed (returned an exit code other than 0):
