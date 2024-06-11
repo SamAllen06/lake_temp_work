@@ -26,9 +26,9 @@ transparent for all indices not included in the dictionary.
 >>> transparent_layer = TransparentLayer(base, layer)
 >>> [val for val in transparent_layer]
 [1, 2, 4, 5, 5]
->>> # For understanding purposes
->>> transparent_layer._comparison_map
+>>> transparent_layer.get_comparison_map()
 {2: 4, 3: 5}
+>>> # For understanding purposes
 >>> transparent_layer._base_layer
 [1, 2, 3, 4, 5]
 ```
@@ -47,6 +47,6 @@ transparent for all indices not included in the dictionary.
 >>> [list(l) for l in transparent_layer_list]
 [[1, 2, 3], [1, 1, 1], [1, 2, 2], [1, 3, 0], [1, 4, 1], [1, 5, 2], [1, 6, 0]]
 >>> # For understanding purposes
->>> [transparent_layer_list._base_layer] + [l._comparison_map for l in transparent_layer_list._layers]
+>>> [transparent_layer_list._base_layer] + [l.get_comparison_map for l in transparent_layer_list._layers]
 [[1, 2, 3], {1: 1, 2: 1}, {2: 2}, {1: 3, 2: 0}, {1: 4, 2: 1}, {1: 5, 2: 2}, {1: 6, 2: 0}]
 ```

@@ -61,6 +61,9 @@ class TransparentLayer(Sequence, _MixinIndices):
                 "Comparison layer must be a Sequence or Mapping[int, Any]"
             )
 
+    def get_comparison_map(self) -> dict[int, Any]:
+        return self._comparison_map.copy()
+
     @override
     @overload
     def __getitem__(self, index: int) -> Any:
