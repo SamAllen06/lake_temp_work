@@ -1,51 +1,19 @@
-from abc import ABC
-from collections.abc import Iterable, Mapping, MutableSequence, Sequence, Sized
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping, MutableSequence, Sequence
 from typing import Any, overload, override
 from typing_extensions import Self
 
-
-class _MixinIndices(ABC, Sized):
-    def _get_as_valid_index(self, index: int) -> int:
-        index = self._ensure_positive_index(index)
-        if self._is_index_out_of_bounds(index):
-            raise IndexError("Index out of bounds")
-
-        return index
-
-    def _slice_to_range(self, slice_object: slice) -> range:
-        start = self._ensure_positive_index(slice_object.start)
-        stop = (
-            self.__len__() if slice_object.stop is None else
-            self._ensure_positive_index(slice_object.stop)
-        )
-        step = 1 if slice_object.step is None else slice_object.step
-
-        return range(start, stop, step)
-
-    def _ensure_positive_index(self, index: int) -> int:
-        if index < 0:
-            return self.__len__() + index
-        return index
-
-    def _is_index_out_of_bounds(self, index: int) -> bool:
-        return index < 0 or index >= self.__len__()
+from .mixin_sequence_indices import MixinSequenceIndices
 
 
-class TransparentLayer(Sequence, _MixinIndices):
+class TransparentLayer(Sequence, MixinSequenceIndices):
     @overload
-    def __init__(
-            self,
-            base_layer: Sequence[Any],
-            comparison_layer: Sequence[Any]
-    ):
+    def __init__(self, base_layer: Sequence[Any], comparison_layer: Sequence[Any]):
         pass
 
     @overload
-    def __init__(
-            self,
-            base_layer: Sequence[Any],
-            comparison_layer: Mapping[int, Any]
-    ):
+    def __init__(self, base_layer: Sequence[Any], comparison_layer: Mapping[int, Any]):
         pass
 
     def __init__(self, base_layer, comparison_layer):
@@ -53,13 +21,9 @@ class TransparentLayer(Sequence, _MixinIndices):
         if issubclass(type(comparison_layer), Mapping):
             self._comparison_map = comparison_layer
         elif issubclass(type(comparison_layer), Sequence):
-            self._comparison_map = self._generate_comparison_map(
-                comparison_layer
-            ) 
+            self._comparison_map = self._generate_comparison_map(comparison_layer)
         else:
-            raise TypeError(
-                "Comparison layer must be a Sequence or Mapping[int, Any]"
-            )
+            raise TypeError("Comparison layer must be a Sequence or Mapping[int, Any]")
 
     def get_comparison_map(self) -> dict[int, Any]:
         return self._comparison_map.copy()
@@ -71,7 +35,7 @@ class TransparentLayer(Sequence, _MixinIndices):
 
     @override
     @overload
-    def __getitem__(self, index: slice) -> Self:
+    def __getitem__(self, index: slice) -> TransparentLayer:
         pass
 
     def __getitem__(self, index):
@@ -90,8 +54,7 @@ class TransparentLayer(Sequence, _MixinIndices):
         return len(self._base_layer)
 
     def _generate_comparison_map(
-            self,
-            comparison_layer: Sequence[Any]
+        self, comparison_layer: Sequence[Any]
     ) -> dict[int, Any]:
         comparison_map: dict[int, Any] = {}
 
@@ -104,18 +67,17 @@ class TransparentLayer(Sequence, _MixinIndices):
         return comparison_map
 
     def _getitem_with_int_index(self, index: int) -> Any:
-        index = self._get_as_valid_index(index)
+        index = self._ensure_positive_index(index)
+        self._raise_index_error_if_out_of_bounds(index)
 
         if index in self._comparison_map:
             return self._comparison_map[index]
         return self._base_layer[index]
 
-    def _getitem_with_slice(self, slice_index: slice) -> Self:
+    def _getitem_with_slice(self, slice_index: slice) -> TransparentLayer:
         return TransparentLayer(
-            self._base_layer[slice_index],
-            self._slice_comparison_map(slice_index)
+            self._base_layer[slice_index], self._slice_comparison_map(slice_index)
         )
-
 
     def _slice_comparison_map(self, slice_object: slice) -> dict[int, Any]:
         new_comparison_map: dict[int, Any] = {}
@@ -128,7 +90,7 @@ class TransparentLayer(Sequence, _MixinIndices):
         return new_comparison_map
 
 
-class TransparentLayerList(MutableSequence, _MixinIndices):
+class TransparentLayerList(MutableSequence, MixinSequenceIndices):
     def __init__(self):
         self._base_layer = None
         self._layers = []
@@ -136,10 +98,8 @@ class TransparentLayerList(MutableSequence, _MixinIndices):
     def insert(self, index: int, layer: Sequence[Any]) -> None:
         self._verify_layer_type(layer)
 
-        if index > self.__len__():
-            index = self.__len__()
-        elif index < 0:
-            index = 0
+        index = self._ensure_positive_index(index)
+        index = self._clamp_insert_index(index)
 
         if index == 0:
             if self._base_layer is None:
@@ -151,10 +111,7 @@ class TransparentLayerList(MutableSequence, _MixinIndices):
             self.insert(1, old_base_layer)
             return
 
-        self._layers.insert(
-            index - 1,
-            TransparentLayer(self._base_layer, layer)
-        )
+        self._layers.insert(index - 1, TransparentLayer(self._base_layer, layer))
 
     def rebase(self, base_layer: Sequence) -> None:
         base_layer_list = list(base_layer)
@@ -170,7 +127,7 @@ class TransparentLayerList(MutableSequence, _MixinIndices):
 
     @override
     @overload
-    def __getitem__(self, index: slice) -> Self:
+    def __getitem__(self, index: slice) -> TransparentLayerList:
         pass
 
     def __getitem__(self, index):
@@ -237,14 +194,15 @@ class TransparentLayerList(MutableSequence, _MixinIndices):
             )
 
     def _getitem_with_int_index(self, index: int) -> Sequence[Any]:
-        index = self._get_as_valid_index(index)
+        index = self._ensure_positive_index(index)
+        self._raise_index_error_if_out_of_bounds(index)
 
         if index == 0:
             return self._base_layer
 
         return self._layers[index - 1]
 
-    def _getitem_with_slice(self, slice_index: slice) -> Self:
+    def _getitem_with_slice(self, slice_index: slice) -> TransparentLayerList:
         slice_range = self._slice_to_range(slice_index)
 
         sliced_list = TransparentLayerList()
@@ -256,7 +214,8 @@ class TransparentLayerList(MutableSequence, _MixinIndices):
 
     def _setitem_with_int_index(self, index: int, value: Any) -> None:
         self._verify_layer_type(value)
-        index = self._get_as_valid_index(index)
+        index = self._ensure_positive_index(index)
+        self._raise_index_error_if_out_of_bounds(index)
 
         if index == 0:
             self.rebase(value)
@@ -264,22 +223,19 @@ class TransparentLayerList(MutableSequence, _MixinIndices):
             self._layers[index - 1] = TransparentLayer(self._base_layer, value)
 
     def _setitem_with_slice(
-            self,
-            slice_index: slice,
-            value_iterable: Iterable[Any]
+        self, slice_index: slice, value_iterable: Iterable[Any]
     ) -> None:
         slice_range = self._slice_to_range(slice_index)
 
         if not issubclass(type(value_iterable), Iterable):
-            raise TypeError(
-                "Can only assign an Iterable when indexing with a slice"
-            )
+            raise TypeError("Can only assign an Iterable when indexing with a slice")
 
         for index, value in zip(slice_range, value_iterable):
             self._setitem_with_int_index(index, value)
 
     def _delitem_with_int_index(self, index: int) -> None:
-        index = self._get_as_valid_index(index)
+        index = self._ensure_positive_index(index)
+        self._raise_index_error_if_out_of_bounds(index)
 
         if index == 0:
             try:
@@ -293,13 +249,3 @@ class TransparentLayerList(MutableSequence, _MixinIndices):
     def _delitem_with_slice(self, slice_index: slice) -> None:
         for index in reversed(self._slice_to_range(slice_index)):
             self._delitem_with_int_index(index)
-
-    def _ensure_positive_index(self, index: int) -> int:
-        if index < 0:
-            return self.__len__() + index
-        return index
-
-    def _is_index_out_of_bounds(self, index: int) -> bool:
-        return index < 0 or index >= self.__len__()
-
-
