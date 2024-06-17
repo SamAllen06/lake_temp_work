@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Mapping
 
 
 class SampleGroupIterable(ABC):
     @abstractmethod
-    def __next__(self) -> Mapping[str, float]:
+    def __next__(self) -> dict[str, float]:
         pass
 
 
@@ -14,11 +13,9 @@ class SampleGroup(ABC):
         pass
 
     @abstractmethod
-    def get_ranges(self) -> Mapping[str, tuple[float, float]]:
+    def get_ranges(self) -> dict[str, tuple[float, float]]:
         pass
 
     @abstractmethod
     def __iter__(self) -> SampleGroupIterable:
         pass
-
-

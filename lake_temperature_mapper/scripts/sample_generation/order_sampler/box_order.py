@@ -1,16 +1,10 @@
-from typing import Mapping
-
 from sample_generation.order_sampler.bound_translator import BoundTranslator
 from sample_generation.order_sampler.order import Order
 from sample_generation.sample_group import SampleGroupIterable
 
 
 class BoxOrder(Order):
-    def __init__(
-            self,
-            order_data,
-            bound_translator: BoundTranslator
-    ):
+    def __init__(self, order_data, bound_translator: BoundTranslator):
         self._bound_translator = bound_translator
         self._ranges = self._read_ranges(order_data["ranges"])
 
@@ -23,7 +17,7 @@ class BoxOrder(Order):
 
         return sample_count
 
-    def get_ranges(self) -> Mapping[str, tuple[float, float]]:
+    def get_ranges(self) -> dict[str, tuple[float, float]]:
         bound_ranges: dict[str, tuple[float, float]] = {}
 
         for key in self._ranges.keys():
@@ -35,20 +29,14 @@ class BoxOrder(Order):
     def __iter__(self):
         return BoxOrderIterable(self._ranges)
 
-    def _read_ranges(self, ranges_data) -> Mapping[
-        str, tuple[float, float, int]
-    ]:
+    def _read_ranges(self, ranges_data) -> dict[str, tuple[float, float, int]]:
         ranges = {}
 
         for parameter in ranges_data.keys():
             range_data = ranges_data[parameter]
             ranges[parameter] = (
-                self._bound_translator.translate_bound(
-                    parameter, range_data[0]
-                ),
-                self._bound_translator.translate_bound(
-                    parameter, range_data[1]
-                ),
+                self._bound_translator.translate_bound(parameter, range_data[0]),
+                self._bound_translator.translate_bound(parameter, range_data[1]),
                 range_data[2],
             )
 
@@ -56,9 +44,7 @@ class BoxOrder(Order):
 
 
 class BoxOrderIterable(SampleGroupIterable):
-    def __init__(
-            self, ranges: Mapping[str, tuple[float, float, int]]
-    ):
+    def __init__(self, ranges: dict[str, tuple[float, float, int]]):
         self._ranges = ranges
         self._parameter_order = [parameter for parameter in self._ranges.keys()]
         self._indices = {parameter: 0 for parameter in self._ranges.keys()}
@@ -66,7 +52,7 @@ class BoxOrderIterable(SampleGroupIterable):
         self._current_sample: dict[str, float] = {}
         self._update_sample()
 
-    def __next__(self) -> Mapping[str, float]:
+    def __next__(self) -> dict[str, float]:
         last_parameter = self._parameter_order[-1]
         if self._indices[last_parameter] >= self._ranges[last_parameter][2]:
             raise StopIteration
@@ -75,9 +61,7 @@ class BoxOrderIterable(SampleGroupIterable):
 
         partial_sample = {
             parameter: self._current_sample[parameter]
-            for parameter in self._parameter_order[
-                0:self._last_changed_index + 1
-            ]
+            for parameter in self._parameter_order[0 : self._last_changed_index + 1]
         }
 
         self._increment_indices()
@@ -85,10 +69,8 @@ class BoxOrderIterable(SampleGroupIterable):
         return partial_sample
 
     def _update_sample(self) -> None:
-        for parameter in self._parameter_order[0:self._last_changed_index + 1]:
-            self._current_sample[parameter] = self._sample_parameter_range(
-                parameter
-            )
+        for parameter in self._parameter_order[0 : self._last_changed_index + 1]:
+            self._current_sample[parameter] = self._sample_parameter_range(parameter)
 
     def _sample_parameter_range(self, parameter: str) -> float:
         parameter_range = self._ranges[parameter]
@@ -108,12 +90,12 @@ class BoxOrderIterable(SampleGroupIterable):
             sample_index = self._indices[parameter]
             sample_count = self._ranges[parameter][2]
 
-            if (sample_index < sample_count - 1
-                    or parameter_index == len(self._parameter_order) - 1):
+            if (
+                sample_index < sample_count - 1
+                or parameter_index == len(self._parameter_order) - 1
+            ):
                 self._indices[parameter] += 1
                 self._last_changed_index = parameter_index
                 break
-            
+
             self._indices[parameter] = 0
-
-
