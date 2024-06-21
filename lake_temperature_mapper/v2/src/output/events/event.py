@@ -48,7 +48,7 @@ class Event(Enum):
     TESTING_COMPLETED = 36
 
 
-EVENT_PARAMETERS = {
+EVENT_PARAMETERS: dict[Event, dict[str, type]] = {
     Event.LOADING_BINARY: {"binary_name": str},
     Event.BINARY_LOAD_SUCCESS: {},
     Event.BINARY_LOAD_FAILURE: {"reason": Exception},

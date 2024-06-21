@@ -11,12 +11,8 @@ class SamplerLoader:
         self._samplers = []
         self._plugin_names = []
 
-    def load_sampler_plugins(self) -> None:
-        event_bus.fire_event(Event.BEGAN_LOADING_SAMPLING_PLUGINS)
-
-        plugin_module_names = [
-            plugin.name for plugin in pkgutil.iter_modules(sampling_plugins.__path__)
-        ]
+    def load_sampling_plugins(self) -> None:
+        plugin_module_names = self._discover_sampling_plugins()
 
         for plugin_module_name in plugin_module_names:
             plugin_display_name = self._generate_plugin_display_name(plugin_module_name)
@@ -25,13 +21,8 @@ class SamplerLoader:
                 Event.LOADING_SAMPLING_PLUGIN, plugin_name=plugin_display_name
             )
 
-            plugin_module = importlib.import_module(
-                f"{sampling_plugins.__name__}.{plugin_module_name}"
-            )
-
             try:
-                PluginSampler = getattr(plugin_module, "sampler_class")
-                sampler = PluginSampler()
+                sampler = self._load_sampling_plugin(plugin_module_name)
             except Exception as error:
                 event_bus.fire_event(
                     Event.SAMPLING_PLUGIN_LOAD_FAILURE,
@@ -47,13 +38,21 @@ class SamplerLoader:
                 Event.SAMPLING_PLUGIN_LOAD_SUCCESS, plugin_name=plugin_display_name
             )
 
-        if not self._samplers:
-            event_bus.fire_event(Event.SAMPLING_PLUGINS_LOAD_FAILURE)
-            sys.exit(1)
+    def get_sampling_plugins_loaded_count(self) -> int:
+        return len(self._samplers)
 
-        event_bus.fire_event(
-            Event.SAMPLING_PLUGINS_LOAD_SUCCESS, count=len(self._samplers)
+    def _discover_sampling_plugins(self) -> list[str]:
+        return [
+            plugin.name for plugin in pkgutil.iter_modules(sampling_plugins.__path__)
+        ]
+
+    def _load_sampling_plugin(self, plugin_module_name: str) -> Sampler:
+        plugin_module = importlib.import_module(
+            f"{sampling_plugins.__name__}.{plugin_module_name}"
         )
+
+        PluginSampler = getattr(plugin_module, "sampler_class")
+        return PluginSampler()
 
     def _generate_plugin_display_name(self, plugin_module_name: str) -> str:
         words = plugin_module_name.split("_")

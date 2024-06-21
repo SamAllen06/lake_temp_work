@@ -103,6 +103,9 @@ def _get_incorrectly_typed_arguments_for_event(
     incorrect_args: list[tuple[str, type, type]] = []
 
     for arg_name in arg_types:
+        if arg_name == "return":
+            continue
+
         arg_type = arg_types[arg_name]
         expected_type = EVENT_PARAMETERS[event][arg_name]
 
