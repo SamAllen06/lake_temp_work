@@ -2,7 +2,7 @@ import inspect
 from types import GenericAlias, MethodType
 from typing import Any
 
-from output.events import Event
+from output.events import Event, EVENT_PARAMETERS
 
 subscriptions: dict[Event, list[MethodType]] = {event: [] for event in Event}
 
@@ -29,7 +29,7 @@ def _validate_callback_for_event(callback: MethodType, event: Event) -> None:
     if not _arg_list_is_valid_length_for_event(event, callback_spec.args):
         raise ValueError(
             f"Callback has {len(callback_spec.args)} arguments, "
-            f"but event expects {len(event.value)}"
+            f"but event expects {len(EVENT_PARAMETERS[event])}"
         )
 
     missing_args = _get_missing_arg_names_for_event(event, callback_spec.args)
@@ -58,7 +58,7 @@ def _validate_provided_args_for_event(event: Event, args: dict[str, Any]) -> Non
 
     if not _arg_list_is_valid_length_for_event(event, arg_list):
         raise TypeError(
-            f"Event expected {len(event.value)} arguments, "
+            f"Event expected {len(EVENT_PARAMETERS[event])} arguments, "
             f"but {len(args)} were provided"
         )
 
@@ -84,13 +84,13 @@ def _validate_provided_args_for_event(event: Event, args: dict[str, Any]) -> Non
 
 
 def _arg_list_is_valid_length_for_event(event: Event, arg_list: list[str]) -> bool:
-    return len(event.value) == len(arg_list)
+    return len(EVENT_PARAMETERS[event]) == len(arg_list)
 
 
 def _get_missing_arg_names_for_event(event: Event, arg_list: list[str]) -> list[str]:
     missing_args: list[str] = []
 
-    for event_arg in event.value:
+    for event_arg in EVENT_PARAMETERS[event]:
         if event_arg not in arg_list:
             missing_args.append(event_arg)
 
@@ -104,12 +104,12 @@ def _get_incorrectly_typed_arguments_for_event(
 
     for arg_name in arg_types:
         arg_type = arg_types[arg_name]
-        expected_type = event.value[arg_name]
+        expected_type = EVENT_PARAMETERS[event][arg_name]
 
         if isinstance(expected_type, GenericAlias):
             continue
 
-        if not arg_type == expected_type:
+        if not issubclass(arg_type, expected_type):
             incorrect_args.append((arg_name, expected_type, arg_type))
 
     return incorrect_args

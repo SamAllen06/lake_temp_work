@@ -1,0 +1,14 @@
+betavis
+1.0
+za_lake
+2.0
+n2min
+7.5e-05
+tdmax
+275.0
+pudz
+11.0
+mixfact
+0.5
+depthcrit
+25.0
