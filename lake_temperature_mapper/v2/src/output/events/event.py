@@ -1,5 +1,7 @@
 from enum import Enum
 
+from output import FileSystemTree
+
 
 class Event(Enum):
     LOADING_BINARY = 0
@@ -95,14 +97,14 @@ EVENT_PARAMETERS: dict[Event, dict[str, type]] = {
     # output, at the cost of flexibility.
     Event.BY_SAMPLE_ANALYSIS_WITH_PLUGIN_SUCCESS: {
         "console_output": str,
-        "file_output": bytes,
+        "file_output": FileSystemTree,
     },
     Event.BY_SAMPLE_ANALYSIS_WITH_PLUGIN_FAILURE: {"reason": Exception},
     Event.BEGAN_SAMPLE_GROUP_ANALYSIS: {},
     Event.BEGAN_SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN: {"plugin_name": str},
     Event.SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN_SUCCESS: {
         "console_output": str,
-        "file_output": bytes,
+        "file_output": FileSystemTree,
     },
     Event.SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN_FAILURE: {"reason": Exception},
     Event.TESTING_COMPLETED: {},
