@@ -8,6 +8,9 @@ class BinaryRunner:
     def __init__(self):
         self._binary_path = None
 
+    def get_binary_name(self) -> str:
+        return self._binary_path.name
+
     def load_binary(self, binary_path: Path) -> None:
         if not binary_path.exists():
             raise FileNotFoundError(f"Unable to find binary: {binary_path}")

@@ -54,18 +54,21 @@ EVENT_PARAMETERS: dict[Event, dict[str, type]] = {
     Event.LOADING_BINARY: {"binary_name": str},
     Event.BINARY_LOAD_SUCCESS: {},
     Event.BINARY_LOAD_FAILURE: {"reason": Exception},
+
     Event.BEGAN_LOADING_SAMPLING_PLUGINS: {},
     Event.LOADING_SAMPLING_PLUGIN: {"plugin_name": str},
     Event.SAMPLING_PLUGIN_LOAD_SUCCESS: {"plugin_name": str},
     Event.SAMPLING_PLUGIN_LOAD_FAILURE: {"plugin_name": str, "reason": Exception},
     Event.SAMPLING_PLUGINS_LOAD_SUCCESS: {"count": int},
     Event.SAMPLING_PLUGINS_LOAD_FAILURE: {},
+
     Event.BEGAN_LOADING_ANALYSIS_PLUGINS: {},
     Event.LOADING_ANALYSIS_PLUGIN: {"plugin_name": str},
     Event.ANALYSIS_PLUGIN_LOAD_SUCCESS: {"plugin_name": str},
     Event.ANALYSIS_PLUGIN_LOAD_FAILURE: {"plugin_name": str, "reason": Exception},
     Event.ANALYSIS_PLUGINS_LOAD_SUCCESS: {"count": int},
     Event.ANALYSIS_PLUGINS_LOAD_FAILURE: {},
+
     Event.BEGAN_SAMPLE_GENERATION: {},
     Event.BEGAN_SAMPLING_FROM_PLUGIN: {"plugin_name": str},
     Event.SAMPLING_FROM_PLUGIN_SUCCESS: {
@@ -75,9 +78,11 @@ EVENT_PARAMETERS: dict[Event, dict[str, type]] = {
     Event.SAMPLING_FROM_PLUGIN_FAILURE: {"plugin_name": str, "reason": Exception},
     Event.SAMPLING_FROM_PLUGINS_SUCCESS: {"group_count": int, "sample_count": int},
     Event.SAMPLING_FROM_PLUGINS_FAILURE: {},
+
     Event.BEGAN_TIMING_BINARY: {"binary_name": str},
     Event.TIMING_BINARY_SUCCESS: {"seconds_estimate": float},
     Event.TIMING_BINARY_FAILURE: {"exit_code": int},
+
     Event.BEGAN_SAMPLING_FROM_GROUP: {
         "group_name": str,
         "group_index": int,
@@ -100,6 +105,7 @@ EVENT_PARAMETERS: dict[Event, dict[str, type]] = {
         "file_output": FileSystemTree,
     },
     Event.BY_SAMPLE_ANALYSIS_WITH_PLUGIN_FAILURE: {"reason": Exception},
+
     Event.BEGAN_SAMPLE_GROUP_ANALYSIS: {},
     Event.BEGAN_SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN: {"plugin_name": str},
     Event.SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN_SUCCESS: {
@@ -107,5 +113,6 @@ EVENT_PARAMETERS: dict[Event, dict[str, type]] = {
         "file_output": FileSystemTree,
     },
     Event.SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN_FAILURE: {"reason": Exception},
+
     Event.TESTING_COMPLETED: {},
 }
