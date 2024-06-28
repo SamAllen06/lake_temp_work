@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from configparser import ConfigParser
 from pathlib import Path
 import sys
@@ -7,7 +8,7 @@ from analysis import AnalyzerLoader
 from output.events import Event, event_bus
 from root import APP_ROOT
 from sampling import SampleGroup, SamplerLoader
-from testing import BinaryRunner, DefaultsWriter
+from testing import BinaryRunner, DefaultsWriter, OutputFileReader, ParamEditor
 
 
 class Tester:
@@ -20,11 +21,16 @@ class Tester:
         self._analyzer_loader = AnalyzerLoader()
 
         self._defaults_writer = DefaultsWriter(
-            self._config["Model"]["parameter_defaults"],
-            self._config["Model"]["parameters"]
+            APP_ROOT / self._config["Model"]["parameter_defaults"],
+            APP_ROOT / self._config["Model"]["parameters"]
+        )
+        self._param_editor = ParamEditor(APP_ROOT / self._config["Model"]["parameters"])
+        self._output_file_reader = OutputFileReader(
+            APP_ROOT / self._config["Model"]["reference_output"],
+            APP_ROOT / self._config["Model"]["test_output"]
         )
 
-        self._sample_groups = None
+        self._sample_groups: dict[str, SampleGroup] = {}
 
     def prepare_for_testing(self) -> None:
         self._load_binary()
@@ -47,14 +53,18 @@ class Tester:
             )
             self._test_with_group(sample_group)
 
+        self._defaults_writer.write_defaults()
+        event_bus.fire_event(Event.TESTING_COMPLETED)
+
     def _load_binary(self) -> None:
         binary_path = APP_ROOT / self._config["Model"]["binary"]
+        binary_args = self._config["Model"]["args"]
         binary_name = binary_path.name
 
         event_bus.fire_event(Event.LOADING_BINARY, binary_name=binary_name)
 
         try:
-            self._binary_runner.load_binary(binary_path)
+            self._binary_runner.load_binary(binary_path, binary_args)
         except FileNotFoundError as error:
             event_bus.fire_event(Event.BINARY_LOAD_FAILURE, reason=error)
             sys.exit(1)
@@ -117,6 +127,7 @@ class Tester:
 
     def _estimate_testing_time(self, sample_count: int) -> None:
         binary_name = self._binary_runner.get_binary_name()
+        self._defaults_writer.write_defaults()
         
         event_bus.fire_event(Event.BEGAN_TIMING_BINARY, binary_name=binary_name)
 
@@ -141,4 +152,47 @@ class Tester:
         full_sample_values = self._defaults_writer.get_defaults()
 
         for index, sample in enumerate(group):
-            full_sample_values |= sample
+            full_sample_values.update(sample)
+
+            event_bus.fire_event(
+                Event.SAMPLE_GENERATED,
+                sample_index=index,
+                sample_count=sample_count,
+                values=full_sample_values
+            )
+
+            self._test_with_sample(sample)
+
+        if (not self._analyzer_loader.any_group_plugins_loaded()
+                or not self._output_file_reader.group_data_exists()
+        ):
+            return
+
+        event_bus.fire_event(Event.BEGAN_GROUP_ANALYSIS)
+
+        group_data = self._output_file_reader.read_group_data()
+        self._analyzer_loader.run_group_analysis(group, group_data)
+
+    def _test_with_sample(self, sample: Mapping[str, float]) -> None:
+        binary_name = self._binary_runner.get_binary_name()
+
+        self._param_editor.modify_parameters(sample)
+
+        event_bus.fire_event(Event.RUNNING_BINARY, binary_name=binary_name)
+        exit_code = self._binary_runner.run_binary()
+        event_bus.fire_event(Event.BINARY_EXITED, exit_code=exit_code)
+
+        if exit_code:
+            return
+
+        reference_data = self._output_file_reader.get_reference_data()
+        test_data = self._output_file_reader.read_sample_data()
+
+        if not self._analyzer_loader.any_sample_plugins_loaded():
+            return
+
+        event_bus.fire_event(Event.BEGAN_SAMPLE_ANALYSIS)
+
+        self._analyzer_loader.run_sample_analysis(sample, reference_data, test_data)
+
+

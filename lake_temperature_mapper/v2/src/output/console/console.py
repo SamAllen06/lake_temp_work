@@ -1,5 +1,6 @@
 from sys import stderr
 
+from output import FileSystemTree #TODO: Refactor analysis events to avoid this.
 from output.console import console_utils
 from output.console.ansi_code import AnsiCode
 from output.events import Event, event_bus
@@ -128,7 +129,7 @@ def _on_timing_binary_success(seconds_estimate: float) -> None:
 
     console_utils.clear_line()
     print(f"Time estimated: {formatted_estimate}")
-    print("Would you like to continue? (Yes/No)")
+    _prompt_to_continue_with_testing()
 
 
 def _format_estimate(seconds_estimate: float) -> str:
@@ -151,7 +152,83 @@ def _on_timing_binary_failure(exit_code: int) -> None:
         f"Timing estimate failed because binary exited with code {exit_code}",
         AnsiCode.BRIGHT_RED
     )
+    _prompt_to_continue_with_testing()
+
+
+def _prompt_to_continue_with_testing() -> None:
     print("Would you like to continue? (Yes/No)")
+
+
+def _on_began_sampling_from_group(
+        group_name: str,
+        group_index: int,
+        group_count: int
+) -> None:
+    print(f"\nGroup {group_index + 1} / {group_count}: {group_name}\n")
+
+
+def _on_sample_generated(
+        sample_index: int,
+        sample_count: int,
+        values: dict[str, float]
+) -> None:
+    print(f"Sample {sample_index + 1} / {sample_count}:")
+    for variable, value in values.items():
+        print(f"\t{variable}: {value}")
+
+    print("")
+
+
+def _on_running_binary(binary_name: str) -> None:
+    print(f"Running {binary_name}...", end="")
+
+
+def _on_binary_exited(exit_code: int) -> None:
+    console_utils.clear_line()
+    if exit_code:
+        console_utils.print_ansi(
+            f"Binary exited with code {exit_code}\n", AnsiCode.BRIGHT_RED
+        )
+    else:
+        console_utils.print_ansi("Binary ran successfully.\n", AnsiCode.BRIGHT_GREEN)
+
+
+def _on_began_sample_analysis() -> None:
+    print("Sample Analysis:")
+
+
+def _on_began_analysis_with_plugin(plugin_name: str) -> None:
+    print(f"\t[{plugin_name}]: Analyzing...", end="")
+
+
+def _on_analysis_with_plugin_success(
+        plugin_name: str,
+        console_output: str,
+        file_output: FileSystemTree
+) -> None:
+    console_utils.clear_line()
+    console_utils.print_ansi(f"\t[{plugin_name}]:", AnsiCode.BRIGHT_GREEN)
+    console_utils.print_indented(console_output, 2)
+    print("")
+
+
+def _on_analysis_with_plugin_failure(
+        plugin_name: str,
+        reason: Exception
+) -> None:
+    console_utils.clear_line()
+    console_utils.print_ansi(
+        f"\t[{plugin_name}]: Analysis Failed ({type(reason).__name__})\n",
+        AnsiCode.BRIGHT_RED
+    )
+
+
+def _on_began_group_analysis() -> None:
+    print("Group Analysis:")
+
+
+def _on_testing_completed() -> None:
+    print("Testing completed.")
 
 
 _EVENT_FUNCTIONS = {
@@ -183,6 +260,22 @@ _EVENT_FUNCTIONS = {
     Event.BEGAN_TIMING_BINARY: _on_began_timing_binary,
     Event.TIMING_BINARY_SUCCESS: _on_timing_binary_success,
     Event.TIMING_BINARY_FAILURE: _on_timing_binary_failure,
+
+    Event.BEGAN_SAMPLING_FROM_GROUP: _on_began_sampling_from_group,
+    Event.SAMPLE_GENERATED: _on_sample_generated,
+    Event.RUNNING_BINARY: _on_running_binary,
+    Event.BINARY_EXITED: _on_binary_exited,
+    Event.BEGAN_SAMPLE_ANALYSIS: _on_began_sample_analysis,
+    Event.BEGAN_SAMPLE_ANALYSIS_WITH_PLUGIN: _on_began_analysis_with_plugin,
+    Event.SAMPLE_ANALYSIS_WITH_PLUGIN_SUCCESS: _on_analysis_with_plugin_success,
+    Event.SAMPLE_ANALYSIS_WITH_PLUGIN_FAILURE: _on_analysis_with_plugin_failure,
+
+    Event.BEGAN_GROUP_ANALYSIS: _on_began_group_analysis,
+    Event.BEGAN_GROUP_ANALYSIS_WITH_PLUGIN: _on_began_analysis_with_plugin,
+    Event.GROUP_ANALYSIS_WITH_PLUGIN_SUCCESS: _on_analysis_with_plugin_success,
+    Event.GROUP_ANALYSIS_WITH_PLUGIN_FAILURE: _on_analysis_with_plugin_failure,
+
+    Event.TESTING_COMPLETED: _on_testing_completed,
 }
 
 

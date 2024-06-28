@@ -1,22 +1,25 @@
 from abc import ABC, abstractmethod
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, Mapping, Sized
 
 
 class SampleGroupIterator(ABC, Iterator):
     @abstractmethod
-    def __next__(self) -> dict[str, float]:
+    def __next__(self) -> Mapping[str, float]:
         pass
 
 
-class SampleGroup(ABC, Iterable):
+class SampleGroup(ABC, Iterable, Sized):
     @abstractmethod
     def get_sample_count(self) -> int:
         pass
 
     @abstractmethod
-    def get_ranges(self) -> dict[str, tuple[float, float]]:
+    def get_ranges(self) -> Mapping[str, tuple[float, float]]:
         pass
 
     @abstractmethod
     def __iter__(self) -> SampleGroupIterator:
         pass
+
+    def __len__(self) -> int:
+        return self.get_sample_count()

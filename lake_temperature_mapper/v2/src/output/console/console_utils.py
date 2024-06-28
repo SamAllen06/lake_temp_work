@@ -1,3 +1,5 @@
+import re
+
 from .ansi_code import AnsiCode
 
 ERASE_CODE = "\033[2K\r"
@@ -13,3 +15,11 @@ def print_ansi(text: str, ansi_code: AnsiCode, **kwargs) -> None:
 
 def clear_line() -> None:
     print(ERASE_CODE, end="")
+
+
+def indented(text: str, indent_level: int) -> str:
+    return re.sub(r"^", "\t" * indent_level, text, flags=re.M)
+
+
+def print_indented(text: str, indent_level: int, **kwargs) -> None:
+    print(indented(text, indent_level), **kwargs)

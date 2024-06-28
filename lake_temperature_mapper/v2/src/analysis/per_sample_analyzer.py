@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from collections.abc import Mapping, Sequence
 
 from output import FileSystemTree
-from util import Table
 
 
 class PerSampleAnalyzer(ABC):

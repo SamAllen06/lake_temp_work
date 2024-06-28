@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from output import FileSystemTree
 from sampling import SampleGroup
-from util import Table, TransparentLayerList
+from util import Table
 
 
 class SampleGroupAnalyzer(ABC):
@@ -10,6 +10,6 @@ class SampleGroupAnalyzer(ABC):
     def analyze_sample_data(
         self,
         sample_group: SampleGroup,
-        data: Table[dict, TransparentLayerList]
+        data: Table
     ) -> tuple[str, FileSystemTree]:
         pass

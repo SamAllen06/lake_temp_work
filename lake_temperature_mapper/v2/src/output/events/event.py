@@ -37,15 +37,15 @@ class Event(Enum):
     SAMPLE_GENERATED = 25
     RUNNING_BINARY = 26
     BINARY_EXITED = 27
-    BEGAN_BY_SAMPLE_ANALYSIS = 28
-    BEGAN_BY_SAMPLE_ANALYSIS_WITH_PLUGIN = 29
-    BY_SAMPLE_ANALYSIS_WITH_PLUGIN_SUCCESS = 30
-    BY_SAMPLE_ANALYSIS_WITH_PLUGIN_FAILURE = 31
+    BEGAN_SAMPLE_ANALYSIS = 28
+    BEGAN_SAMPLE_ANALYSIS_WITH_PLUGIN = 29
+    SAMPLE_ANALYSIS_WITH_PLUGIN_SUCCESS = 30
+    SAMPLE_ANALYSIS_WITH_PLUGIN_FAILURE = 31
 
-    BEGAN_SAMPLE_GROUP_ANALYSIS = 32
-    BEGAN_SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN = 33
-    SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN_SUCCESS = 34
-    SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN_FAILURE = 35
+    BEGAN_GROUP_ANALYSIS = 32
+    BEGAN_GROUP_ANALYSIS_WITH_PLUGIN = 33
+    GROUP_ANALYSIS_WITH_PLUGIN_SUCCESS = 34
+    GROUP_ANALYSIS_WITH_PLUGIN_FAILURE = 35
 
     TESTING_COMPLETED = 36
 
@@ -95,24 +95,32 @@ EVENT_PARAMETERS: dict[Event, dict[str, type]] = {
     },
     Event.RUNNING_BINARY: {"binary_name": str},
     Event.BINARY_EXITED: {"exit_code": int},
-    Event.BEGAN_BY_SAMPLE_ANALYSIS: {},
-    Event.BEGAN_BY_SAMPLE_ANALYSIS_WITH_PLUGIN: {"plugin_name": str},
+    Event.BEGAN_SAMPLE_ANALYSIS: {},
+    Event.BEGAN_SAMPLE_ANALYSIS_WITH_PLUGIN: {"plugin_name": str},
     # View logic is handled inside analysis plugins to offer them better flexibility
     # with their output. Helper classes are avaliable to handle specific forms of
     # output, at the cost of flexibility.
-    Event.BY_SAMPLE_ANALYSIS_WITH_PLUGIN_SUCCESS: {
+    Event.SAMPLE_ANALYSIS_WITH_PLUGIN_SUCCESS: {
+        "plugin_name": str,
         "console_output": str,
         "file_output": FileSystemTree,
     },
-    Event.BY_SAMPLE_ANALYSIS_WITH_PLUGIN_FAILURE: {"reason": Exception},
+    Event.SAMPLE_ANALYSIS_WITH_PLUGIN_FAILURE: {
+        "plugin_name": str,
+        "reason": Exception
+    },
 
-    Event.BEGAN_SAMPLE_GROUP_ANALYSIS: {},
-    Event.BEGAN_SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN: {"plugin_name": str},
-    Event.SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN_SUCCESS: {
+    Event.BEGAN_GROUP_ANALYSIS: {},
+    Event.BEGAN_GROUP_ANALYSIS_WITH_PLUGIN: {"plugin_name": str},
+    Event.GROUP_ANALYSIS_WITH_PLUGIN_SUCCESS: {
+        "plugin_name": str,
         "console_output": str,
         "file_output": FileSystemTree,
     },
-    Event.SAMPLE_GROUP_ANALYSIS_WITH_PLUGIN_FAILURE: {"reason": Exception},
+    Event.GROUP_ANALYSIS_WITH_PLUGIN_FAILURE: {
+        "plugin_name": str,
+        "reason": Exception
+    },
 
     Event.TESTING_COMPLETED: {},
 }
