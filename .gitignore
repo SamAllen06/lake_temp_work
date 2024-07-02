@@ -154,3 +154,6 @@ cython_debug/
 
 # Test output files
 *LakeTemperatureTest.txt
+
+# Testing output
+testing_output/
