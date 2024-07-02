@@ -1,11 +1,16 @@
 from pathlib import Path
 
-from output import console
+from output.views import enable_views, View
 from root import CONFIG_ROOT
 from testing import Tester
 
 
 DEFAULT_CONFIG_PATH = CONFIG_ROOT / "main.ini"
+
+
+def _enable_requested_views() -> None:
+    requested_views = [View.CONSOLE, View.FILE]
+    enable_views(requested_views)
 
 
 def _user_wants_to_continue_testing() -> bool:
@@ -15,7 +20,7 @@ def _user_wants_to_continue_testing() -> bool:
 
 
 def main():
-    console.enable()
+    _enable_requested_views()
     tester = Tester(DEFAULT_CONFIG_PATH)
     tester.prepare_for_testing()
     if _user_wants_to_continue_testing():

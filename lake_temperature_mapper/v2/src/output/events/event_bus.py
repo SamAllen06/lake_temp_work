@@ -1,3 +1,4 @@
+from collections.abc import Set, Sized
 import inspect
 from types import GenericAlias, MethodType
 from typing import Any
@@ -20,22 +21,37 @@ def fire_event(event: Event, **kwargs) -> None:
     _validate_provided_args_for_event(event, kwargs)
 
     for callback in subscriptions[event]:
-        callback(**kwargs)
+        kwarg_subset = get_callback_args_subset(callback, kwargs)
+        callback(**kwarg_subset)
+
+
+def get_callback_args_subset(
+        callback: MethodType,
+        kwargs: dict[str, Any]
+) -> dict[str, Any]:
+    subset: dict[str, Any] = {}
+
+    callback_args = inspect.getfullargspec(callback).args
+    for callback_arg in callback_args:
+        subset[callback_arg] = kwargs[callback_arg]
+
+    return subset
 
 
 def _validate_callback_for_event(callback: MethodType, event: Event) -> None:
     callback_spec = inspect.getfullargspec(callback)
 
-    if not _arg_list_is_valid_length_for_event(event, callback_spec.args):
-        raise ValueError(
-            f"Callback has {len(callback_spec.args)} arguments, "
-            f"but event expects {len(EVENT_PARAMETERS[event])}"
-        )
+    if callback_spec.varkw:
+        return
 
-    missing_args = _get_missing_arg_names_for_event(event, callback_spec.args)
-    if missing_args:
+    additional_args = _get_missing_arg_names(
+        set(callback_spec.args),
+        EVENT_PARAMETERS[event].keys()
+    )
+    if additional_args:
         raise ValueError(
-            f"Event expects arguments: {missing_args}, but callback is missing them"
+            f"Callback expects arguments: {additional_args}, but event {event.name} "
+            "does not provide them"
         )
 
     incorrectly_typed_args = _get_incorrectly_typed_arguments_for_event(
@@ -62,7 +78,7 @@ def _validate_provided_args_for_event(event: Event, args: dict[str, Any]) -> Non
             f"but {len(args)} were provided"
         )
 
-    missing_args = _get_missing_arg_names_for_event(event, arg_list)
+    missing_args = _get_missing_arg_names(EVENT_PARAMETERS[event].keys(), set(arg_list))
     if missing_args:
         raise TypeError(
             f"Missing keyword arguments {missing_args}, which are expected by event"
@@ -83,16 +99,17 @@ def _validate_provided_args_for_event(event: Event, args: dict[str, Any]) -> Non
         raise TypeError(error_message)
 
 
-def _arg_list_is_valid_length_for_event(event: Event, arg_list: list[str]) -> bool:
+def _arg_list_is_valid_length_for_event(event: Event, arg_list: Sized) -> bool:
     return len(EVENT_PARAMETERS[event]) == len(arg_list)
 
 
-def _get_missing_arg_names_for_event(event: Event, arg_list: list[str]) -> list[str]:
+#for event_arg in EVENT_PARAMETERS[event]:
+def _get_missing_arg_names(superset: Set[str], subset: Set[str]) -> list[str]:
     missing_args: list[str] = []
 
-    for event_arg in EVENT_PARAMETERS[event]:
-        if event_arg not in arg_list:
-            missing_args.append(event_arg)
+    for superset_arg in superset:
+        if superset_arg not in subset:
+            missing_args.append(superset_arg)
 
     return missing_args
 

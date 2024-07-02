@@ -33,6 +33,7 @@ class Tester:
         self._sample_groups: dict[str, SampleGroup] = {}
 
     def prepare_for_testing(self) -> None:
+        event_bus.fire_event(Event.INITIALIZE)
         self._load_binary()
         self._load_sampling_plugins()
         self._load_analysis_plugins()

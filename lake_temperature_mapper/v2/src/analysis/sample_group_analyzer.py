@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from output import FileSystemTree
+from output.file_utils import FileSystemTree
 from sampling import SampleGroup
 from util import Table
 

@@ -20,5 +20,3 @@ def convert_to_csv_data(data: Table) -> StringIO:
         csv_writer.writerow(row_sequence)
 
     return csv_file
-
-

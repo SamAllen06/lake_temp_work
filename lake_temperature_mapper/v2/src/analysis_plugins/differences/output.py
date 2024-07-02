@@ -2,15 +2,13 @@ from collections.abc import Mapping, Sequence
 from io import StringIO
 from pathlib import Path
 
-from analysis.output.console import table_to_text
-from analysis.output.file import table_to_csv, list_to_txt
-from output import FileSystemTree
-from output.console import AnsiCode, console_utils
+from output.console_utils import ansi, table_to_text
+from output.file_utils import FileSystemTree, list_to_txt, table_to_csv
 from util import Table
 
 
 OUTPUT_FILE_EXTENSION = ".csv"
-NO_DIFFERENCES_LINE = console_utils.with_ansi("No differences", AnsiCode.BRIGHT_YELLOW)
+NO_DIFFERENCES_LINE = ansi.with_ansi_color("No differences", ansi.AnsiColor.BRIGHT_YELLOW)
 NO_DIFFERENCES_FILEPATH = Path("unchanged_parameters.txt")
 
 
@@ -33,7 +31,7 @@ def _generate_console_output(differences: Mapping[str, Table]) -> str:
             continue
 
         no_differences_flag = False
-        parameter_header = console_utils.with_ansi(parameter, AnsiCode.BRIGHT_CYAN)
+        parameter_header = ansi.with_ansi_color(parameter, ansi.AnsiColor.BRIGHT_CYAN)
         lines.append(parameter_header)
 
         lines.append(table_to_text.convert_to_text(differences[parameter]))
@@ -62,8 +60,3 @@ def _generate_file_output(differences: Mapping[str, Table]) -> FileSystemTree:
         )
 
     return FileSystemTree.create_from_files(files)
-
-
-
-
-

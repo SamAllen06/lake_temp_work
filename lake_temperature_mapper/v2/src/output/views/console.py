@@ -1,8 +1,6 @@
 from sys import stderr
 
-from output import FileSystemTree #TODO: Refactor analysis events to avoid this.
-from output.console import console_utils
-from output.console.ansi_code import AnsiCode
+from output.console_utils import ansi, indentation
 from output.events import Event, event_bus
 
 
@@ -11,20 +9,18 @@ def _on_loading_binary(binary_name: str) -> None:
 
 
 def _on_binary_load_success() -> None:
-    console_utils.clear_line()
-    console_utils.print_ansi("Successfully loaded binary.\n", AnsiCode.BRIGHT_GREEN)
+    ansi.reset_line()
+    ansi.print_ansi_color("Successfully loaded binary.\n", ansi.AnsiColor.BRIGHT_GREEN)
 
 
 def _on_binary_load_failure(reason: Exception) -> None:
-    console_utils.clear_line()
-    print(
-        console_utils.with_ansi(
-            f"Failed to load binary due to {type(reason).__name__}.",
-            AnsiCode.BRIGHT_RED
-        ),
+    ansi.reset_line()
+    ansi.print_ansi_color(
+        f"Failed to load binary due to {type(reason).__name__}.",
+        ansi.AnsiColor.BRIGHT_RED,
         file=stderr
     )
-    console_utils.print_ansi(str(reason) + "\n", AnsiCode.BRIGHT_RED, file=stderr)
+    ansi.print_ansi_color(str(reason) + "\n", ansi.AnsiColor.BRIGHT_RED, file=stderr)
 
 
 def _on_began_loading_sampling_plugins() -> None:
@@ -36,15 +32,15 @@ def _on_loading_plugin(plugin_name: str) -> None:
 
 
 def _on_plugin_load_success(plugin_name: str) -> None:
-    console_utils.clear_line()
-    console_utils.print_ansi(f"\t[{plugin_name}]: Loaded", AnsiCode.BRIGHT_GREEN)
+    ansi.reset_line()
+    ansi.print_ansi_color(f"\t[{plugin_name}]: Loaded", ansi.AnsiColor.BRIGHT_GREEN)
 
 
 def _on_plugin_load_failure(plugin_name: str, reason: Exception) -> None:
-    console_utils.clear_line()
-    console_utils.print_ansi(
+    ansi.reset_line()
+    ansi.print_ansi_color(
         f"\t[{plugin_name}]: Load Failed ({type(reason).__name__})",
-        AnsiCode.BRIGHT_RED
+        ansi.AnsiColor.BRIGHT_RED
     )
 
 
@@ -53,9 +49,9 @@ def _on_sampling_plugins_load_success(count: int) -> None:
 
 
 def _on_sampling_plugins_load_failure() -> None:
-    console_utils.print_ansi(
+    ansi.print_ansi_color(
         "\nAll sampling plugins failed to load, exiting...\n",
-        AnsiCode.BRIGHT_RED,
+        ansi.AnsiColor.BRIGHT_RED,
         file=stderr
     )
 
@@ -69,9 +65,9 @@ def _on_analysis_plugins_load_success(count: int) -> None:
 
 
 def _on_analysis_plugins_load_failure() -> None:
-    console_utils.print_ansi(
+    ansi.print_ansi_color(
         "\nAll analysis plugins failed to load, exiting...\n",
-        AnsiCode.BRIGHT_RED,
+        ansi.AnsiColor.BRIGHT_RED,
         file=stderr
     )
 
@@ -88,8 +84,8 @@ def _on_sampling_from_plugin_success(
         plugin_name: str,
         group_sample_counts: dict[str, int]
 ) -> None:
-    console_utils.clear_line()
-    console_utils.print_ansi(f"\t[{plugin_name}]:", AnsiCode.BRIGHT_GREEN)
+    ansi.reset_line()
+    ansi.print_ansi_color(f"\t[{plugin_name}]:", ansi.AnsiColor.BRIGHT_GREEN)
 
     group_lines = [
         f"\t\t({name}): {group_sample_counts[name]} samples"
@@ -105,10 +101,10 @@ def _on_sampling_from_plugin_success(
 
 
 def _on_sampling_from_plugin_failure(plugin_name: str, reason: Exception) -> None:
-    console_utils.clear_line()
-    console_utils.print_ansi(
+    ansi.reset_line()
+    ansi.print_ansi_color(
         f"\t[{plugin_name}]: Sampling Failed ({type(reason).__name__})",
-        AnsiCode.BRIGHT_RED
+        ansi.AnsiColor.BRIGHT_RED
     )
 
 
@@ -117,7 +113,7 @@ def _on_sampling_from_plugins_success(group_count: int, sample_count: int) -> No
 
 
 def _on_sampling_from_plugins_failure() -> None:
-    console_utils.print_ansi("Sampling failed. Exiting...", AnsiCode.BRIGHT_RED)
+    ansi.print_ansi_color("Sampling failed. Exiting...", ansi.AnsiColor.BRIGHT_RED)
 
 
 def _on_began_timing_binary(binary_name: str) -> None:
@@ -127,7 +123,7 @@ def _on_began_timing_binary(binary_name: str) -> None:
 def _on_timing_binary_success(seconds_estimate: float) -> None:
     formatted_estimate = _format_estimate(seconds_estimate)
 
-    console_utils.clear_line()
+    ansi.reset_line()
     print(f"Time estimated: {formatted_estimate}")
     _prompt_to_continue_with_testing()
 
@@ -148,9 +144,9 @@ def _format_estimate(seconds_estimate: float) -> str:
 
 
 def _on_timing_binary_failure(exit_code: int) -> None:
-    console_utils.print_ansi(
+    ansi.print_ansi_color(
         f"Timing estimate failed because binary exited with code {exit_code}",
-        AnsiCode.BRIGHT_RED
+        ansi.AnsiColor.BRIGHT_RED
     )
     _prompt_to_continue_with_testing()
 
@@ -184,13 +180,13 @@ def _on_running_binary(binary_name: str) -> None:
 
 
 def _on_binary_exited(exit_code: int) -> None:
-    console_utils.clear_line()
+    ansi.reset_line()
     if exit_code:
-        console_utils.print_ansi(
-            f"Binary exited with code {exit_code}\n", AnsiCode.BRIGHT_RED
+        ansi.print_ansi_color(
+            f"Binary exited with code {exit_code}\n", ansi.AnsiColor.BRIGHT_RED
         )
     else:
-        console_utils.print_ansi("Binary ran successfully.\n", AnsiCode.BRIGHT_GREEN)
+        ansi.print_ansi_color("Binary ran successfully.\n", ansi.AnsiColor.BRIGHT_GREEN)
 
 
 def _on_began_sample_analysis() -> None:
@@ -204,11 +200,10 @@ def _on_began_analysis_with_plugin(plugin_name: str) -> None:
 def _on_analysis_with_plugin_success(
         plugin_name: str,
         console_output: str,
-        file_output: FileSystemTree
 ) -> None:
-    console_utils.clear_line()
-    console_utils.print_ansi(f"\t[{plugin_name}]:", AnsiCode.BRIGHT_GREEN)
-    console_utils.print_indented(console_output, 2)
+    ansi.reset_line()
+    ansi.print_ansi_color(f"\t[{plugin_name}]:", ansi.AnsiColor.BRIGHT_GREEN)
+    indentation.print_indented(console_output, 2)
     print("")
 
 
@@ -216,10 +211,10 @@ def _on_analysis_with_plugin_failure(
         plugin_name: str,
         reason: Exception
 ) -> None:
-    console_utils.clear_line()
-    console_utils.print_ansi(
+    ansi.reset_line()
+    ansi.print_ansi_color(
         f"\t[{plugin_name}]: Analysis Failed ({type(reason).__name__})\n",
-        AnsiCode.BRIGHT_RED
+        ansi.AnsiColor.BRIGHT_RED
     )
 
 
@@ -231,7 +226,7 @@ def _on_testing_completed() -> None:
     print("Testing completed.")
 
 
-_EVENT_FUNCTIONS = {
+SUBSCRIPTIONS = {
     Event.LOADING_BINARY: _on_loading_binary,
     Event.BINARY_LOAD_SUCCESS: _on_binary_load_success,
     Event.BINARY_LOAD_FAILURE: _on_binary_load_failure,
@@ -277,8 +272,3 @@ _EVENT_FUNCTIONS = {
 
     Event.TESTING_COMPLETED: _on_testing_completed,
 }
-
-
-def enable():
-    for event in _EVENT_FUNCTIONS:
-        event_bus.subscribe(event, _EVENT_FUNCTIONS[event])

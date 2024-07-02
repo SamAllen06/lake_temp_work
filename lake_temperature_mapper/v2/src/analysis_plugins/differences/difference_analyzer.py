@@ -3,7 +3,7 @@ from collections.abc import Mapping, Sequence
 import math
 
 from analysis import PerSampleAnalyzer
-from output import FileSystemTree
+from output.file_utils import FileSystemTree
 from util import Table
 
 from . import output
