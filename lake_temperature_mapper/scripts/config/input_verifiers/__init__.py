@@ -1,3 +1,0 @@
-from config.input_verifiers.no_check_input_verifier import NoCheckInputVerifier
-from config.input_verifiers.path_input_verifier import PathInputVerifier
-from config.input_verifiers.class_input_verifier import ClassInputVerifier

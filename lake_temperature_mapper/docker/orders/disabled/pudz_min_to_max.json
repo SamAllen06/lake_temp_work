@@ -1,0 +1,10 @@
+{
+  "samples":11,
+  "ranges":[
+    {
+      "param":"pudz",
+      "start":"r(0)",
+      "end":"r(1)"
+    }
+  ]
+}

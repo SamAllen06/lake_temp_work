@@ -13,16 +13,15 @@ RUN apt-get install -y locales && \
     echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && \
     locale-gen
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
 
 RUN locale -a
 
 WORKDIR /app
 
-COPY ./docker_app/ /app/
-COPY ./scripts/ /app/scripts/
+COPY docker/ /app/
+COPY src/ /app/src/
 
-RUN pip3 install numpy
 #RUN pip3 install wheel numpy scipy netCDF4 h5py configparser cftime
 #RUN CFLAGS=-noswitcherror pip install mpi4py

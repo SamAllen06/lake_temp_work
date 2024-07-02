@@ -1,0 +1,10 @@
+{
+  "samples":5,
+  "ranges":[
+    {
+      "param":"n2min",
+      "start":"r(0)",
+      "end":"r(1)"
+    }
+  ]
+}
