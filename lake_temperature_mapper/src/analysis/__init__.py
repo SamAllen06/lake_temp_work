@@ -1,3 +1,2 @@
 from analysis.per_sample_analyzer import PerSampleAnalyzer
 from analysis.sample_group_analyzer import SampleGroupAnalyzer
-from analysis.analyzer_loader import AnalyzerLoader

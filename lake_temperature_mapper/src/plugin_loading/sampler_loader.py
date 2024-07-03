@@ -5,7 +5,7 @@ from root import SOURCE_ROOT
 from sampling import Sampler, SampleGroup
 import sys
 
-from plugin_loader import PluginLoader
+from plugin_loading import PluginLoader
 import sampling_plugins
 
 PLUGINS_MODULE_NAME = "sampling_plugins"
