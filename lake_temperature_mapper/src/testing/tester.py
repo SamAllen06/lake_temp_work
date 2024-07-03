@@ -4,17 +4,19 @@ from pathlib import Path
 import sys
 import time
 
-from analysis import AnalyzerLoader
 from output.events import Event, event_bus
-from root import APP_ROOT
-from sampling import SampleGroup, SamplerLoader
+from plugin_loading import AnalyzerLoader, SamplerLoader
+from root import APP_ROOT, CONFIG_ROOT
+from sampling import SampleGroup
 from testing import BinaryRunner, DefaultsWriter, OutputFileReader, ParamEditor
+
+CONFIG_PATH = CONFIG_ROOT / "main.ini"
 
 
 class Tester:
-    def __init__(self, config_path: Path):
+    def __init__(self):
         self._config = ConfigParser()
-        self._config.read(config_path)
+        self._config.read(CONFIG_PATH)
 
         self._binary_runner = BinaryRunner()
         self._sampler_loader = SamplerLoader()
