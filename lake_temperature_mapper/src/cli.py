@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from output.views import enable_views, View
-from testing import Tester
+from tester import Tester
 
 
 def _enable_requested_views() -> None:
