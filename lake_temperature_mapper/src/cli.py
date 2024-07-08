@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from output.views import enable_views, View
-from tester import Tester
+import tester
 
 
 def _enable_requested_views() -> None:
@@ -17,7 +17,6 @@ def _user_wants_to_continue_testing() -> bool:
 
 def main():
     _enable_requested_views()
-    tester = Tester()
     tester.prepare_for_testing()
     if _user_wants_to_continue_testing():
         tester.test_model()
