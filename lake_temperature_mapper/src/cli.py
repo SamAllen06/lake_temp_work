@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from output.views import enable_views, View
+from output.view_manager import enable_views, View
 import tester
 
 
