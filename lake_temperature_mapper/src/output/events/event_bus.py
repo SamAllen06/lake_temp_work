@@ -3,7 +3,7 @@ import inspect
 from types import GenericAlias, MethodType
 from typing import Any
 
-from output.events import Event, EVENT_PARAMETERS
+from output.events.event import Event, EVENT_PARAMETERS
 
 subscriptions: dict[Event, list[MethodType]] = {event: [] for event in Event}
 

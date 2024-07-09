@@ -1,1 +1,1 @@
-from output.events.event import Event, EVENT_PARAMETERS
+from output.events.event import Event
