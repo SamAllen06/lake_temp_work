@@ -1,12 +1,13 @@
 from pathlib import Path
 
-from output.view_manager import enable_views, View
+from output import view_manager
+from output.views import View
 import tester
 
 
 def _enable_requested_views() -> None:
     requested_views = [View.CONSOLE, View.FILE, View.LOGS]
-    enable_views(requested_views)
+    view_manager.enable_views(requested_views)
 
 
 def _user_wants_to_continue_testing() -> bool:

@@ -2,13 +2,7 @@ from collections.abc import Iterable
 from enum import Enum
 
 from output.events import event_bus
-from output.views import console, file, logs
-
-
-class View(Enum):
-    CONSOLE = console
-    FILE = file
-    LOGS = logs
+from output.views import View
 
 
 def _enable(view: View) -> None:
