@@ -5,7 +5,7 @@ import pkgutil
 import sys
 
 from analysis import PerSampleAnalyzer, SampleGroupAnalyzer
-from plugin_loading import PluginLoader
+from plugin_loading.plugin_loader import PluginLoader
 from sampling import SampleGroup
 from util import Table
 
