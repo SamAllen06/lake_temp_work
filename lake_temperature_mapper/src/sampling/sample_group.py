@@ -14,10 +14,6 @@ class SampleGroup(ABC, Iterable, Sized):
         pass
 
     @abstractmethod
-    def get_ranges(self) -> Mapping[str, tuple[float, float]]:
-        pass
-
-    @abstractmethod
     def __iter__(self) -> SampleGroupIterator:
         pass
 

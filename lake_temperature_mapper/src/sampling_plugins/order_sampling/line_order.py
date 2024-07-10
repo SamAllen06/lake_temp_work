@@ -13,9 +13,6 @@ class LineOrder(Order):
     def get_sample_count(self) -> int:
         return self._samples
 
-    def get_ranges(self) -> dict[str, tuple[float, float]]:
-        return self._ranges
-
     def __iter__(self):
         return LineOrderIterator(self._samples, self._ranges)
 

@@ -18,15 +18,6 @@ class BoxOrder(Order):
 
         return sample_count
 
-    def get_ranges(self) -> dict[str, tuple[float, float]]:
-        bound_ranges: dict[str, tuple[float, float]] = {}
-
-        for key in self._ranges.keys():
-            key_range = self._ranges[key]
-            bound_ranges[key] = (key_range[0], key_range[1])
-
-        return bound_ranges
-
     def __iter__(self):
         return BoxOrderIterator(self._ranges)
 
