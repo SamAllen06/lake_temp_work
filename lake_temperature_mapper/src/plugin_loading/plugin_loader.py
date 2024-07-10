@@ -8,30 +8,21 @@ from root import SOURCE_ROOT
 
 
 class PluginLoader(ABC):
-    def __init__(self, acceptable_plugin_classes: Sequence[type]):
+    def __init__(
+            self,
+            acceptable_plugin_classes: Sequence[type],
+            plugins_module_name: str,
+            plugin_class_attribute: str
+    ):
         self._plugin_objects: dict[type, dict[str, Any]] = {
             plugin_class: {} for plugin_class in acceptable_plugin_classes
         }
+        self._plugins_module_name = plugins_module_name
+        self._plugin_class_attribute = plugin_class_attribute
 
-    @abstractmethod
     def load_plugins(self) -> None:
-        pass
-
-    def get_total_plugins_loaded_count(self) -> int:
-        count = 0;
-
-        for plugin_class in self._plugin_objects:
-            count += len(self._plugin_objects[plugin_class])
-
-        return count
-
-    def _load_plugins_in_module(
-            self,
-            plugins_module_name: str,
-            plugin_class_attribute: str
-    ) -> None:
         discovered_plugin_names = self._discover_plugins_in(
-            SOURCE_ROOT / plugins_module_name
+            SOURCE_ROOT / self._plugins_module_name
         )
 
         for plugin_name in discovered_plugin_names:
@@ -42,8 +33,8 @@ class PluginLoader(ABC):
             try:
                 plugin_object, plugin_superclass = self._load_plugin(
                     plugin_name,
-                    plugins_module_name,
-                    plugin_class_attribute
+                    self._plugins_module_name,
+                    self._plugin_class_attribute
                 )
             except Exception as error:
                 self._fire_plugin_load_failed_event(plugin_display_name, error)
@@ -51,6 +42,14 @@ class PluginLoader(ABC):
 
             self._plugin_objects[plugin_superclass][plugin_display_name] = plugin_object
             self._fire_plugin_load_success_event(plugin_display_name)
+
+    def get_total_plugins_loaded_count(self) -> int:
+        count = 0;
+
+        for plugin_class in self._plugin_objects:
+            count += len(self._plugin_objects[plugin_class])
+
+        return count
 
     @abstractmethod
     def _fire_loading_plugin_event(self, plugin_name: str) -> None:

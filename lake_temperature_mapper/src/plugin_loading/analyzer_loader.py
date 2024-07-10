@@ -9,16 +9,14 @@ from plugin_loading.plugin_loader import PluginLoader
 from sampling import SampleGroup
 from util import Table
 
-PLUGINS_MODULE_NAME = "analysis_plugins"
-PLUGIN_CLASS_ATTRIBUTE = "analyzer_class"
-
 
 class AnalyzerLoader(PluginLoader):
     def __init__(self):
-        super().__init__([PerSampleAnalyzer, SampleGroupAnalyzer])
-
-    def load_plugins(self) -> None:
-        self._load_plugins_in_module(PLUGINS_MODULE_NAME, PLUGIN_CLASS_ATTRIBUTE)
+        super().__init__(
+            [PerSampleAnalyzer, SampleGroupAnalyzer],
+            "analysis_plugins",
+            "analyzer_class"
+        )
 
     def any_sample_plugins_loaded(self) -> bool:
         return len(self._plugin_objects[PerSampleAnalyzer]) > 0
