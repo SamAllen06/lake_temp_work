@@ -21,7 +21,6 @@ def _define_log_file():
     timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
     log_path = log_directory / f"{timestamp}.log"
 
-    print("Logging at " + str(log_path))
     logging.basicConfig(filename=log_path, level=logging.INFO)
 
 
