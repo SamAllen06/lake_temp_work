@@ -3,7 +3,8 @@
 ## Purpose
 Generates a log file each time the program is run. The file is timestamped and
 written inside of the log directory, the location of which can be configured in
-APP/config/output/logs.ini.
+APP/config/output/logs.ini. Additionally, you can configure how many log files
+you want to keep.
 
 ## Functionality
 The log view subscribes to all events, and generates at least one line for each

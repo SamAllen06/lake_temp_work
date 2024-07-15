@@ -9,3 +9,4 @@ All paths are relative to [APP_ROOT.](../../src/root.md)
 | Field Name    | Type | Description                              |
 |---------------|:----:|------------------------------------------|
 | log_directory | Path | Path to the directory for outputing logs |
+| keep_logs     | int  | Number of log files to keep              |

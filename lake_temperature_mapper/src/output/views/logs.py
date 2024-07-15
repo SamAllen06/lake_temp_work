@@ -1,6 +1,7 @@
 import configparser
 import datetime
 import logging
+import os.path
 from pathlib import Path
 import traceback
 
@@ -8,54 +9,93 @@ from output.events import Event
 from root import APP_ROOT, OUTPUT_CONFIG_DIRECTORY
 
 
+LATEST_PREFIX = "latest-"
 LOGGER = logging.getLogger("event")
 
 
-def _define_log_file():
+def _clean_logs(log_directory: Path, keep_logs: int) -> None:
+    creation_times: dict[float, Path] = {}
+    for log in log_directory.iterdir():
+        creation_times[os.path.getctime(log)] = log
+
+    if len(creation_times) <= keep_logs:
+        return
+
+    sorted_times = list(creation_times.keys())
+    sorted_times.sort()
+
+    delete_count = len(creation_times) - keep_logs
+
+    for time_index in range(delete_count):
+        time = sorted_times[time_index]
+        creation_times[time].unlink()
+
+
+def _rename_last_log(log_directory: Path) -> None:
+    for log in log_directory.iterdir():
+        if log.name.startswith(LATEST_PREFIX):
+            last_log = log
+            break
+    else:
+        return
+
+    new_path = last_log.parent / last_log.name[len(LATEST_PREFIX):]
+    last_log.rename(new_path)
+
+
+def _define_log_file() -> None:
     config_path = OUTPUT_CONFIG_DIRECTORY / "logs.ini"
     config = configparser.ConfigParser()
     config.read(config_path)
 
     log_directory = APP_ROOT / config["Directories"]["log_directory"]
     log_directory.mkdir(parents=True, exist_ok=True)
+
+    _rename_last_log(log_directory)
+    
+    keep_logs = int(config["Settings"]["keep_logs"])
+
+    if keep_logs > 0:
+        _clean_logs(log_directory, keep_logs - 1)
+
     timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
-    log_path = log_directory / f"{timestamp}.log"
+    log_path = log_directory / f"{LATEST_PREFIX}{timestamp}.log"
 
     logging.basicConfig(filename=log_path, level=logging.INFO)
 
 
-def _on_initialize():
+def _on_initialize() -> None:
     _define_log_file()
 
     LOGGER.info("Initialized")
 
 
-def _on_loading_binary(binary_name: str):
+def _on_loading_binary(binary_name: str) -> None:
     LOGGER.info(f'Attemping to find the binary "{binary_name}"...')
 
 
-def _on_binary_load_success():
+def _on_binary_load_success() -> None:
     LOGGER.info("Successfully found the binary")
 
 
-def _on_binary_load_failure(reason: Exception):
+def _on_binary_load_failure(reason: Exception) -> None:
     formatted_exception = traceback.format_exception(reason)
     LOGGER.critical(f"Failed to find the binary.\n{formatted_exception}")
 
 
-def _on_began_loading_sampling_plugins():
+def _on_began_loading_sampling_plugins() -> None:
     LOGGER.info("Started loading sampling plugins")
 
 
-def _on_loading_sampling_plugin(plugin_name: str):
+def _on_loading_sampling_plugin(plugin_name: str) -> None:
     LOGGER.info(f'Loading sampling plugin "{plugin_name}"')
 
 
-def _on_sampling_plugin_load_success(plugin_name: str):
+def _on_sampling_plugin_load_success(plugin_name: str) -> None:
     LOGGER.info(f'Successfully loaded sampling plugin "{plugin_name}"')
 
 
-def _on_sampling_plugin_load_failure(plugin_name: str, reason: Exception):
+def _on_sampling_plugin_load_failure(plugin_name: str, reason: Exception) -> None:
     formatted_exception = traceback.format_exception(reason)
     LOGGER.error(
         f'Failed to load sampling plugin "{plugin_name}"\n'
