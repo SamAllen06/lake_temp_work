@@ -6,10 +6,10 @@ from typing import Mapping
 from root import APP_ROOT, SAMPLING_PLUGIN_CONFIG_DIRECTORY
 from sampling.sampler import Sampler
 
-from .bound_translator import BoundTranslator
+from sampling_libs.range_interpolation import BoundTranslator
+from sampling_libs.range_interpolation import RangeReader
 from .order import Order
 from .order_factory import OrderFactory
-from .range_reader import RangeReader
 
 
 CONFIG_FILE = SAMPLING_PLUGIN_CONFIG_DIRECTORY / "order_sampling.ini"

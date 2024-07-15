@@ -1,4 +1,4 @@
-# Bound Translator (bound_translator.py)
+# Bound Translator (APP/src/sampling_libs/range_interpolation/bound_translator.py)
 
 ## Purpose
 Converts the start and end strings of an order into a float. This includes 

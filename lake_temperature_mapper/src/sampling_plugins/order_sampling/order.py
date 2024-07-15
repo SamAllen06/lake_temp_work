@@ -3,7 +3,7 @@ from typing import Mapping
 
 from sampling import SampleGroup
 
-from .bound_translator import BoundTranslator
+from sampling_libs.range_interpolation import BoundTranslator
 
 
 class Order(SampleGroup):
