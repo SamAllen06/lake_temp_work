@@ -80,7 +80,7 @@ def _on_binary_load_success() -> None:
 
 def _on_binary_load_failure(reason: Exception) -> None:
     formatted_exception = traceback.format_exception(reason)
-    LOGGER.critical(f"Failed to find the binary.\n{formatted_exception}")
+    LOGGER.critical(f"Failed to find the binary.\n{"".join(formatted_exception)}")
 
 
 def _on_began_loading_sampling_plugins() -> None:
@@ -99,7 +99,7 @@ def _on_sampling_plugin_load_failure(plugin_name: str, reason: Exception) -> Non
     formatted_exception = traceback.format_exception(reason)
     LOGGER.error(
         f'Failed to load sampling plugin "{plugin_name}"\n'
-        f'{formatted_exception}'
+        f'{"".join(formatted_exception)}'
     )
 
 
@@ -127,7 +127,7 @@ def _on_analysis_plugin_load_failure(plugin_name: str, reason: Exception) -> Non
     formatted_exception = traceback.format_exception(reason)
     LOGGER.error(
         f'Failed to load analysis plugin "{plugin_name}"\n'
-        f'{formatted_exception}'
+        f'{"".join(formatted_exception)}'
     )
 
 
@@ -160,7 +160,7 @@ def _on_sampling_from_plugin_failure(plugin_name: str, reason: Exception) -> Non
     formatted_exception = traceback.format_exception(reason)
     LOGGER.error(
         f'Failed to get sample groups from plugin "{plugin_name}"\n'
-        f'{formatted_exception}'
+        f'{"".join(formatted_exception)}'
     )
 
 
@@ -224,7 +224,7 @@ def _on_sample_analysis_with_plugin_success(plugin_name: str) -> None:
 def _on_sample_analysis_with_plugin_failure(plugin_name: str, reason: Exception) -> None:
     formatted_exception = traceback.format_exception(reason)
     LOGGER.info(
-        f'Failed to analyze sample with plugin "{plugin_name}"\n{formatted_exception}'
+        f'Failed to analyze sample with plugin "{plugin_name}"\n{"".join(formatted_exception)}'
     )
 
 
@@ -243,7 +243,7 @@ def _on_group_analysis_with_plugin_success(plugin_name: str) -> None:
 def _on_group_analysis_with_plugin_failure(plugin_name: str, reason: Exception) -> None:
     formatted_exception = traceback.format_exception(reason)
     LOGGER.info(
-        f'Failed to analyze group with plugin "{plugin_name}"\n{formatted_exception}'
+        f'Failed to analyze group with plugin "{plugin_name}"\n{"".join(formatted_exception)}'
     )
 
 
