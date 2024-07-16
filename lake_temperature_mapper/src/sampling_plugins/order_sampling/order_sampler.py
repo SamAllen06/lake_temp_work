@@ -6,8 +6,8 @@ from typing import Mapping
 from root import APP_ROOT, SAMPLING_PLUGIN_CONFIG_DIRECTORY
 from sampling.sampler import Sampler
 
-from sampling_libs.range_interpolation import BoundTranslator
-from sampling_libs.range_interpolation import RangeReader
+from sampling_libs.ranges import BoundTranslator
+from sampling_libs.ranges import RangeReader
 from .order import Order
 from .order_factory import OrderFactory
 

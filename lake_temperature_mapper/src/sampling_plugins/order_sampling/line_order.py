@@ -1,6 +1,6 @@
 from sampling import SampleGroupIterator
 
-from sampling_libs.range_interpolation import BoundTranslator
+from sampling_libs.ranges import BoundTranslator
 from .order import Order
 
 

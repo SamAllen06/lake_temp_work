@@ -1,4 +1,4 @@
-from sampling_libs.range_interpolation import BoundTranslator
+from sampling_libs.ranges import BoundTranslator
 from .box_order import BoxOrder
 from .line_order import LineOrder
 from .order import Order
