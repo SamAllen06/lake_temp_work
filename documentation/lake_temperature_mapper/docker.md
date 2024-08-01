@@ -1,4 +1,5 @@
-# Docker (APP/docker/)
+# Docker
+APP/docker/
 
 ## Purpose
 Contains the actual model we are testing (currently elmtest.exe) along with

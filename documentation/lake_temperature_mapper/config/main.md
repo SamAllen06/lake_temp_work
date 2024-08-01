@@ -1,7 +1,8 @@
-# Main (APP/config/main.ini)
+# Main 
+APP/config/main.ini
 
 ## Purpose
-Configures the testing program.
+Configures Lake Temperature Mapper.
 
 ## Fields
 All paths are relative to [APP_ROOT.](../src/root.md)
@@ -13,4 +14,4 @@ All paths are relative to [APP_ROOT.](../src/root.md)
 | parameter_defaults | Path   | Path to the parameter defaults file (.txt)  |
 | reference_output   | Path   | Path to the reference output (.txt)         |
 | test_output        | Path   | Path to the test output (.txt)              |
-| args               | String | Args to pass to the model (space seperated) |
+| args               | String | Args to pass to the model (space separated) |

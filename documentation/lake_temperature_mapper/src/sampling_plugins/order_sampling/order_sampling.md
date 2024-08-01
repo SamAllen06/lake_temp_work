@@ -1,4 +1,5 @@
-# Order Sampling (APP/src/sampling_plugins/order_sampling/)
+# Order Sampling
+APP/src/sampling_plugins/order_sampling/
 
 ## Purpose
 Order Sampling is a sampling plugin that uses "order files" to generate

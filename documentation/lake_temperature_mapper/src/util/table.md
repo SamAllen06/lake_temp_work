@@ -1,4 +1,5 @@
-# Table (APP/src/util/table.py)
+# Table
+APP/src/util/table.py
 
 ## Purpose
 Represents a dataset stored with keyed, unordered columns, and ordered rows.
@@ -26,7 +27,7 @@ dataset.
 >>> from util import Table
 >>>
 >>> # Must pass an instance of the MutableMapping and MutableSequence, since
->>> # neither is garanteed to have a no-arg constructor.
+>>> # neither is guaranteed to have a no-arg constructor.
 >>> table = Table[dict, list]({}, [])
 >>>
 >>> table_mapping = table.as_mapping()

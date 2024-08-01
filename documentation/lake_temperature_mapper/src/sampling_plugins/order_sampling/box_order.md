@@ -1,8 +1,10 @@
-# Box Order (box_order.py)
+# Box Order
+APP/sampling_plugins/order_sampling/box_order.py
 
 ## Purpose
-Represents a sequence of samples in the form of a box, evenly spaced along each
-individual axis, but not necessarily from each other.
+A box order is a subclass of [Order](order.md)
+representing a sequence of samples in the form of a box, evenly spaced along
+each individual axis, but not necessarily from each other.
 
 ## Functionality
 Contains the starting vertex, the ending vertex, and the number of samples to 
@@ -11,11 +13,10 @@ is not defined in the order file, but can be calculated by multiplying each
 axis' sample count together. The exponential relationship between number of
 parameters being changed and the number of samples should be considered when
 writing box samples. As an example, 5 samples across 5 axes each results in
-3125 samples. (Assuming each sample takes 1.5 seconds to test, this will take
-about an hour and twenty minutes.)
+3125 samples. (Assuming each sample takes 1.25 seconds to test, this will take
+about an hour and five minutes.)
 
 ## Order File Format Example
-
 JSON:
 ```
 {

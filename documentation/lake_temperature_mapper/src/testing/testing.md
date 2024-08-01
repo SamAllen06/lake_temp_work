@@ -1,4 +1,5 @@
-# Testing (APP/src/testing/)
+# Testing
+APP/src/testing/
 
 ## Purpose
 The testing module contains all the modules used in the process of testing the

@@ -1,4 +1,5 @@
-# Sampler (APP/sampling/sampler.py)
+# Sampler
+APP/sampling/sampler.py
 
 ## Purpose
 Sampler is an abstract class requiring a get_sample_groups method which returns

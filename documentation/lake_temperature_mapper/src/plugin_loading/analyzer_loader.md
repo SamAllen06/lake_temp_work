@@ -1,8 +1,9 @@
-# Analyzer Loader (APP/src/plugin_loading/analyzer_loader.py)
+# Analyzer Loader 
+APP/src/plugin_loading/analyzer_loader.py
 
 ## Purpose
 AnalyzerLoader is a subclass of [PluginLoader](plugin_loader.md) which loads
-analysis plugins. Each plugin must have a "analyzer_class" attribute, which
+analysis plugins. Each plugin must have an "analyzer_class" attribute, which
 stores a class that extends either [PerSampleAnalyzer](../analysis/per_sample_analyzer.md)
 or [SampleGroupAnalyzer](../analysis/sample_group_analyzer.md).
 

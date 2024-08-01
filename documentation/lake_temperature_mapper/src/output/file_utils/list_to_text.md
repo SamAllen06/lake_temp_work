@@ -1,7 +1,9 @@
-# List to Text (APP/src/output/file_utils/list_to_text.py)
+# List to Text 
+APP/src/output/file_utils/list_to_text.py
 
 ## Purpose
-Converts a list of strings into a StringIO with each of strings on a new line.
+Converts a list of strings into a [StringIO](https://docs.python.org/3/library/io.html#io.StringIO)
+with each string on a new line.
 
 ## Example
 ```

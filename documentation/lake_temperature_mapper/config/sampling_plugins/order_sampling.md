@@ -1,4 +1,5 @@
-# Order Sampling (APP/config/sampling_plugins/order_sampling.ini)
+# Order Sampling
+APP/config/sampling_plugins/order_sampling.ini
 
 ## Purpose
 Configures the [order sampling plugin.](../../src/sampling_plugins/order_sampling/order_sampling.md)

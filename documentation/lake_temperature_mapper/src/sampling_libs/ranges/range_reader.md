@@ -1,4 +1,5 @@
-# Range Reader (APP/src/sampling_libs/range_interpolation/range_reader.py)
+# Range Reader
+APP/src/sampling_libs/range_interpolation/range_reader.py
 
 ## Purpose
 Range Reader accepts a path to a range input file and parses it.

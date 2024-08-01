@@ -1,4 +1,5 @@
-# Parameter Editor (APP/src/testing/param_editor.py)
+# Parameter Editor
+APP/src/testing/param_editor.py
 
 ## Purpose
 Modifies the values of parameters stored in the model's input parameter file.

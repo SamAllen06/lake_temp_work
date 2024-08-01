@@ -1,4 +1,5 @@
-# Logs (APP/config/output/logs.ini)
+# Logs 
+APP/config/output/logs.ini
 
 ## Purpose
 Configures the [log view.](../../src/output/views/logs.md)
@@ -6,7 +7,7 @@ Configures the [log view.](../../src/output/views/logs.md)
 ## Fields
 All paths are relative to [APP_ROOT.](../../src/root.md)
 
-| Field Name    | Type | Description                              |
-|---------------|:----:|------------------------------------------|
-| log_directory | Path | Path to the directory for outputing logs |
-| keep_logs     | int  | Number of log files to keep              |
+| Field Name    | Type | Description                               |
+|---------------|:----:|-------------------------------------------|
+| log_directory | Path | Path to the directory for outputting logs |
+| keep_logs     | int  | Number of log files to keep               |

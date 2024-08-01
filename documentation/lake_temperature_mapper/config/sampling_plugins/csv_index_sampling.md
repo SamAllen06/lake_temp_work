@@ -1,4 +1,5 @@
-# CSV Index Sampling (APP/config/sampling_plugins/csv_index_sampling.ini)
+# CSV Index Sampling 
+APP/config/sampling_plugins/csv_index_sampling.ini
 
 ## Purpose
 Configures the [CSV Index Sampling plugin.](../../src/sampling_plugins/csv_index_sampling/csv_index_sampling.md)

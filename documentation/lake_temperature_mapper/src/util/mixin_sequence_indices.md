@@ -1,4 +1,5 @@
-# Mixin Sequence Indices (APP/src/util/mixin_sequence_indices)
+# Mixin Sequence Indices
+APP/src/util/mixin_sequence_indices
 
 ## Purpose
 MixinSequenceIndices is a [mixin class](https://www.pythontutorial.net/python-oop/python-mixin/)

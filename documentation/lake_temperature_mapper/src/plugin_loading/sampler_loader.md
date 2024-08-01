@@ -1,4 +1,5 @@
-# Sampler Loader (APP/src/plugin_loading/sampler_loader.py)
+# Sampler Loader
+APP/src/plugin_loading/sampler_loader.py
 
 ## Purpose
 SamplerLoader is a subclass of [PluginLoader](plugin_loader.md) that loads

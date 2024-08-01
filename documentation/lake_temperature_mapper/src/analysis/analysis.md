@@ -1,4 +1,5 @@
-# Analysis (APP/src/analysis/)
+# Analysis
+APP/src/analysis/
 
 ## Purpose
 The analysis module serves as the interface between analysis plugins and the

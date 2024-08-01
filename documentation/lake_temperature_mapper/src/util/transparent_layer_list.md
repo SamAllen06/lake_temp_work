@@ -1,4 +1,5 @@
-# Transparent Layer List (APP/src/util/transparent_layer_list)
+# Transparent Layer List
+APP/src/util/transparent_layer_list
 
 ## Purpose
 Serves as a data structure optimized for storing multiple sequences (layers) of
@@ -8,16 +9,16 @@ dimensional [Sequence.](https://docs.python.org/3.10/library/collections.abc.htm
 ## Functionality
 Stores a base layer, which is a Sequence of data that is, ideally, shares the
 greatest percentage of data with the other layers. (In [OutputFileReader,](../testing/output_file_reader.md)
-I've used the reference data as the base layer, since most output variables are
-not changed by changes to individual inputs.)
+the reference data is used as the base layer, since most output variables are
+not affected by changes to individual inputs.)
 
-On top of the base layer, it stores a dictionary for each additional layer,
-mapping indices to their respective changed values. These dictionaries are
-wrapped using TransparentLayer, which is an immutable [Sequence](https://docs.python.org/3.10/library/collections.abc.html#collections.abc.Sequence)
+On top of the base layer, each additional layer is represented by a dictionary
+mapping indices of changed values to their respective values. These dictionaries are
+wrapped using TransparentLayer, which is a [Sequence](https://docs.python.org/3.10/library/collections.abc.html#collections.abc.Sequence)
 storing a reference to the base layer, as well as the dictionary itself.
 The dictionary only stores differences from the base layer, and, as the name
-would imply, is transparent for all indices not included in the dictionary,
-allowing the programmer to access data as if it stored the full dataset.
+would imply, is transparent for all values not overridden by the dictionary,
+allowing the programmer to access data as if the full dataset was stored.
 
 ## Examples
 ```

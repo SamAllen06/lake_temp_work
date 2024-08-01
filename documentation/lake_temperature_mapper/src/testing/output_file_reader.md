@@ -1,4 +1,5 @@
-# Output File Reader (APP/src/testing/output_file_reader.py)
+# Output File Reader
+APP/src/testing/output_file_reader.py
 
 ## Purpose
 The OutputFileReader class reads in output data from the model and packages
@@ -17,11 +18,11 @@ outputs independently.
 
 In OutputFileReader, since get_reference_data is called frequently despite the
 reference data being constant, OutputFileReader reads the reference data once
-when it is initialized and then stores it to respond to requests later.
+when it is initialized and then stores it to respond to later requests.
 
 ### Reading Sample Test Data (read_sample_data)
-Test data is the data produced by the model after it has run following changes
-to its parameters file. Sample test data is returned in the same format as the
+Test data is the data produced by the model after it has run using a modified
+parameters file. Sample test data is returned in the same format as the
 reference data, but, unlike the reference data, it is read every time the
 function is called. Additionally, this function has a side effect of adding the
 sample's test data to the current group data.
@@ -37,4 +38,4 @@ more details.)
 
 Each sample's test data is added to the group data when read_sample_data is 
 called. When read_group_data is called, it will return this table, then reset
-the group data for the next [SampleGroup.](../sampling/sample_group.md)
+the group data in preparation for the next [SampleGroup.](../sampling/sample_group.md)

@@ -1,4 +1,5 @@
-# Event (APP/src/output/events/event.py)
+# Event 
+APP/src/output/events/event.py
 
 ## Purpose
 The event module includes an Event enum that provides a name for each possible

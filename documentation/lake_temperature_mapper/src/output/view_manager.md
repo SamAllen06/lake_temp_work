@@ -1,10 +1,12 @@
-# View Manager (APP/src/output/view_manager.py)
+# View Manager 
+APP/src/output/view_manager.py
 
 ## Purpose
 The view_manager module enables views when its enable_view function is called.
 
 ## Example
 ```
+>>> # This is typically done in a controller.
 >>> from output.views import View
 >>> from output import view_manager
 >>> 
@@ -12,7 +14,7 @@ The view_manager module enables views when its enable_view function is called.
 >>> 
 >>> view_manager.enable_views(wanted_views)
 >>> 
->>> 
+>>> # This is typically done in the model.
 >>> from output.events import Event, event_bus
 >>> 
 >>> event_bus.fire_event(Event.BEGAN_LOADING_SAMPLING_PLUGINS)

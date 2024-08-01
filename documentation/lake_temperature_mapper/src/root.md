@@ -1,9 +1,10 @@
-# Root Paths (APP/src/root.py)
+# Root Paths
+APP/src/root.py
 
 ## Purpose
 The root module stores a number of [pathlib.Path](https://docs.python.org/3.10/library/pathlib.html)
 constants. Paths are used at multiple points in the program, however, letting
-individual modules define the paths of the files they make use of would be 
+individual modules define the entire path of the files they make use of would be 
 unwise.
 
 There are two types of paths: absolute and relative. Absolute paths are defined
@@ -14,9 +15,9 @@ Commonly this path is the current working directory, but not always.
 For this program, relative paths are the better option for a number of reasons.
 The most important of which is that the program can run inside both a
 developer's computer, as well as inside the docker image.
-However, every relative path is defined relative to some absolute path, so the
-question then becomes, which path are the various paths in this program
-relative to?
+However, every relative path must eventually be defined relative to some absolute
+path, so the question then becomes, which path should the various paths in this
+program relative to?
 
 A common answer would be either the current working directory or the file's
 path. However, using the current working directory would cause the paths to
@@ -32,31 +33,41 @@ relative paths in relation to root's constant paths.
 
 ## Constants
 
-### APP_ROOT (APP/) (root.py/../..)
+### APP_ROOT
+(APP/) or (root.py/../..)
+
 App root is the root of the project. All files accessed by the program are
 descendants of this directory. As such, it is the only path defined relative to 
 the location of the root.py file. The remaining constants in this module 
 are all relative to this path, and it will be referred to as "APP" when defining
 them in this document.
 
-### CONFIG_ROOT (APP/config/)
+### CONFIG_ROOT
+(APP/config/)
+
 Config root is the directory that contains all the configuration files used by
 the testing program's modules. All .ini files are located in here.
 
-### SOURCE_ROOT (APP/src/)
+### SOURCE_ROOT
+(APP/src/)
+
 Source root contains the source code of the program. All .py files are located
 here. This includes plugin code.
 
-### SAMPLING_PLUGIN_CONFIG_DIRECTORY (APP/config/sampling_plugins/)
+### SAMPLING_PLUGIN_CONFIG_DIRECTORY
+(APP/config/sampling_plugins/)
+
 The sampling plugin config directory contains all configuration files used by
-[sampling plugins.](sampling_plugins/sampling_plugins.md)
+[sampling plugins.](sampling_plugins/how_to_create_a_sampling_plugin.md)
 
-### ANALYSIS_PLUGIN_CONFIG_DIRECTORY (APP/config/analysis_plugins/)
+### ANALYSIS_PLUGIN_CONFIG_DIRECTORY
+(APP/config/analysis_plugins/)
+
 The analysis plugin config directory, similarly to its sampling equivalent,
-contains all configuration files used by [analysis plugins.](analysis_plugins/analysis_plugins.md)
+contains all configuration files used by [analysis plugins.](analysis_plugins/how_to_create_an_analysis_plugin.md)
 
-### OUTPUT_CONFIG_DIRECTORY (APP/config/output/)
+### OUTPUT_CONFIG_DIRECTORY
+(APP/config/output/)
+
 The output config directory contains all configuration files used by the
 [views.](output/views/views.md)
-
-OUTPUT_CONFIG_DIRECTORY = CONFIG_ROOT / "output"

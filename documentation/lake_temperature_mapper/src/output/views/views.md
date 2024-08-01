@@ -1,8 +1,9 @@
-# Views (APP/src/output/views/)
+# Views 
+APP/src/output/views/
 
 ## Purpose
 Views are modules that subscribe to [events](../events/events.md) and produce
-output that can be used the user later.
+output that can be used by the user later.
 
 ## Functionality
 This module provides a View enum which allows a controller to enable the views

@@ -1,4 +1,5 @@
-# CSV Index Sampling (APP/src/sampling_plugins/csv_index_sampling/)
+# CSV Index Sampling
+APP/src/sampling_plugins/csv_index_sampling/
 
 ## Purpose
 The CSV Index Sampling plugin converts csv files containing indices (such as
@@ -18,7 +19,7 @@ param1,param2
 2,0
 2,1
 2,2
-``
+```
 using this range file:
 ```
 param1

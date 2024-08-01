@@ -1,12 +1,13 @@
-# File (APP/src/output/views/file.py)
+# File 
+APP/src/output/views/file.py
 
 ## Purpose
 Produces file output for the testing program.
 
 ## Functionality
 This view produces three different forms of file output: samples, errors, and
-analysis. The location of these three types can be configured using the config
-file APP/config/views/file.ini.
+analysis. The location of these three types can be configured using 
+[its config file.](../../../config/output/files.md)
 
 ### Samples Output
 Sample output stores the values of the input parameters for all samples in each
@@ -25,11 +26,11 @@ Here is an example file:
 
 ```
 var1,var2,var3
-0.0, 1.0, 2.0
-1.0, 2.0, 3.0
-2.0, 3.0, 4.0
-3.0, 4.0, 5.0
-4.0, 5.0, 6.0
+0.0,1.0,2.0
+1.0,2.0,3.0
+2.0,3.0,4.0
+3.0,4.0,5.0
+4.0,5.0,6.0
 ```
 
 ### Errors Output

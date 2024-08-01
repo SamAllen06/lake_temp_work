@@ -1,4 +1,5 @@
-# Per Sample Analyzer (APP/src/analysis/per_sample_analyzer.py)
+# Per Sample Analyzer 
+APP/src/analysis/per_sample_analyzer.py
 
 ## Purpose
 PerSampleAnalyzer is an abstract class that analysis plugins should extend if

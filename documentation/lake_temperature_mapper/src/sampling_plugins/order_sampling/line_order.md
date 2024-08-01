@@ -1,8 +1,9 @@
-# Line Order (line_order.py)
+# Line Order
+APP/src/sampling_plugins/order_sampling/line_order.py
 
 ## Purpose
-Represents a sequence of samples an even distance along a line in the input 
-space.
+A subclass of [Order](order.md) representing a sequence of samples evenly
+spaced along a line in the input space.
 
 ## Functionality
 Contains the starting sample, ending sample, and the total number of samples.

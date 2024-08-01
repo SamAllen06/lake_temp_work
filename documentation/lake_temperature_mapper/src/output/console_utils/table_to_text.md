@@ -1,4 +1,5 @@
-# Table to Text (APP/src/output/console_utils/table_to_text.py)
+# Table to Text 
+APP/src/output/console_utils/table_to_text.py
 
 ## Purpose
 Table to text is a module that converts a [Table](../../util/table.md) into

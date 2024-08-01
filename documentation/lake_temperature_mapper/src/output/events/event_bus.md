@@ -1,4 +1,5 @@
-# Event Bus (APP/src/events/event_bus.py)
+# Event Bus 
+APP/src/events/event_bus.py
 
 ## Purpose
 The event_bus module allows subscribing to, unsubscribing from, and firing
