@@ -7,7 +7,8 @@ import tester
 
 def _enable_requested_views() -> None:
     requested_views = [View.CONSOLE, View.FILE, View.LOGS]
-    view_manager.enable_views(requested_views)
+    # requested views is a list of View, not Module.
+    view_manager.enable_views(requested_views) #type: ignore
 
 
 def _user_wants_to_continue_testing() -> bool:
