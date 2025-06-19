@@ -1,9 +1,0 @@
-I need to write a program that reads a file and changes the data values of that file
-
-methods I need:
-1. dupeFile - ##DONE
-    - this should make a duplicate file
-4. getChanges - ##DONE
-    - get the changes that the user wants to make to the file
-5. makeChanges
-    - make the changes according to what the user inputs
