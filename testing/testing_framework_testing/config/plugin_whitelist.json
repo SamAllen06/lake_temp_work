@@ -1,0 +1,8 @@
+{
+	"sampling": [
+		"csv_index_sampling"
+	],
+	"analysis": [
+		"fault_finding"
+	]
+}
