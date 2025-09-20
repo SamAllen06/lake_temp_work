@@ -1,8 +1,8 @@
 {
 	"sampling": [
-		"csv_index_sampling"
+		"order_sampling"
 	],
 	"analysis": [
-		"fault_finding"
+		"netcdf4_output"
 	]
 }

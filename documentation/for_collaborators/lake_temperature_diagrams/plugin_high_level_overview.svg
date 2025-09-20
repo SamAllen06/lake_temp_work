@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="600"
+   height="800"
+   viewBox="0 0 600 800.00003"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   sodipodi:docname="plugin_high_level_overview.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="271.73103"
+     inkscape:cy="209.60665"
+     inkscape:window-width="1908"
+     inkscape:window-height="1034"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="21.213203"
+       y="30.304576"
+       width="119.198"
+       height="41.416254"
+       id="rect2" />
+    <rect
+       x="21.213203"
+       y="30.304577"
+       width="119.198"
+       height="41.416252"
+       id="rect2-1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#34383a;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-linecap:round;stroke-dasharray:none"
+       id="rect1"
+       width="200"
+       height="99.999992"
+       x="20"
+       y="20"
+       rx="16"
+       ry="15.999999" />
+    <text
+       xml:space="preserve"
+       id="text2"
+       style="font-weight:bold;font-size:8px;line-height:0.95;font-family:'Fira Sans';-inkscape-font-specification:'Fira Sans Bold';text-align:center;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2);fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.51728;stroke-linecap:round;stroke-dasharray:none"
+       transform="matrix(1.9362291,0,0,1.9362198,-36.657095,-28.451705)"><tspan
+         x="45.903"
+         y="40.9884"
+         id="tspan9"><tspan
+           style="font-size:14.5403px;font-family:Sans;-inkscape-font-specification:'Sans, Bold'"
+           id="tspan8">Abstract </tspan></tspan><tspan
+         x="42.527066"
+         y="54.801686"
+         id="tspan11"><tspan
+           style="font-size:14.5403px;font-family:Sans;-inkscape-font-specification:'Sans, Bold'"
+           id="tspan10">Sampling </tspan></tspan><tspan
+         x="33.09149"
+         y="68.614972"
+         id="tspan13"><tspan
+           style="font-size:14.5403px;font-family:Sans;-inkscape-font-specification:'Sans, Bold'"
+           id="tspan12">Plugin Data</tspan></tspan></text>
+    <rect
+       style="fill:#34383a;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-linecap:round;stroke-dasharray:none"
+       id="rect1-4"
+       width="200"
+       height="99.999992"
+       x="380"
+       y="20"
+       rx="16"
+       ry="15.999999" />
+    <text
+       xml:space="preserve"
+       id="text2-7"
+       style="font-weight:bold;font-size:8px;line-height:0.95;font-family:'Fira Sans';-inkscape-font-specification:'Fira Sans Bold';text-align:center;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2-1);fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.51728;stroke-linecap:round;stroke-dasharray:none"
+       transform="matrix(1.9362291,0,0,1.9362198,323.34289,-28.451705)"><tspan
+         x="45.903"
+         y="40.9884"
+         id="tspan15"><tspan
+           style="font-size:14.5403px;font-family:Sans;-inkscape-font-specification:'Sans, Bold'"
+           id="tspan14">Abstract </tspan></tspan><tspan
+         x="42.527066"
+         y="54.801686"
+         id="tspan17"><tspan
+           style="font-size:14.5403px;font-family:Sans;-inkscape-font-specification:'Sans, Bold'"
+           id="tspan16">Sampling </tspan></tspan><tspan
+         x="33.09149"
+         y="68.614972"
+         id="tspan19"><tspan
+           style="font-size:14.5403px;font-family:Sans;-inkscape-font-specification:'Sans, Bold'"
+           id="tspan18">Plugin Data</tspan></tspan></text>
+  </g>
+</svg>

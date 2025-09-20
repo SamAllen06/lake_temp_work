@@ -23,5 +23,5 @@ WORKDIR /app
 COPY lake_temperature_testing/ /app/
 COPY model_testing_framework/src/ /app/src/
 
-#RUN pip3 install wheel numpy scipy netCDF4 h5py configparser cftime
+RUN pip3 install netCDF4
 #RUN CFLAGS=-noswitcherror pip install mpi4py
