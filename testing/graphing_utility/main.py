@@ -16,8 +16,10 @@ def main() -> None:
 
     with Dataset(dataset_path, "r", format="NETCDF4") as dataset:
         input_data = _get_input_data(dataset, args.input)
+        output_data = _get_output_data(dataset, args.output, args.output_index)
 
-        print(input_data)
+        print("In: " + str(input_data))
+        print("Out: " + str(output_data))
 
 
 def _parse_args() -> Namespace:
@@ -35,14 +37,14 @@ def _get_input_data(dataset: Dataset, input: str) -> np.array:
         print(f"Unable to find input {input} in dataset", file=sys.stderr)
         sys.exit(1)
 
-    return np.array(dataset.variables[input], copy=True)
+    return dataset.variables[input]
 
 def _get_output_data(dataset: Dataset, output: str, index: int) -> np.array:
-    if input not in dataset.variables:
+    if output not in dataset.variables:
         print(f"Unable to find output {output} in dataset", file=sys.stderr)
         sys.exit(1)
 
-    return np.array(dataset.variables[output][:][index])
+    return dataset.variables[output][:, :, index]
 
 
 if __name__ == "__main__":
