@@ -1,27 +1,11 @@
-FROM nvcr.io/nvidia/nvhpc:23.5-devel-cuda_multi-ubuntu22.04
+FROM alpine:latest
 
-RUN apt-get update -y && \
-    apt-get install -y \
-    python3 \
-    python3-pip \
-    vim && \
-    apt-get clean all
-
-RUN ln -sf /usr/bin/python3 /usr/bin/python
-
-RUN apt-get install -y locales && \
-    echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && \
-    locale-gen
-
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US.UTF-8
-
-RUN locale -a
+RUN apk add python3 hdf5-dev netcdf-dev gcc musl-dev python3-dev
 
 WORKDIR /app
 
-COPY lake_temperature_testing/ /app/
-COPY model_testing_framework/src/ /app/src/
+RUN ["python3", "-m", "venv", "venv"]
+RUN ["/app/venv/bin/pip", "install", "numpy", "netCDF4"]
 
-RUN pip3 install netCDF4
-#RUN CFLAGS=-noswitcherror pip install mpi4py
+COPY netcdf_lake_temp_testing/ /app/
+COPY model_testing_framework/src/ /app/src/
