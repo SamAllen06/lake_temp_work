@@ -1,0 +1,117 @@
+    1  ls
+    2  apt update
+    3  ls home/
+    4  ls
+    5  cd home/
+    6  mkdir app
+    7  cd app/
+    8  ls
+    9  wget https://github.com/E3SM-Project/E3SM/archive/refs/tags/v3.0.2.zip
+   10  curl
+   11  apt install wget
+   12  wget https://github.com/E3SM-Project/E3SM/archive/refs/tags/v3.0.2.zip
+   13  unzip v3.0.2.zip -d E3SM
+   14  apt install zip
+   15  unzip v3.0.2.zip -d E3SM
+   16  ls
+   17  cd E3SM/
+   18  ls
+   19  cd E3SM-3.0.2/
+   20  ls
+   21  cd ..
+   22  cd ..
+   23  git clone https://github.com/peterdschwartz/SPEL_OpenACC.git
+   24  apt install git
+   25  git clone https://github.com/peterdschwartz/SPEL_OpenACC.git
+   26  ls
+   27  apt install python3
+   28  ls
+   29  cd SPEL_OpenACC/
+   30  ls
+   31  pip install .
+   32  apt install pip
+   33  clear
+   34  ls
+   35  python -m venv
+   36  python3 -m venv
+   37  python3 -m venv venv
+   38  apt install python3-venv
+   39  python3 -m venv venv
+   40  source venv/bin/activate
+   41  pip install .
+   42  cat scripts/config.py 
+   43* ls ../E3SM/E3SM-3.0.2/d
+   44  sed -i 's:E3SM_SRCROOT = spel_dir + "\.\./repo/E3SM":E3SM_SRCROOT = spel_dir + "\.\./E3SM/E3SM-3\.0\.2"' scripts/config.py 
+   45  sed -i 's:E3SM_SRCROOT = spel_dir + "\.\./repo/E3SM":E3SM_SRCROOT = spel_dir + "\.\./E3SM/E3SM-3\.0\.2":' scripts/config.py 
+   46  cat scripts/config.py 
+   47  history
+   48  ls
+   49  spel create -s laketemperature
+   50  spel create -s LakeTemperature
+   51  l
+   52  ls
+   53  ls scripts/
+   54  pip uninstall spel
+   55  pip install -e .
+   56  spel create -s LakeTemperature
+   57  spel create -s LakeTemperature
+   58  apt install vim
+   59  ls
+   60  vim scripts/cli.py 
+   61  spel create -s LakeTemperature
+   62  vim scripts/cli.py 
+   63  spel create -s LakeTemperature
+   64  vim scripts/cli.py 
+   65  spel create -s LakeTemperature
+   66  vim scripts/edit_files.py 
+   67  vim scripts/edit_files.py 
+   68  spel create -s LakeTemperature
+   69  vim scripts/edit_files.py 
+   70  spel create -s LakeTemperature
+   71  vim scripts/edit_files.py 
+   72  spel create -s LakeTemperature
+   73  vim scripts/edit_files.py 
+   74  spel create -s LakeTemperature
+   75  vim scripts/edit_files.py 
+   76  vim scripts/config.py 
+   77  cd ..
+   78  ls
+   79  mv E3SM/E3SM-3.0.2/ e3sm
+   80  rm -d E3SM/
+   81  mv e3sm/ E3SM
+   82  spel create -s LakeTemperature
+   83  spel create -s turtle
+   84  spel create -s LakeTemperature
+   85  cd SPEL_OpenACC/
+   86  ls
+   87  vim scripts/types.py 
+   88  vim scripts/edit_files.py 
+   89  spel create -s LakeTemperature
+   90  git log
+   91  claer
+   92  claer
+   93  clear
+   94  ls
+   95  s
+   96  ls
+   97  vim scripts/nml/analyze_namelist.py 
+   98  spel create -s LakeTemperature
+   99  vim scripts/edit_files.py 
+  100  spel create -s LakeTemperature
+  101  vim scripts/edit_files.py 
+  102  vim scripts/edit_files.py 
+  103  spel create -s LakeTemperature
+  104  vim scripts/edit_files.py 
+  105  spel create -s LakeTemperature
+  106  vim scripts/edit_files.py 
+  107  spel create -s LakeTemperature
+  108  vim scripts/edit_files.py 
+  109  apt install gfortran
+  110  spel create -s LakeTemperature
+  111  vim scripts/edit_files.py 
+  112  spel create -s LakeTemperature
+  113  ls
+  114  ls unit-tests/fut/
+  115  history
+  116  history | grep apt
+  117  history > /home/app/history.txt

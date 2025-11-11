@@ -1,6 +1,7 @@
-FROM alpine:latest
+FROM debian:bookworm
 
-RUN apk add python3 hdf5-dev netcdf-dev gcc musl-dev python3-dev
+RUN apt update && apt install -y gfortran libnetcdff-dev libblas-dev liblapack-dev \
+	python3 python3-venv less vim netcdf-bin
 
 WORKDIR /app
 
