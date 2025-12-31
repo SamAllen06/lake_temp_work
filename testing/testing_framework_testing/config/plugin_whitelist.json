@@ -3,6 +3,6 @@
 		"order_sampling"
 	],
 	"analysis": [
-		"netcdf4_output"
+		"fault_finding"
 	]
 }
