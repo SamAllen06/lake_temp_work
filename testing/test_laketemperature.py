@@ -6,7 +6,6 @@ import sys
 DOCKER_DIRECTORY = Path(__file__).parent
 IMAGE_NAME = "lake_temp"
 
-
 def main() -> None:
     try:
         delete_image_if_exists()
@@ -53,7 +52,11 @@ def delete_containers_for_image(image_id: str) -> None:
 # Returns JSON containing the information from each line of output.
 def read_docker_output(command: str) -> list:
     output = subprocess.check_output(f"{command} --format json", shell=True)
-    data = [json.loads(line) for line in output.strip().split(b"\n")]
+
+    if output:
+        data = [json.loads(line) for line in output.strip().split(b"\n")]
+    else:
+        data = {}
 
     return data
 
