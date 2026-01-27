@@ -30,10 +30,6 @@ def check_ground_heat_flux_finite(test_veg_ef_eflx_soil_grnd: npt.NDArray) -> No
     assert_variable_is_finite(test_veg_ef_eflx_soil_grnd, "veg_ef%eflx_soil_grnd")
 
 
-def check_ground_heat_flux_finite(test_veg_ef_eflx_soil_grnd: npt.NDArray) -> None:
-    assert_variable_is_finite(test_veg_ef_eflx_soil_grnd, "veg_ef%eflx_soil_grnd")
-
-
 def check_snow_melt_heat_flux_finite(test_col_ef_eflx_snomelt: npt.NDArray) -> None:
     assert_variable_is_finite(test_col_ef_eflx_snomelt, "col_ef%eflx_snomelt")
 
