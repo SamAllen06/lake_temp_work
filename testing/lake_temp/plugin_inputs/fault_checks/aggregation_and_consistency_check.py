@@ -31,3 +31,9 @@ def check_icethick_col_is_sum(
     abs_diff = np.abs(test_lakestate_vars_lake_icethick_col - sum)
 
     assert np.all(abs_diff <= tolerance), "Ice thickness is not consistent with other variables"
+
+
+def check_imelt_uses_valid_enum_values(
+    test_col_ef_imelt: npt.NDArray,
+) -> None:
+    assert np.all(test_col_ef_imelt >= 0) and np.all(test_col_ef_imelt <= 2)
