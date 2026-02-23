@@ -15,7 +15,13 @@ RUN mv E3SM-3.0.2 E3SM
 # Download SPEL
 RUN git clone 'https://github.com/peterdschwartz/SPEL_OpenACC.git'
 
+# Fix the version
+WORKDIR /app/build/SPEL_OpenACC
+RUN git reset --hard a0929e97
+RUN git clean -df
+
 # Make a virtual environment for installing SPEL
+WORKDIR /app/build
 RUN python3 -m venv spel_venv
 RUN /app/build/spel_venv/bin/python -m pip install -e ./SPEL_OpenACC/
 
