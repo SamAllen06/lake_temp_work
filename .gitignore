@@ -161,5 +161,8 @@ testing_output/
 # Plugin whitelists
 whitelist
 
-# Ignore .DS_Store files
+# .DS_Store files
 .DS_Store
+
+# Ignore .~lock.* files
+.~lock.*
