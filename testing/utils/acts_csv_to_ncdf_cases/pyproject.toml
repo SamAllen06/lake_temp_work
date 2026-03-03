@@ -1,0 +1,18 @@
+[project]
+name = "acts-csv-to-ncdf-cases"
+version = "1.0.0"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+	"netCDF4>=1.7.2,<2.0",
+	"numpy>=2.4.2,<3.0",
+]
+
+[project.scripts]
+csv2nc = "csv2nc:main"
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
