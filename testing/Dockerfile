@@ -76,12 +76,19 @@ RUN rm datasets.zip
 RUN cp spel-constant-defaults0001.nc spel-constants0001.nc
 RUN ./elmtest 1
 RUN mv fut-outputs0001.nc spel-outputs0001.nc
-# Install python dependencies for model testing framework.
 
+# Install model testing framework and all plugins.
 WORKDIR /app
-RUN pip install numpy netCDF4
+COPY model_testing_framework/packages/ /app/mtf_packages/
+WORKDIR /app/mtf_packages
+RUN pip install ./mtf
+RUN for pkg in ./sampling_libs/*; do (cd "$pkg" && pip install .); done
+RUN for pkg in ./analysis_libs/*; do (cd "$pkg" && pip install .); done
+RUN for pkg in ./sampling_plugins/*; do (cd "$pkg" && pip install .); done
+RUN for pkg in ./analysis_plugins/*; do (cd "$pkg" && pip install .); done
+WORKDIR /app
+RUN rm -rf /app/mtf_packages
 
-COPY model_testing_framework/src/ /app/src/
 COPY lake_temp/config/ /app/config/
 COPY lake_temp/plugin_inputs/ /app/plugin_inputs/
 

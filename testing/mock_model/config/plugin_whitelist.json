@@ -1,8 +1,8 @@
 {
 	"sampling": [
-		"order_sampling"
+		"mtf_netcdf_cases"
 	],
 	"analysis": [
-		"fault_finding"
+		"mtf_netcdf4_output"
 	]
 }
