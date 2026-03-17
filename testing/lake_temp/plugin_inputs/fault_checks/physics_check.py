@@ -1,6 +1,8 @@
 import numpy as np
 import numpy.typing as npt
 
+from mtf_fault_finding import CheckStatus
+
 # tfrz not in constants.
 TFRZ = 273.15
 
@@ -12,6 +14,9 @@ def check_temp_at_freezing_where_lake_is_frozen(
 ) -> None:
     diff_to_frozen = np.abs(test_lakestate_vars_lake_icefrac_col - 1.0)
     frozen = diff_to_frozen <= 1E-6
+
+    if not np.any(frozen):
+        return CheckStatus.SKIPPED
 
     diff_to_freezing_temp = np.abs(TFRZ - test_col_es_t_lake)
     close_to_freezing = diff_to_freezing_temp <= 1E-3
@@ -27,6 +32,9 @@ def no_eddies_when_surface_frozen(
     test_lakestate_vars_savedtke1_col: npt.NDArray,
 ) -> None:
     surface_frozen = test_col_es_t_lake[:, 1, :] <= TFRZ
+
+    if not np.any(surface_frozen):
+        return CheckStatus.SKIPPED
 
     eddies_present = test_lakestate_vars_savedtke1_col > 0.0
 
