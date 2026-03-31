@@ -134,5 +134,50 @@ def check_latent_heat_from_lake(
     almost_frozen = np.abs(1.0 - test_lakestate_vars_lake_icefrac_col) < 0.01
     almost_at_freezing = np.abs(TFRZ - test_col_es_t_lake) < 0.01
 
+    if not np.any(almost_frozen):
+        return CheckStatus.SKIPPED
+
     # Verify layers that are almost frozen are also almost at the freezing temperature.
     assert np.all(~almost_frozen | almost_at_freezing)
+
+def check_methane_conductance_gated_by_ice(
+    use_lch4: npt.NDArray,
+    test_lakestate_vars_lake_icefrac_col: npt.NDArray,
+    test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
+):
+    some_surface_ice = test_lakestate_vars_lake_icefrac_col[:, 0, :] > 0.1
+
+    if not use_lch4 == 1 or not np.any(some_surface_ice):
+        return CheckStatus.SKIPPED
+
+    conducting_methane = ch4_vars_grnd_ch4_cond_col > 0.0
+
+    # Verify methane conductance is blocked by ice
+    assert not np.any(some_surface_ice & conducting_methane)
+
+def check_methane_conductance_allowed_without_ice(
+    use_lch4: npt.NDArray,
+    test_lakestate_vars_lake_icefrac_col: npt.NDArray,
+
+    test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
+    test_lakestate_vars_lakeresist_col: npt.NDArray,
+    test_lakestate_vars_lake_raw_col: npt.NDArray,
+):
+    no_surface_ice = test_lakestate_vars_lake_icefrac_col[:, 0, :] == 0.0
+
+    if not use_lch4 == 1 or not np.any(no_surface_ice):
+        return CheckStatus.SKIPPED
+
+    expected_methane = 1.0 / (
+        lakestate_vars_lakeresist_col + lakestate_vars_lake_raw_col
+    )
+
+    # Verify columns without ice conduct the expected methane.
+    assert np.all(
+        ~no_surface_ice | np.isclose(expected_methane, ch4_vars_grnd_ch4_cond_col)
+    )
+
+# Skipping radiation absorption for now because I'm not sure how patches and columns
+# correspond.
+
+
