@@ -15,12 +15,6 @@ class IMelt(Enum):
     FREEZING = 2
 
 
-class IMelt(Enum):
-    NONE = 0
-    MELTING = 1
-    FREEZING = 2
-
-
 def check_energy_conservation(
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
@@ -150,7 +144,7 @@ def check_methane_conductance_gated_by_ice(
     if not use_lch4 == 1 or not np.any(some_surface_ice):
         return CheckStatus.SKIPPED
 
-    conducting_methane = ch4_vars_grnd_ch4_cond_col > 0.0
+    conducting_methane = test_ch4_vars_grnd_ch4_cond_col > 0.0
 
     # Verify methane conductance is blocked by ice
     assert not np.any(some_surface_ice & conducting_methane)
@@ -169,12 +163,12 @@ def check_methane_conductance_allowed_without_ice(
         return CheckStatus.SKIPPED
 
     expected_methane = 1.0 / (
-        lakestate_vars_lakeresist_col + lakestate_vars_lake_raw_col
+        test_lakestate_vars_lakeresist_col + test_lakestate_vars_lake_raw_col
     )
 
     # Verify columns without ice conduct the expected methane.
     assert np.all(
-        ~no_surface_ice | np.isclose(expected_methane, ch4_vars_grnd_ch4_cond_col)
+        ~no_surface_ice | np.isclose(expected_methane, test_ch4_vars_grnd_ch4_cond_col)
     )
 
 # Skipping radiation absorption for now because I'm not sure how patches and columns
