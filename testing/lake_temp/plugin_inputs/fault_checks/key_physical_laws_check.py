@@ -8,6 +8,12 @@ from mtf_fault_finding import CheckStatus
 # tfrz not in constants.
 TFRZ = 273.15
 
+# imelt representation
+class IMelt(Enum):
+    NEW = 0
+    MELTING = 1
+    FREEZING = 2
+
 
 class IMelt(Enum):
     NONE = 0
@@ -20,11 +26,14 @@ def check_energy_conservation(
     test_col_ws_h2osno: npt.NDArray,
     test_col_es_t_lake: npt.NDArray,
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
+
+    test_col_ef_errsoi: npt.NDArray,
+    test_col_es_hc_soisno: npt.NDArray,
 ):
     no_snow_layers = test_col_pp_snl == 0
     no_snow_water = test_col_ws_h2osno == 0.0
-    surface_above_freezing = test_col_es_t_lake[:, 1, :] > TFRZ
-    unfrozen_surface = test_lakestate_vars_lake_icefrac_col[:, 1, :] == 0.0
+    surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
+    unfrozen_surface = test_lakestate_vars_lake_icefrac_col[:, 0, :] == 0.0
 
     # Skip unless lake is unfrozen.
     if not np.all(
@@ -32,20 +41,98 @@ def check_energy_conservation(
     ):
         return CheckStatus.SKIPPED
 
-    # Needs energy conservation check here.
+    # Verify error is below threshold used in LakeTemperature.
+    assert np.all(test_col_ef_errsoi < 0.1)
+
+    # Difference between each time step.
+    #change_in_heat_content = np.diff(test_col_es_hc_soisno, axis=0)
+
+    # Need to compare with lake and soil energy fluxes.
 
 
-def snow_freezing_produces_latent_heat(
+def check_freezing_latent_heat(
+    test_col_es_t_lake: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
-    test_col_es_t_lake: npt.NDArray,
 
-    test_col_wf_qflx_snofrz: npt.NDArray,
     test_col_wf_qflx_snofrz_lyr: npt.NDArray,
     test_col_wf_qflx_snomelt: npt.NDArray,
     test_col_ef_imelt: npt.NDArray,
-    test_col_ws_h2osno: npt.NDArray,
     test_col_ws_snow_depth: npt.NDArray,
+    test_col_wf_qflx_snofrz: npt.NDArray,
 ):
-    pass
+    some_snow_layers = test_col_pp_snl > 0
+    some_snow_water = test_col_ws_h2osno > 0.0
 
+    lake_surface_is_at_or_below_freezing = np.all(test_col_es_t_lake <= TFRZ)
+
+    snow_present = some_snow_layers & some_snow_water
+    if not np.any(snow_present) or not lake_surface_is_at_or_below_freezing:
+        return CheckStatus.SKIPPED
+
+    # Verify snow is freezing
+    surface_snow_freezing = test_col_wf_qflx_snofrz_lyr[:, 0, :] > 0.0
+    surface_snow_labeled_freezing = test_col_ef_imelt[:, 0, :] == IMelt.FREEZING.value
+    assert surface_snow_freezing == snow_present
+    assert surface_snow_labeled_freezing == snow_present
+
+    # Verify snow is not melting
+    snow_not_melting = test_col_wf_qflx_snomelt == 0.0
+    assert snow_not_melting == snow_present
+
+    # Verify snow water and depth are not decreasing
+    snow_water_not_decreasing = np.diff(test_col_ws_h2osno, axis=0) >= 0.0
+    snow_depth_not_decreasing = np.diff(test_col_ws_snow_depth, axis=0) >= 0.0
+    assert np.all(snow_water_not_decreasing & snow_depth_not_decreasing)
+
+    # Verify snofrz is snofrz_lyr integrated
+    assert np.sum(test_col_wf_qflx_snofrz_lyr, axis=1) == test_col_wf_qflx_snofrz
+
+
+def check_melting_latent_heat(
+    test_col_es_t_lake: npt.NDArray,
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
+
+    hfus: npt.NDArray,
+    dtime_mod: npt.NDArray,
+    test_col_wf_qflx_snomelt: npt.NDArray,
+    test_col_wf_qflx_snow_melt: npt.NDArray,
+    test_col_ef_eflx_snomelt: npt.NDArray,
+    test_col_ef_imelt: npt.NDArray,
+    test_col_ws_snow_depth: npt.NDArray,
+    test_col_wf_qflx_snofrz: npt.NDArray,
+):
+    no_snow_layers = test_col_pp_snl == 0
+    some_snow_water = test_col_ws_h2osno > 0.0
+
+    lake_surface_above_freezing = np.all(test_col_es_t_lake > TFRZ)
+
+    soil_water_present = no_snow_layers & some_snow_water
+    if not np.any(soil_water_present) or not lake_surface_above_freezing:
+        return CheckStatus.SKIPPED
+
+    snow_is_melting = test_col_wf_qflx_snomelt > 0.0
+    snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
+    
+    # Verify snow is melting and has melted on all columns were soil water is present.
+    assert np.all(~soil_water_present | (snow_is_melting & snow_has_melted))
+
+    # Verify energy flux is consistent with latent heat from snow melt rate.
+    assert np.all(test_col_ef_eflx_snomelt == test_col_wf_qflx_snomelt * hfus)
+
+    # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
+    assert (
+        np.diff(test_col_ws_snow_depth * 1000.0, axis=0) / dtime_mod
+        == test_col_wf_qflx_snomelt
+    )
+
+def check_latent_heat_from_lake(
+    test_col_es_t_lake: npt.NDArray,
+    test_lakestate_vars_lake_icefrac_col: npt.NDArray,
+):
+    almost_frozen = np.abs(1.0 - test_lakestate_vars_lake_icefrac_col) < 0.01
+    almost_at_freezing = np.abs(TFRZ - test_col_es_t_lake) < 0.01
+
+    # Verify layers that are almost frozen are also almost at the freezing temperature.
+    assert np.all(~almost_frozen | almost_at_freezing)
