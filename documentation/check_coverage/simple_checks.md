@@ -136,4 +136,10 @@ Skipped because we are unsure how to check these.
 
 `lakestate_vars%lake_icefrac_col` $\approx 1 \rightarrow$
 `|col_es%t_lake|` $\le 10^{-3}$
-- More details to be added later.
+- `physics_check.check_temp_at_freezing_where_lake_is_frozen`
+- Condition: `lakestate_vars%lake_icefrac_col` $\approx 1$ somewhere
+
+`lakestate_vars%savedtke1_col` $> 0 \rightarrow$
+`col_es%t_lake` $>$ `tfrz` and `col_pp%snl` $= 0$
+- `physics_check.no_tke_when_surface_frozen`
+- Condition: `lakestate_vars%savedtke1_col` $> 0$ somewhere
