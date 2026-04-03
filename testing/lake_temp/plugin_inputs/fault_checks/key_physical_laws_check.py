@@ -54,6 +54,9 @@ def check_freezing_latent_heat(
     test_col_ef_imelt: npt.NDArray,
     test_col_ws_snow_depth: npt.NDArray,
     test_col_wf_qflx_snofrz: npt.NDArray,
+    test_col_ws_h2osoi_ice: npt.NDArray,
+    test_col_es_hc_soisno: npt.NDArray,
+    hfus: npt.NDArray,
 ):
     some_snow_layers = test_col_pp_snl > 0
     some_snow_water = test_col_ws_h2osno > 0.0
@@ -79,8 +82,17 @@ def check_freezing_latent_heat(
     snow_depth_not_decreasing = np.diff(test_col_ws_snow_depth, axis=0) >= 0.0
     assert np.all(snow_water_not_decreasing & snow_depth_not_decreasing)
 
-    # Verify snofrz is snofrz_lyr integrated
-    assert np.sum(test_col_wf_qflx_snofrz_lyr, axis=1) == test_col_wf_qflx_snofrz
+    # Verify sensible heat reflects latent heat released from freezing snow in MJ/m2
+    # Ice content of snow (kg/m2) by column
+    ice_content = np.sum(test_col_ws_h2osoi_ice, axis=1)
+    # Change in ice content of snow (kg/m2) over each time step
+    ice_content_diff = np.diff(ice_content, axis=0)
+    # Change in latent heat (MJ/m2) per time step
+    latent_heat_diff = ice_content_diff * hfus * 1E-6
+    # Change in sensible heat (MJ/m2) per time step
+    sensible_heat_diff = np.diff(test_col_es_hc_soisno, axis=0)
+
+    assert np.isclose(latent_heat_diff, sensible_heat_diff)
 
 
 def check_melting_latent_heat(
