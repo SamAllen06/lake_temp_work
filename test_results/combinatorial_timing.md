@@ -4,7 +4,7 @@ Date: 03/31/26
 
 When generating combinatorial test cases using ACTS and our csv2nc Python script, we
 timed each stage with different degrees of interaction. The configuration file used with
-acts is `REPO:/test_resources/acts/lake_temp_combinatorial.conf`. Seven iterations were
+ACTS is `REPO:/test_resources/acts/lake_temp_combinatorial.conf`. Seven iterations were
 run for each degree of interaction using a bash for loop. Note that the time was
 collected using `real` time from the `time` command, not ACTS reported time. We suspect
 the difference is because ACTS's measurement does not include the time it takes to write
@@ -12,12 +12,12 @@ the cases to a CSV file.
 
 ## Cases per Degree of Interaction
 
-| Degree of Interaction | Case Count | Estimated Time   |
-|:---------------------:|:----------:|:----------------:|
-| 2                     | 231        | 0 days, 00:01:45 |
-| 3                     | 3685       | 0 days, 00:28:00 |
-| 4                     | 53170      | 0 days, 06:44:06 |
-| 5                     | 688290     | 3 days, 15:11:00 |
+| Degree of Interaction | Case Count  | Estimated Execution Time   |
+|:---------------------:|:-----------:|:--------------------------:|
+| 2                     | 231         | 0 days, 00:01:45           |
+| 3                     | 3,685       | 0 days, 00:28:00           |
+| 4                     | 53,170      | 0 days, 06:44:06           |
+| 5                     | 688,290     | 3 days, 15:11:00           |
 
 For ten samples, the mean time it takes to run `elmtest` is 0.456 seconds, with a 
 standard deviation of 0.040. This time is used to estimate how long testing each 
