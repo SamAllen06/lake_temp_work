@@ -112,10 +112,10 @@ def check_melting_latent_heat(
     no_snow_layers = test_col_pp_snl == 0
     some_snow_water = test_col_ws_h2osno > 0.0
 
-    lake_surface_above_freezing = np.all(test_col_es_t_lake > TFRZ)
+    lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
 
-    soil_water_present = no_snow_layers & some_snow_water
-    if not np.any(soil_water_present) or not lake_surface_above_freezing:
+    soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
+    if not np.any(soil_water_present):
         return CheckStatus.SKIPPED
 
     snow_is_melting = test_col_wf_qflx_snomelt > 0.0
