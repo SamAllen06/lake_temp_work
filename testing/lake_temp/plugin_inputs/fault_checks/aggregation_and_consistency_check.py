@@ -36,4 +36,9 @@ def check_icethick_col_is_sum(
 def check_imelt_uses_valid_enum_values(
     test_col_ef_imelt: npt.NDArray,
 ) -> None:
-    assert np.all(test_col_ef_imelt >= 0) and np.all(test_col_ef_imelt <= 2)
+    # Values of 2147483647 are uninitialized, and should be masked.
+    masked_imelt = np.ma.masked_where(
+        test_col_ef_imelt == 2147483647, test_col_ef_imelt
+    )
+
+    assert np.all(masked_imelt >= 0) and np.all(masked_imelt <= 2)
