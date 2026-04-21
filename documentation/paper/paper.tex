@@ -51,8 +51,9 @@ basically a brief summary of the whole paper.
 Example text with citation \cite{tdd}.
 
 % Discuss the research problem, in our case automating testing on LakeTemperature
-% Introduce E3SM, then LakeTemperature, then SPEL.
+% Introduce E3SM, then LakeTemperature, then SPEL (briefly, details in background).
 % Mention that we developed an automated testing framework and why it's significant.
+% (Systematic way to run a large number of samples on the model)
 % This paper is organized as follows...
 
 \Section{Background and Related Work}
@@ -66,17 +67,21 @@ Example text with citation \cite{tdd}.
 
 % Maybe here, maybe later:
 % NetCDF (briefly)
-% Combinatorial Testing and ACTS
+% Combinatorial Testing and ACTS (briefly, well-established method, we're using ACTS
+% [from NIST])
 
 % Related Work (How what we did [testing framework] fits into related research, fills
 % a gap, builds on other things, etc.)
 
-% Automated testing of a black-box software by generating input values, by any methods
-% Validating outputs using a series of checks, mention unit testing inspiration.
-% Maybe briefly discuss other testing methods (like statistical testing, etc) that are
-% used to test similar models.
-% Discuss alternative methods (besides our checks) used to test systems with no clear
+% - Automated testing of a black-box software by generating input values, by any methods
+% (fuzzer could work)
+% - Validating outputs using a series of checks, mention unit testing inspiration.
+% - Discuss that test oracle is a difficult problem for scientific oracle because
+% there's not really a standard way to know if the result is 100% correct.
+% - Discuss alternative methods (besides our checks) used to test systems with no clear
 % test oracle.
+% - Maybe briefly discuss other testing methods (like statistical testing, etc) that are
+% used to test similar models.
 
 \Section{\raggedright A Proposed Automated Testing \\ Framework}
 \label{sec:framework}
@@ -99,7 +104,7 @@ Example text with citation \cite{tdd}.
 % Give examples of each. (Note that we'll explain the ones used for combinatorial
 % testing/fault checks later.)
 
-\Section{Application to LakeTemperature}
+\Section{Application to \texttt{LakeTemperature}}
 \label{sec:application}
 
 % Briefly reiterate the purpose of LakeTemperature.
@@ -108,7 +113,7 @@ Example text with citation \cite{tdd}.
 % Provide a sentence or two to structure the section (mention that we'll discuss change-
 % impact and comb. testing.
 
-\SubSection{Change-Impact Analysis}
+\SubSection{Change Impact Analysis}
 
 % Goal: Understand how the model constants influence the model outputs.
 % Discuss use of line samples on individual axes to determine which constants affect
@@ -133,7 +138,6 @@ Example text with citation \cite{tdd}.
 % Discuss where we got the bounds for each variable from and why we used linear
 % interpolation.
 % FUTURE: Discuss why we picked the values we did outside the bounds for those tests
-% Can include tables for test case generation and runtime.
 
 % - - - Fault Checks - - - 
 % Discuss the lack of a test oracle.
@@ -151,26 +155,26 @@ Example text with citation \cite{tdd}.
 \Section{Experimental Results}
 \label{sec:results}
 
+% Can include tables for test case generation and runtime.
 % Discuss that all checks were either passed or skipped when we interpolated between
 % bounds, describe why each skipped check was skipped.
 % FUTURE: Discuss results from testing outside bounds.
+% Discuss the implications of our results, even if we didn't find any bugs.
 
 
-% I've added this because I assume we want to talk about limitations and future work at
-% least.
-\Section{Conclusion}
+\Section{Conclusion and Future Work}
 
 % Limitations
 % - Lack of control of inputs
-% - Combinatorial testing used on floating point values
+% - Combinatorial testing used on floating point values though we had key values/bounds
 
 % Future Work
 % - Parallelization
 % - Changing inputs (samples edit multiple files, maybe in a smarter manner)
 % - Testing of other E3SM modules
+% - Statistical testing (with our sampling plugins)
 
-% This template doesn't let me remove the number on this section.
-\Section{Acknowledgements}
+\section*{Acknowledgements}
 
 
 \end{document}
