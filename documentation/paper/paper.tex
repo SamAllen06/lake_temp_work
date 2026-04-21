@@ -1,12 +1,12 @@
-\documentclass[10pt,twocolumn,letterpaper]{article}
+\documentclass[10pt,twocolumn]{article}
 \usepackage{latex8}
 \usepackage[letterpaper]{geometry}
 \usepackage{times}
+%\usepackage{biblatex}
 
 \pagestyle{empty}
-\bibliographystyle{latex8}
-% We'll fill this in when we have a bibliography.
-%\bibliography{...your files...}
+%\bibliographystyle{latex8}
+%\bibliography{paper.bib}
 
 \title{
 	A Framework for Automated Functional Testing \\
@@ -14,31 +14,164 @@
 }
 % We will add affiliations to this. The author's instructions for SEKE are kind of vauge
 % so I've yet to determine the best way to format this.
-\author{Aidan Bensch \and Sam Allen \and Lan Lin \and Peter Schwartz \and Dali Wang}
+\author{
+	Aidan Bensch, Sam Allen, Lan Lin
+	\and
+	Peter Schwartz, Dali Wang
+}
+
+\affiliation{
+	Department of Computer Science \\
+	Ball State University \\
+	Muncie, IN 47306, USA \\
+	\{aidan.bensch, sallen7, llin4\}@bsu.edu
+	\and
+	Environmental Sciences Division \\
+	Oak Ridge National Laboratory \\
+	Oak Ridge, TN 37831, USA \\
+	\{schwartzpd, wangd\}@ornl.gov
+}
+% This is the intended way to put emails, but it's far too big.
+%\email{
+%	\{aidan.bensch, sallen7, llin4\}@bsu.edu
+%	\{schwartzpd, wangd\}@ornl.gov
+%}
 
 \begin{document}
 
 \maketitle
 
-\Section{Abstract}
+\abstract
+Abstract text, we will fill this out once we've written the rest of the paper, it's
+basically a brief summary of the whole paper.
+\endabstract
 
 \Section{Introduction}
+\label{sec:introduction}
+
+Example text with citation \cite{tdd}.
+
+% Discuss the research problem, in our case automating testing on LakeTemperature
+% Introduce E3SM, then LakeTemperature, then SPEL.
+% Mention that we developed an automated testing framework and why it's significant.
+% This paper is organized as follows...
 
 \Section{Background and Related Work}
+\label{sec:background}
 
-% This one is a little too long, so LaTeX tries to fit it to the column edge and wrap
-% it, we can either shorten the section title or use ragged formatting so it doesn't
-% look bad.
-\Section{A Proposed Automated Testing Framework}
+% Background
+
+% E3SM
+% LakeTemperature
+% SPEL (we'll ask Peter and Dali if they want to write about SPEL themselves)
+
+% Maybe here, maybe later:
+% NetCDF (briefly)
+% Combinatorial Testing and ACTS
+
+% Related Work (How what we did [testing framework] fits into related research, fills
+% a gap, builds on other things, etc.)
+
+% Automated testing of a black-box software by generating input values, by any methods
+% Validating outputs using a series of checks, mention unit testing inspiration.
+% Maybe briefly discuss other testing methods (like statistical testing, etc) that are
+% used to test similar models.
+% Discuss alternative methods (besides our checks) used to test systems with no clear
+% test oracle.
+
+\Section{\raggedright A Proposed Automated Testing \\ Framework}
+\label{sec:framework}
+
+% One thing that's really key to this section is to make sure we explain the
+% justification for each design decision we made.
+
+% Somehow introduce the need for multiple sampling and analysis methods. Originally, 
+% in the first iteration, the program was able to take line and box samples, as well as
+% compare differences. When we met with Peter and Dali, ideas such as baysian testing
+% combinatorial testing for sampling were suggested, along with various ideas for
+% analysis, which is why iteration two (current) was made.
+
+% Explain the flow of the program (sampling -> testing -> analysis)
+% Show the relationship between plugins and the core application. (UML diagram?)
+% Include a figure of the program running (we can make a PDF diagram for this since it's
+% just colored text).
+% Discuss samples, sample groups, and sampling plugins
+% Discuss analysis plugins
+% Give examples of each. (Note that we'll explain the ones used for combinatorial
+% testing/fault checks later.)
 
 \Section{Application to LakeTemperature}
+\label{sec:application}
+
+% Briefly reiterate the purpose of LakeTemperature.
+% Explain the interface SPEL provides us to control the constants, inputs, and outputs
+% of LakeTemperature. Define constants, inputs, and outputs in this context.
+% Provide a sentence or two to structure the section (mention that we'll discuss change-
+% impact and comb. testing.
 
 \SubSection{Change-Impact Analysis}
 
+% Goal: Understand how the model constants influence the model outputs.
+% Discuss use of line samples on individual axes to determine which constants affect
+% which outputs.
+
+% Discuss using netcdf4-output to store the output data in a compressed netCDF4 file so
+% we could plot it using our graphing utility. I can make a 3D graph to show an output 
+% changing as we change a constant.
+
 \SubSection{Combinatorial Testing}
 
-\Section{Experimental Results}
+% Goal: Find values for model constants that cause behavior that violates physical laws
+% and expected model bounds.
 
+% - - - Combinatorial - - -
+% Use our results showing multiple constants affect the same outputs to set up a
+% combinatorial testing problem.
+% Discuss why we can't use every combination of inputs.
+% Discuss NIST's research and ACTS
+% Discuss our process for generating test case indices using ACTS and mapping them to an
+% arbitrary partition of the constant space.
+% Discuss where we got the bounds for each variable from and why we used linear
+% interpolation.
+% FUTURE: Discuss why we picked the values we did outside the bounds for those tests
+% Can include tables for test case generation and runtime.
+
+% - - - Fault Checks - - - 
+% Discuss the lack of a test oracle.
+% We should expect the outputs to follow certain rules, such as bounds and aggregation.
+% Additionally, they should follow physical laws.
+% Describe the Fault Checks plugin, allowing multiple independent functions to request
+% parts of the output data and make assertions, then we get a report about the status of
+% each check, similar to a unit test framework, though notibly different since the scope
+% of the tests are all of LakeTemperature, and the inputs are not provided by the
+% checks, like they would be in a unit test.
+% Conditional Checks
+% Based on documents discussing these assertions (how do we mention this, since they're
+% authors?)
+
+\Section{Experimental Results}
+\label{sec:results}
+
+% Discuss that all checks were either passed or skipped when we interpolated between
+% bounds, describe why each skipped check was skipped.
+% FUTURE: Discuss results from testing outside bounds.
+
+
+% I've added this because I assume we want to talk about limitations and future work at
+% least.
+\Section{Conclusion}
+
+% Limitations
+% - Lack of control of inputs
+% - Combinatorial testing used on floating point values
+
+% Future Work
+% - Parallelization
+% - Changing inputs (samples edit multiple files, maybe in a smarter manner)
+% - Testing of other E3SM modules
+
+% This template doesn't let me remove the number on this section.
 \Section{Acknowledgements}
+
 
 \end{document}
