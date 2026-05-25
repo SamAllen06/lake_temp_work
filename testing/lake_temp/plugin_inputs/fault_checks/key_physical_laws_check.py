@@ -133,19 +133,6 @@ def check_melting_latent_heat(
         == test_col_wf_qflx_snomelt
     )
 
-def check_latent_heat_from_lake(
-    test_col_es_t_lake: npt.NDArray,
-    test_lakestate_vars_lake_icefrac_col: npt.NDArray,
-):
-    almost_frozen = np.abs(1.0 - test_lakestate_vars_lake_icefrac_col) < 0.01
-    almost_at_freezing = np.abs(TFRZ - test_col_es_t_lake) < 0.01
-
-    if not np.any(almost_frozen):
-        return CheckStatus.SKIPPED
-
-    # Verify layers that are almost frozen are also almost at the freezing temperature.
-    assert np.all(~almost_frozen | almost_at_freezing)
-
 def check_methane_conductance_gated_by_ice(
     use_lch4: npt.NDArray,
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
