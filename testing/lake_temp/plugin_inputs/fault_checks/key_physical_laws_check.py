@@ -4,6 +4,7 @@ import numpy as np
 import numpy.typing as npt
 
 from mtf_fault_finding import CheckStatus
+from mtf_fault_finding import NonFiniteValuesHandler
 
 # tfrz not in constants.
 TFRZ = 273.15
@@ -24,6 +25,17 @@ def check_energy_conservation(
     test_col_ef_errsoi: npt.NDArray,
     test_col_es_hc_soisno: npt.NDArray,
 ):
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_pp_snl, test_col_ws_h2osno, 
+            test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col, 
+            test_col_ef_errsoi, test_col_es_hc_soisno):
+        return CheckStatus.SKIPPED
+    (test_col_pp_snl, test_col_ws_h2osno, test_col_es_t_lake, 
+     test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi, test_col_es_hc_soisno)=(
+         NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
+            test_col_ws_h2osno, test_col_es_t_lake, 
+            test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi, 
+            test_col_es_hc_soisno))
+    
     no_snow_layers = test_col_pp_snl == 0
     no_snow_water = test_col_ws_h2osno == 0.0
     surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
@@ -58,6 +70,21 @@ def check_freezing_latent_heat(
     test_col_es_hc_soisno: npt.NDArray,
     hfus: npt.NDArray,
 ):
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
+            test_col_ws_h2osno, test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, 
+            test_col_ef_imelt, test_col_ws_snow_depth, test_col_wf_qflx_snofrz, 
+            test_col_ws_h2osoi_ice, test_col_es_hc_soisno):
+        return CheckStatus.SKIPPED
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno,
+     test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, test_col_ef_imelt,
+     test_col_ws_snow_depth, test_col_wf_qflx_snofrz,
+     test_col_ws_h2osoi_ice, test_col_es_hc_soisno)=(
+         NonFiniteValuesHandler.mask_non_finite_values(
+             test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno,
+             test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, test_col_ef_imelt,
+             test_col_ws_snow_depth, test_col_wf_qflx_snofrz, test_col_ws_h2osoi_ice,
+             test_col_es_hc_soisno))
+    
     some_snow_layers = test_col_pp_snl > 0
     some_snow_water = test_col_ws_h2osno > 0.0
 
@@ -109,6 +136,19 @@ def check_melting_latent_heat(
     test_col_ws_snow_depth: npt.NDArray,
     test_col_wf_qflx_snofrz: npt.NDArray,
 ):
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
+            test_col_ws_h2osno, test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt, 
+            test_col_ef_eflx_snomelt, test_col_ef_imelt, test_col_ws_snow_depth, 
+            test_col_wf_qflx_snofrz):
+        return CheckStatus.SKIPPED
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+     test_col_wf_qflx_snow_melt, test_col_ef_eflx_snomelt, test_col_ef_imelt, 
+     test_col_ws_snow_depth, test_col_wf_qflx_snofrz)=(
+         NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
+            test_col_pp_snl,test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+            test_col_wf_qflx_snow_melt, test_col_ef_eflx_snomelt, test_col_ef_imelt, 
+            test_col_ws_snow_depth, test_col_wf_qflx_snofrz))
+
     no_snow_layers = test_col_pp_snl == 0
     some_snow_water = test_col_ws_h2osno > 0.0
 
@@ -133,11 +173,43 @@ def check_melting_latent_heat(
         == test_col_wf_qflx_snomelt
     )
 
+<<<<<<< Updated upstream
+=======
+def check_latent_heat_from_lake(
+    test_col_es_t_lake: npt.NDArray,
+    test_lakestate_vars_lake_icefrac_col: npt.NDArray,
+):
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, 
+                                                test_lakestate_vars_lake_icefrac_col):
+        return CheckStatus.SKIPPED
+    test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col = (
+        NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
+                                               test_lakestate_vars_lake_icefrac_col))
+
+    almost_frozen = np.abs(1.0 - test_lakestate_vars_lake_icefrac_col) < 0.01
+    almost_at_freezing = np.abs(TFRZ - test_col_es_t_lake) < 0.01
+
+    if not np.any(almost_frozen):
+        return CheckStatus.SKIPPED
+
+    # Verify layers that are almost frozen are also almost at the freezing temperature.
+    assert np.all(~almost_frozen | almost_at_freezing)
+
+>>>>>>> Stashed changes
 def check_methane_conductance_gated_by_ice(
     use_lch4: npt.NDArray,
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
     test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
 ):
+    if NonFiniteValuesHandler.is_all_not_finite(use_lch4, 
+                                                test_lakestate_vars_lake_icefrac_col, 
+                                                test_ch4_vars_grnd_ch4_cond_col):
+        return CheckStatus.SKIPPED
+    use_lch4, test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col = (
+        NonFiniteValuesHandler.mask_non_finite_values(use_lch4, 
+                                                test_lakestate_vars_lake_icefrac_col, 
+                                                test_ch4_vars_grnd_ch4_cond_col))
+
     some_surface_ice = test_lakestate_vars_lake_icefrac_col[:, 0, :] > 0.1
 
     if not use_lch4 == 1 or not np.any(some_surface_ice):
@@ -156,6 +228,16 @@ def check_methane_conductance_allowed_without_ice(
     test_lakestate_vars_lakeresist_col: npt.NDArray,
     test_lakestate_vars_lake_raw_col: npt.NDArray,
 ):
+    if NonFiniteValuesHandler.is_all_not_finite(use_lch4, 
+            test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col,
+            test_lakestate_vars_lakeresist_col, test_lakestate_vars_lake_raw_col):
+        return CheckStatus.SKIPPED
+    (use_lch4, test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col,
+     test_lakestate_vars_lakeresist_col, test_lakestate_vars_lake_raw_col) = (
+        NonFiniteValuesHandler.mask_non_finite_values(use_lch4, 
+            test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col,
+            test_lakestate_vars_lakeresist_col, test_lakestate_vars_lake_raw_col))
+
     no_surface_ice = test_lakestate_vars_lake_icefrac_col[:, 0, :] == 0.0
 
     if not use_lch4 == 1 or not np.any(no_surface_ice):

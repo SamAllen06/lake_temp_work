@@ -2,6 +2,7 @@ import numpy as np
 import numpy.typing as npt
 
 from mtf_fault_finding import CheckStatus
+from mtf_fault_finding import NonFiniteValuesHandler
 
 
 def check_methane_conductance_frozen_lake(
@@ -9,6 +10,13 @@ def check_methane_conductance_frozen_lake(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
     test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
 ) -> None:
+    if NonFiniteValuesHandler.is_all_not_finite(use_lch4, 
+            test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col):
+        return CheckStatus.SKIPPED
+    use_lch4, test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col = (
+        NonFiniteValuesHandler.mask_non_finite_values(use_lch4, 
+                test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col))
+
     if not use_lch4:
         return CheckStatus.SKIPPED
 
@@ -31,6 +39,13 @@ def check_methane_conductance_non_negative(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
     test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
 ) -> None:
+    if NonFiniteValuesHandler.is_all_not_finite(use_lch4, 
+            test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col):
+        return CheckStatus.SKIPPED
+    use_lch4, test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col = (
+        NonFiniteValuesHandler.mask_non_finite_values(use_lch4, 
+                test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col))
+
     if not use_lch4:
         return CheckStatus.SKIPPED
 
