@@ -1,6 +1,9 @@
 import numpy as np
 import numpy.typing as npt
 
+from mtf_fault_finding import CheckStatus
+from mtf_fault_finding import NonFiniteValuesHandler
+
 
 def check_snofrz_lyr_sums_to_snofrz_col(
     test_col_wf_qflx_snofrz_lyr: npt.NDArray,
