@@ -68,3 +68,31 @@ def check_ground_methane_conductance_finite(
 ) -> None:
     if use_lch4:
         assert_variable_is_finite(test_ch4_vars_grnd_ch4_cond_col, "ch4_vars%grnd_ch4_cond_col")
+
+
+def check_energy_conservation_residual_finite(test_col_ef_errsoi: npt.NDArray) -> None:
+    assert_variable_is_finite(test_col_ef_errsoi, "col_ef%errsoi")
+
+
+def check_snow_layer_flag_finite(test_col_ef_imelt: npt.NDArray) -> None:
+    assert_variable_is_finite(test_col_ef_imelt, "col_ef%imelt")
+
+
+def check_soil_heat_content_finite(test_col_es_hc_soi: npt.NDArray) -> None:
+    assert_variable_is_finite(test_col_es_hc_soi, "col_es%hc_soi")
+
+
+def check_combined_heat_content_finite(test_col_es_hc_soisno: npt.NDArray) -> None:
+    assert_variable_is_finite(test_col_es_hc_soisno, "col_es%hc_soisno")
+
+
+def check_surface_absorption_finite(test_lakestate_vars_betaprime_col: npt.NDArray) -> None:
+    assert_variable_is_finite(test_lakestate_vars_betaprime_col, "lakestate_vars%betaprime_col")
+
+
+def check_ice_mass_fraction_finite(test_lakestate_vars_lake_icefrac_col: npt.NDArray) -> None:
+    assert_variable_is_finite(test_lakestate_vars_lake_icefrac_col, "lakestate_vars%lake_icefrac_col")
+
+
+def check_ice_thickness_finite(test_lakestate_vars_lake_icethick_col: npt.NDArray) -> None:
+    assert_variable_is_finite(test_lakestate_vars_lake_icethick_col, "lakestate_vars%lake_icethick_col")
