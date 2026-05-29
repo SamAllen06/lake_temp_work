@@ -65,25 +65,22 @@ def check_freezing_latent_heat(
     test_col_wf_qflx_snomelt: npt.NDArray,
     test_col_ef_imelt: npt.NDArray,
     test_col_ws_snow_depth: npt.NDArray,
-    test_col_wf_qflx_snofrz: npt.NDArray,
     test_col_ws_h2osoi_ice: npt.NDArray,
     test_col_es_hc_soisno: npt.NDArray,
     hfus: npt.NDArray,
 ):
     if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
             test_col_ws_h2osno, test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, 
-            test_col_ef_imelt, test_col_ws_snow_depth, test_col_wf_qflx_snofrz, 
-            test_col_ws_h2osoi_ice, test_col_es_hc_soisno):
+            test_col_ef_imelt, test_col_ws_snow_depth, test_col_ws_h2osoi_ice, 
+            test_col_es_hc_soisno):
         return CheckStatus.SKIPPED
     (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno,
      test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, test_col_ef_imelt,
-     test_col_ws_snow_depth, test_col_wf_qflx_snofrz,
-     test_col_ws_h2osoi_ice, test_col_es_hc_soisno)=(
+     test_col_ws_snow_depth, test_col_ws_h2osoi_ice, test_col_es_hc_soisno)=(
          NonFiniteValuesHandler.mask_non_finite_values(
              test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno,
              test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, test_col_ef_imelt,
-             test_col_ws_snow_depth, test_col_wf_qflx_snofrz, test_col_ws_h2osoi_ice,
-             test_col_es_hc_soisno))
+             test_col_ws_snow_depth, test_col_ws_h2osoi_ice, test_col_es_hc_soisno))
     
     some_snow_layers = test_col_pp_snl > 0
     some_snow_water = test_col_ws_h2osno > 0.0
@@ -132,22 +129,18 @@ def check_melting_latent_heat(
     test_col_wf_qflx_snomelt: npt.NDArray,
     test_col_wf_qflx_snow_melt: npt.NDArray,
     test_col_ef_eflx_snomelt: npt.NDArray,
-    test_col_ef_imelt: npt.NDArray,
     test_col_ws_snow_depth: npt.NDArray,
-    test_col_wf_qflx_snofrz: npt.NDArray,
 ):
     if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
             test_col_ws_h2osno, test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt, 
-            test_col_ef_eflx_snomelt, test_col_ef_imelt, test_col_ws_snow_depth, 
-            test_col_wf_qflx_snofrz):
+            test_col_ef_eflx_snomelt, test_col_ws_snow_depth):
         return CheckStatus.SKIPPED
     (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-     test_col_wf_qflx_snow_melt, test_col_ef_eflx_snomelt, test_col_ef_imelt, 
-     test_col_ws_snow_depth, test_col_wf_qflx_snofrz)=(
+     test_col_wf_qflx_snow_melt, test_col_ef_eflx_snomelt, test_col_ws_snow_depth)=(
          NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
             test_col_pp_snl,test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-            test_col_wf_qflx_snow_melt, test_col_ef_eflx_snomelt, test_col_ef_imelt, 
-            test_col_ws_snow_depth, test_col_wf_qflx_snofrz))
+            test_col_wf_qflx_snow_melt, test_col_ef_eflx_snomelt, test_col_ws_snow_depth
+            ))
 
     no_snow_layers = test_col_pp_snl == 0
     some_snow_water = test_col_ws_h2osno > 0.0
