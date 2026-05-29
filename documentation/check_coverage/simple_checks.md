@@ -52,6 +52,27 @@ to fail, and are not something that would change with the constants.
 - `finite_values_check.check_ground_methane_conductance_finite`
 - Condition: `use_lch4` is true
 
+`col_ef%errsoi` is finite
+- `finite_values_check.check_energy_conservation_residual_finite`
+
+`col_ef%imelt` is finite
+- `finite_values_check.check_snow_layer_flag_finite`
+
+`col_es%hc_soi` is finite
+- `finite_values_check.check_soil_heat_content_finite`
+
+`col_es%hc_soisno` is finite
+- `finite_values_check.check_combined_heat_content_finite`
+
+`lakestate_vars%betaprime_col` is finite
+- `finite_values_check.check_surface_absorption_finite`
+
+`lakestate_vars%lake_icefrac_col` is finite
+- `finite_values_check.check_ice_mass_fraction_finite`
+
+`lakestate_vars%lake_icethick_col` is finite
+- `finite_values_check.check_ice_thickness_finite`
+
 ## Physical Bounds
 
 `lakestate_vars%lake_icefrac_col` $\in [0, 1]$
