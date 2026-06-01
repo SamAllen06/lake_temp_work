@@ -23,18 +23,16 @@ def check_energy_conservation(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
 
     test_col_ef_errsoi: npt.NDArray,
-    test_col_es_hc_soisno: npt.NDArray,
 ):
     if NonFiniteValuesHandler.is_all_not_finite(test_col_pp_snl, test_col_ws_h2osno, 
             test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col, 
-            test_col_ef_errsoi, test_col_es_hc_soisno):
+            test_col_ef_errsoi):
         return CheckStatus.SKIPPED
     (test_col_pp_snl, test_col_ws_h2osno, test_col_es_t_lake, 
-     test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi, test_col_es_hc_soisno)=(
+     test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi)=(
          NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
             test_col_ws_h2osno, test_col_es_t_lake, 
-            test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi, 
-            test_col_es_hc_soisno))
+            test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi))
     
     no_snow_layers = test_col_pp_snl == 0
     no_snow_water = test_col_ws_h2osno == 0.0
