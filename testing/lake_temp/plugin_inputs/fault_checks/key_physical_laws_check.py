@@ -46,7 +46,7 @@ def check_energy_conservation(
         return CheckStatus.SKIPPED
 
     # Verify error is below threshold used in LakeTemperature.
-    assert np.all(test_col_ef_errsoi < 0.1)
+    assert np.all(np.abs(test_col_ef_errsoi) < 1E-6)
 
     # Difference between each time step.
     #change_in_heat_content = np.diff(test_col_es_hc_soisno, axis=0)
