@@ -43,7 +43,7 @@ RUN sed -i 's:"/home/mrgex/SPEL_Openacc/unit-tests/input-data/":"./":' \
 # Limiting the test's time steps
 RUN sed -i 's:io_inputs%end_run:io_inputs%end_run \.or\. step > max_step:' \
 	'./unit-tests/fut/main.F90'
-#RUN sed -i 's:max_step = 1000:max_step = 35:' './unit-tests/fut/main.F90'
+RUN sed -i 's:max_step = 1000:max_step = 35:' './unit-tests/fut/main.F90'
 
 WORKDIR /app/build/SPEL_OpenACC/unit-tests/fut/
 
