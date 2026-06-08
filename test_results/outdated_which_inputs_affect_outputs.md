@@ -158,7 +158,6 @@ veg_ef__eflx_soil_grnd
 ```
 ch4_vars__grnd_ch4_cond_col
 col_ef__eflx_snomelt
-col_ef__errsoi
 col_es__hc_soi
 col_es__hc_soisno
 col_es__t_lake
@@ -261,7 +260,6 @@ col_ws__snow_depth
 lakestate_vars__lake_icefrac_col
 lakestate_vars__lake_icethick_col
 lakestate_vars__lakeresist_col
-lakestate_vars__savedtke1_col
 veg_ef__eflx_gnet
 veg_ef__eflx_sh_grnd
 veg_ef__eflx_sh_tot
