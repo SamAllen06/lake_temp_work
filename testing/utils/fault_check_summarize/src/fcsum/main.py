@@ -80,25 +80,25 @@ def create_results_per_check():
         #add 1 to sample index so it matches the indexing used in the console output and filesystem
         actual_sample_index = sample_index + 1
         sample_dir = sample_out_dir / str(actual_sample_index)
-        executable_errors = 0
-
-        if not sample_dir.exists():
-            executable_errors += 1
-            continue
         
-        with open(sample_dir / "check_statuses.csv", newline="") as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                check_and_status = row["check"] + " " + row["status"]
-                if check_and_status not in results_per_check:
-                    results_per_check[check_and_status] = []
-                results_per_check[check_and_status].append(actual_sample_index)
+        if (sample_dir / "check_statuses.csv").exists():
+            with open(sample_dir / "check_statuses.csv", newline="") as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    check_and_status = row["check"] + " " + row["status"]
+                    if check_and_status not in results_per_check:
+                        results_per_check[check_and_status] = []
+                    results_per_check[check_and_status].append(actual_sample_index)
+        else:
+            if "Runs Exited with Error" not in results_per_check:
+                results_per_check["Runs Exited with Error"] = []
+            results_per_check["Runs Exited with Error"].append(actual_sample_index)
 
     results_per_check = dict(sorted(results_per_check.items()))
     
-    print("\nSamples per check result:")
+    print("\nSamples per result:")
     for check, sample_indices in results_per_check.items():
-        print(f"| {str(check):<97} |")
+        print(f"| {str(check+':'):<97} |")
         sample_numbers = textwrap.fill(f"{', '.join([str(index) for index in sample_indices])}", width=93)
         for line in sample_numbers.splitlines():
             print(f"|     {str(line):<93} |")
