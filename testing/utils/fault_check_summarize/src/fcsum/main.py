@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 import csv
 from pathlib import Path
+import textwrap
 
 
 def parse_args() -> tuple[Path, int]:
@@ -18,12 +19,19 @@ def parse_args() -> tuple[Path, int]:
 
 
 def main() -> None:
+    create_summary()
+    create_results_per_check()
+
+
+def create_summary():
     sample_out_dir, expected_samples = parse_args()
 
     executable_errors = 0
     counts = {}
     for sample_index in range(expected_samples):
-        sample_dir = sample_out_dir / str(sample_index)
+        #add 1 to sample index so it matches the indexing used in the console output and filesystem
+        actual_sample_index = sample_index + 1
+        sample_dir = sample_out_dir / str(actual_sample_index)
         if not sample_dir.exists():
             executable_errors += 1
             continue
@@ -62,6 +70,38 @@ def main() -> None:
             f"| {str(check_counts['fail']):<6} "
             f"| {str(check_counts['error']):<7} |"
         )
+
+
+def create_results_per_check():
+    sample_out_dir, expected_samples = parse_args()
+    results_per_check: dict[str, list[int]] = {}
+    
+    for sample_index in range(expected_samples):
+        #add 1 to sample index so it matches the indexing used in the console output and filesystem
+        actual_sample_index = sample_index + 1
+        sample_dir = sample_out_dir / str(actual_sample_index)
+        executable_errors = 0
+
+        if not sample_dir.exists():
+            executable_errors += 1
+            continue
+        
+        with open(sample_dir / "check_statuses.csv", newline="") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                check_and_status = row["check"] + " " + row["status"]
+                if check_and_status not in results_per_check:
+                    results_per_check[check_and_status] = []
+                results_per_check[check_and_status].append(actual_sample_index)
+
+    results_per_check = dict(sorted(results_per_check.items()))
+    
+    print("\nSamples per check result:")
+    for check, sample_indices in results_per_check.items():
+        print(f"| {str(check):<97} |")
+        sample_numbers = textwrap.fill(f"{', '.join([str(index) for index in sample_indices])}", width=93)
+        for line in sample_numbers.splitlines():
+            print(f"|     {str(line):<93} |")
 
 
 if __name__ == "__main__":
