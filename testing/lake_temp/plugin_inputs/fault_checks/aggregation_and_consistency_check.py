@@ -49,7 +49,7 @@ def check_icethick_col_is_sum(
     sum = product.sum(axis=1)
     abs_diff = np.abs(test_lakestate_vars_lake_icethick_col - sum)
 
-    assert (np.all(abs_diff <= tolerance), 
+    assert np.all(abs_diff <= tolerance), (
             "Ice thickness is not consistent with other variables")
 
 
