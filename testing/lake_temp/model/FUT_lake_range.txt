@@ -13,7 +13,7 @@ vkc
 mixfact
 0.2 - 0.9
 nlevgrnd
-0 - 29
+0 - 25
 cpliq
 4180.0 - 4190.0
 nlevsno
@@ -27,7 +27,7 @@ betavis
 denice
 915.0 - 920.0
 dtime_mod
-0 - 3700.0
+3500.0 - 3700.0
 hfus
 333500.0 - 334000.0
 grav
@@ -41,9 +41,9 @@ lake_no_ed
 use_lch4
 0 - 1
 nlevlak
-1 - 24
+1 - 15
 nlevsoi
-0 - 23
+0 - 15
 tkair
 0.01 - 0.03
 thk_bedrock
