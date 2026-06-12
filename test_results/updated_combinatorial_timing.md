@@ -2,11 +2,14 @@
 
 Date: 06/09/26
 
-Using the same steps as the `REPO:/test_results/outdated_combinatorial_timing.md`, new 
+Using the same steps as the `REPO:/test_results/outdated_combinatorial_timing.md` except
+using the Powershell `Measure-Command{}` instead of the bash `time` command, new 
 combinatorial tests were created that included all of the model constants instead of 
-just the ones with confirmed effects on the model output. However, all of the timing and
-generation was done on a different device than previous timings and generations,
-resulting in differences of estimated and actual timing statistics. 
+just the ones with confirmed effects on the model output. However, this timing was done
+on all of the model constants rather than just the ones confirmed to have an effect on 
+model outputall of the timing and generation was done on a different device than
+previous timings and generations, resulting in differences of estimated and actual 
+timing statistics. 
 
 ## Cases per Degree of Interaction
 
@@ -28,9 +31,9 @@ version of our testing framework.
 
 | Degree of Interaction | Time (seconds) Mean | Sample Standard Deviation |
 |-----------------------|---------------------|---------------------------|
-| 2                     | 0.962               | 0.180                     |
-| 3                     | 19.763              | 4.720                     |
-| 4                     | 408.981             | 23.126                    |
+| 2                     | 0.303               | 0.016                     |
+| 3                     | 1.638               | 0.027                     |
+| 4                     | 201.699             | 2.937                    |
 | 5                     |             |                       |
 
 ### csv2nc
@@ -54,37 +57,37 @@ necessarily normal.
 
 | Time (seconds) |
 |----------------|
-| 1.389          |
-| 0.913          |
-| 0.946          |
-| 0.925          |
-| 0.828          |
-| 0.909          |
-| 0.824          |
+| 0.317          |
+| 0.326          |
+| 0.294          |
+| 0.287          |
+| 0.305          |
+| 0.312          |
+| 0.279          |
 
 ### DOI: 3
 
 | Time (seconds) |
 |----------------|
-| 27.864          |
-| 24.125          |
-| 16.274          |
-| 19.503          |
-| 20.956          |
-| 12.737          |
-| 16.883          |
+| 1.692          |
+| 1.631          |
+| 1.603          |
+| 1.618          |
+| 1.660          |
+| 1.627          |
+| 1.634          |
 
 ### DOI: 4
 
 | Time (seconds) |
 |----------------|
-| 421.491        |
-| 446.563        |
-| 405.734        |
-| 391.971        |
-| 378.567        |
-| 431.061        |
-| 387.477        |
+| 203.710        |
+| 197.572        |
+| 203.893        |
+| 197.274        |
+| 204.056        |
+| 204.612        |
+| 200.777        |
 
 ### DOI: 5
 
