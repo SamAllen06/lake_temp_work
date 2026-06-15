@@ -21,7 +21,7 @@ timing statistics.
 | 5                     | 1,009,602   | 7 days, 06:26:12                              |
 
 For ten samples, the mean time it takes to run `elmtest` is 0.622 seconds, with a 
-standard deviation of 0.030 This time is used to estimate how long testing each 
+standard deviation of 0.030. This time is used to estimate how long testing each 
 interaction level would take, assuming tests run sequentially as they do in the current
 version of our testing framework.
 
