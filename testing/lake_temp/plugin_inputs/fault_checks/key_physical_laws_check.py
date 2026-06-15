@@ -23,16 +23,24 @@ def check_energy_conservation(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
 
     test_col_ef_errsoi: npt.NDArray,
+    test_col_es_hc_soisno: npt.NDArray,
+    test_veg_ef_eflx_gnet: npt.NDArray,
+    test_veg_ef_eflx_soil_grnd: npt.NDArray,
+    test_veg_ef_eflx_sh_grnd: npt.NDArray,
 ):
     if NonFiniteValuesHandler.is_all_not_finite(test_col_pp_snl, test_col_ws_h2osno, 
             test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col, 
-            test_col_ef_errsoi):
+            test_col_ef_errsoi, test_col_es_hc_soisno, test_veg_ef_eflx_gnet, 
+            test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd):
         return CheckStatus.SKIPPED
     (test_col_pp_snl, test_col_ws_h2osno, test_col_es_t_lake, 
-     test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi)=(
+     test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi, test_col_es_hc_soisno, 
+     test_veg_ef_eflx_gnet, test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd)=(
          NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
             test_col_ws_h2osno, test_col_es_t_lake, 
-            test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi))
+            test_lakestate_vars_lake_icefrac_col, test_col_ef_errsoi, 
+            test_col_es_hc_soisno, test_veg_ef_eflx_gnet, test_veg_ef_eflx_soil_grnd, 
+            test_veg_ef_eflx_sh_grnd))
     
     no_snow_layers = test_col_pp_snl == 0
     no_snow_water = test_col_ws_h2osno == 0.0
@@ -49,9 +57,14 @@ def check_energy_conservation(
     assert np.all(np.abs(test_col_ef_errsoi) < 1E-6)
 
     # Difference between each time step.
-    #change_in_heat_content = np.diff(test_col_es_hc_soisno, axis=0)
-
-    # Need to compare with lake and soil energy fluxes.
+    #change_in_combined_heat_content = np.diff(test_col_es_hc_soisno, axis=0)
+    # change_in_individual_heat_contents_added = integral(fin + lake energy flux (probably veg_ef_eflx_soil_grnd) + soil energy flux (probably veg_ef_eflx_gnet))dt
+    #change_in_individual_heat_contents_added = np.trapezoid(np.add(test_veg_ef_eflx_gnet,
+    #                        test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd), axis=0)
+    # assert |change_in_combined_heat_content - change_in_individual_heat_contents_added| < 1E-6
+    #heat_content_diff = np.subtract(change_in_combined_heat_content,
+    #                                 change_in_individual_heat_contents_added)
+    #assert np.all(np.abs(heat_content_diff) < 1E-6)
 
 
 def check_freezing_latent_heat(
