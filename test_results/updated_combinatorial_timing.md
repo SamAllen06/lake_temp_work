@@ -1,6 +1,6 @@
 # Combinatorial Timing
 
-Date: 06/09/26
+Date: 06/14/26
 
 Using the same steps as the `REPO:/test_results/outdated_combinatorial_timing.md` except
 using the Powershell `Measure-Command{}` instead of the bash `time` command, new 
@@ -15,13 +15,13 @@ timing statistics.
 
 | Degree of Interaction | Case Count  | Estimated Execution Time (days, hrs:mins:secs)|
 |:---------------------:|:-----------:|:---------------------------------------------:|
-| 2                     | 231         | 0 days, 00:02:90                              |
-| 3                     | 4,706       | 0 days, 00:50:44                              |
-| 4                     | 72,964      | 0 days, 11:50:14                              |
-| 5                     | 1,009,602   | 6 days, 08:44:35                              |
+| 2                     | 231         | 0 days, 00:02:24                              |
+| 3                     | 4,706       | 0 days, 00:48:47                              |
+| 4                     | 72,964      | 0 days, 12:36:24                              |
+| 5                     | 1,009,602   | 7 days, 06:26:12                              |
 
-For ten samples, the mean time it takes to run `elmtest` is ... seconds, with a 
-standard deviation of ... This time is used to estimate how long testing each 
+For ten samples, the mean time it takes to run `elmtest` is 0.622 seconds, with a 
+standard deviation of 0.030 This time is used to estimate how long testing each 
 interaction level would take, assuming tests run sequentially as they do in the current
 version of our testing framework.
 
@@ -33,17 +33,17 @@ version of our testing framework.
 |-----------------------|---------------------|---------------------------|
 | 2                     | 0.303               | 0.016                     |
 | 3                     | 1.638               | 0.027                     |
-| 4                     | 201.699             | 2.937                    |
-| 5                     |             |                       |
+| 4                     | 201.699             | 2.937                     |
+| 5                     | 15431.431           | 171.548                   |
 
 ### csv2nc
 
 | Degree of Interaction | Time (seconds) Mean | Sample Standard Deviation |
 |-----------------------|---------------------|---------------------------|
-| 2                     |                |                      |
-| 3                     |                |                      |
-| 4                     |               |                      |
-| 5                     |              |                      |
+| 2                     | 0.671               | 0.030                     |
+| 3                     | 6.187               | 0.102                     |
+| 4                     | 88.892              | 0.382                     |
+| 5                     | 1155.359            | 16.407                    |
 
 
 
@@ -93,13 +93,13 @@ necessarily normal.
 
 | Time (seconds) |
 |----------------|
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
+| 15798.454      |
+| 15445.166      |
+| 15480.388      |
+| 15319.431      |
+| 15444.483      |
+| 15291.458      |
+| 15240.636      |
 
 ## Raw Data: csv2nc
 
@@ -107,49 +107,49 @@ necessarily normal.
 
 | Time (seconds) |
 |----------------|
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
+| 0.664          |
+| 0.717          |
+| 0.657          |
+| 0.646          |
+| 0.717          |
+| 0.665          |
+| 0.634          |
 
 ### DOI: 3
 
 | Time (seconds) |
 |----------------|
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
+| 6.325          |
+| 6.329          |
+| 6.224          |
+| 6.054          |
+| 6.143          |
+| 6.152          |
+| 6.081          |
 
 ### DOI: 4
 
 | Time (seconds) |
 |----------------|
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
+| 88.384         |
+| 88.738         |
+| 89.301         |
+| 88.967         |
+| 88.360         |
+| 89.116         |
+| 89.378         |
 
 ### DOI: 5
 
 | Time (seconds) |
 |----------------|
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
+| 1194.269       |
+| 1157.351       |
+| 1145.222       |
+| 1150.183       |
+| 1147.288       |
+| 1149.613       |
+| 1143.587       |
 
 ## Raw Data: Running Elmtest
 
@@ -158,15 +158,15 @@ testing time from the number of test cases.
 
 | Time (seconds) |
 |----------------|
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
-|           |
+| 0.671          |
+| 0.614          |
+| 0.607          |
+| 0.622          |
+| 0.600          |
+| 0.611          |
+| 0.612          |
+| 0.688          |
+| 0.593          |
+| 0.604          |
 
 
