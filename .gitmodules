@@ -1,0 +1,3 @@
+[submodule "testing/model-testing-framework"]
+	path = testing/model-testing-framework
+	url = https://github.com/SamAllen06/model-testing-framework.git
