@@ -13,11 +13,11 @@ vkc
 mixfact
 0.2 - 0.9
 nlevgrnd
-5 - 25
+0 - 25
 cpliq
-4185.0 - 4190.0
+4180.0 - 4190.0
 nlevsno
-2 - 12
+0 - 5
 depthcrit
 15.0 - 35.0
 tkice
@@ -41,9 +41,9 @@ lake_no_ed
 use_lch4
 0 - 1
 nlevlak
-5 - 15
+1 - 15
 nlevsoi
-5 - 15
+0 - 15
 tkair
 0.01 - 0.03
 thk_bedrock
