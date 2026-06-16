@@ -46,7 +46,7 @@ def check_surface_absorption_fraction_is_fraction(
     assert_is_frac(test_lakestate_vars_betaprime_col, "lakestate_vars%betaprime_col")
 
 
-def check_water_snow_equivilant_not_negative(
+def check_water_snow_equivalent_not_negative(
     test_col_ws_h2osno: npt.NDArray
 ) -> None:
     if NonFiniteValuesHandler.is_all_not_finite(test_col_ws_h2osno):

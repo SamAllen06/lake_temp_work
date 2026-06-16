@@ -34,7 +34,7 @@ def check_methane_conductance_frozen_lake(
     )
     
 
-def check_methane_conductance_non_negative(
+def check_methane_conductance_not_negative(
     use_lch4: int,
     test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
 ) -> None:
