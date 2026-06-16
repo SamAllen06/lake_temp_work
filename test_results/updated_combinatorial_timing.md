@@ -22,10 +22,10 @@ version of our testing framework.
 
 | Degree of Interaction | Case Count  | Estimated Execution Time | Actual Execution Time |
 |:---------------------:|:-----------:|:------------------------------------------------:|
-| 2                     | 231         | 0 days, 00:02:24         |                       |
-| 3                     | 4,706       | 0 days, 00:48:47         |                       |
-| 4                     | 72,964      | 0 days, 12:36:24         |                       |
-| 5                     | 1,009,602   | 7 days, 06:26:12         |                       |
+| 2                     | 231         | 0 days, 00:02:24         | 0 days, 00:02:17      |
+| 3                     | 4,706       | 0 days, 00:48:47         | 0 days, 00:46:50      |
+| 4                     | 72,964      | 0 days, 12:36:24         |       |
+| 5                     | 1,009,602   | 7 days, 06:26:12         |       |
 
 ### Cases Including Only Constants Originally Believed to have Effects on Output
 
