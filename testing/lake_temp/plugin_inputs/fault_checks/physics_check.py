@@ -32,7 +32,7 @@ def check_temp_around_freezing_where_lake_is_almost_frozen(
     )
 
 
-def no_tke_when_surface_frozen(
+def check_no_tke_when_surface_frozen(
     test_col_es_t_lake: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_lakestate_vars_savedtke1_col: npt.NDArray,
