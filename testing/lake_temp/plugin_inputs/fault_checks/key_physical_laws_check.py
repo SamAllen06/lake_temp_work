@@ -54,7 +54,7 @@ def check_energy_conservation(
         return CheckStatus.SKIPPED
 
     # Verify error is below threshold used in LakeTemperature.
-    assert np.all(np.abs(test_col_ef_errsoi) < 1E-6)
+    assert np.all(np.abs(test_col_ef_errsoi) < 1E-6), "error above threshold"
 
     # Difference between each time step.
     #change_in_combined_heat_content = np.diff(test_col_es_hc_soisno, axis=0)
@@ -110,17 +110,21 @@ def check_freezing_latent_heat(
     # Verify snow is freezing
     surface_snow_freezing = test_col_wf_qflx_snofrz_lyr[:, 0, :] > 0.0
     surface_snow_labeled_freezing = test_col_ef_imelt[:, 0, :] == IMelt.FREEZING.value
-    assert surface_snow_freezing == snow_present
-    assert surface_snow_labeled_freezing == snow_present
+    assert surface_snow_freezing == snow_present, (
+        "snow present does not match surface snow freezing")
+    assert surface_snow_labeled_freezing == snow_present, (
+        "snow present does not match surface snow labeled freezing")
 
     # Verify snow is not melting
     snow_not_melting = test_col_wf_qflx_snomelt == 0.0
-    assert snow_not_melting == snow_present
+    assert snow_not_melting == snow_present, (
+        "snow present does not match snow not melting")
 
     # Verify snow water and depth are not decreasing
     snow_water_not_decreasing = np.diff(test_col_ws_h2osno, axis=0) >= 0.0
+    assert np.all(snow_water_not_decreasing), "snow water is decreasing"
     snow_depth_not_decreasing = np.diff(test_col_ws_snow_depth, axis=0) >= 0.0
-    assert np.all(snow_water_not_decreasing & snow_depth_not_decreasing)
+    assert np.all(snow_depth_not_decreasing), "snow depth is decreasing"
 
     # Verify sensible heat reflects latent heat released from freezing snow in MJ/m2
     # Ice content of snow (kg/m2) by column
@@ -132,7 +136,8 @@ def check_freezing_latent_heat(
     # Change in sensible heat (MJ/m2) per time step
     sensible_heat_diff = np.diff(test_col_es_hc_soisno, axis=0)
 
-    assert np.isclose(latent_heat_diff, sensible_heat_diff)
+    assert np.isclose(latent_heat_diff, sensible_heat_diff), (
+        "latent heat difference and sensible heat difference are not close")
 
 
 def check_melting_latent_heat(
@@ -167,20 +172,20 @@ def check_melting_latent_heat(
     if not np.any(soil_water_present):
         return CheckStatus.SKIPPED
 
-    snow_is_melting = test_col_wf_qflx_snomelt > 0.0
-    snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
-    
     # Verify snow is melting and has melted on all columns were soil water is present.
-    assert np.all(snow_is_melting & snow_has_melted)
-
+    snow_is_melting = test_col_wf_qflx_snomelt > 0.0
+    assert np.all(snow_is_melting), "snow is not melting"
+    snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
+    assert np.all(snow_has_melted), "snow has not melted"
+    
     # Verify energy flux is consistent with latent heat from snow melt rate.
-    assert np.all(test_col_ef_eflx_snomelt == test_col_wf_qflx_snomelt * hfus)
+    assert np.all(test_col_ef_eflx_snomelt == test_col_wf_qflx_snomelt * hfus), (
+        "energy flux is not consistent with latent heat from snow melt rate")
 
     # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
-    assert (
-        np.diff(test_col_ws_snow_depth * 1000.0, axis=0) / dtime_mod
-        == test_col_wf_qflx_snomelt
-    )
+    assert (np.diff(test_col_ws_snow_depth * 1000.0, axis=0) / dtime_mod 
+            == test_col_wf_qflx_snomelt), (
+        "snow depth does not decrease consistently with now melt rate")
 
 
 def check_methane_conductance_gated_by_ice(
@@ -204,7 +209,8 @@ def check_methane_conductance_gated_by_ice(
     conducting_methane = test_ch4_vars_grnd_ch4_cond_col > 0.0
 
     # Verify methane conductance is blocked by ice
-    assert not np.any(some_surface_ice & conducting_methane)
+    assert not np.any(some_surface_ice & conducting_methane), (
+        "methane conductance is not blocked by ice")
 
 def check_methane_conductance_allowed_without_ice(
     use_lch4: npt.NDArray,
@@ -236,7 +242,7 @@ def check_methane_conductance_allowed_without_ice(
     # Verify columns without ice conduct the expected methane.
     assert np.all(
         ~no_surface_ice | np.isclose(expected_methane, test_ch4_vars_grnd_ch4_cond_col)
-    )
+    ), "columns without ice do not conduct the expected methane"
 
 # Skipping radiation absorption for now because I'm not sure how patches and columns
 # correspond.

@@ -108,4 +108,5 @@ def check_combined_heat_content_not_less_than_soil_heat_content(
     test_col_es_hc_soi: npt.NDArray, test_col_es_hc_soisno: npt.NDArray
 ) -> None:
 
-    assert np.all(test_col_es_hc_soisno >= test_col_es_hc_soi)
+    assert np.all(test_col_es_hc_soisno >= test_col_es_hc_soi), (
+        "combined heat content less than soil heat content")

@@ -64,4 +64,5 @@ def check_imelt_uses_valid_enum_values(
         return CheckStatus.SKIPPED
     masked_imelt = NonFiniteValuesHandler.mask_non_finite_values(masked_imelt)
 
-    assert np.all(masked_imelt >= 0) and np.all(masked_imelt <= 2)
+    assert (np.all(masked_imelt >= 0) and np.all(masked_imelt <= 2)), (
+        "imelt has invalid enum values")
