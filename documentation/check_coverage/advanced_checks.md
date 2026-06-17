@@ -64,3 +64,4 @@ Checks:
 - `col_wf%qflx_snow_melt` $> 0$
 - `col_ef%eflx_snomelt` $=$ `col_wf%qflx_snomelt*hfus`
 - `col_ws%snow_depth`$* 1000/$`dtime_mod` $=$ `col_wf%qflx_snomelt`
+- All listed checks performed in `key_physical_laws_check.check_melting_latent_heat`
