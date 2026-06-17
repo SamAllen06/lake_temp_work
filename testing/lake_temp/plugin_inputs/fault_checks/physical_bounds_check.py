@@ -5,7 +5,7 @@ from mtf_fault_finding import CheckStatus
 from mtf_fault_finding import NonFiniteValuesHandler
 
 
-def assert_is_frac(variable: npt.NDArray, check_combinme: str) -> None:
+def assert_is_frac(variable: npt.NDArray, name: str) -> None:
     if NonFiniteValuesHandler.is_all_not_finite(variable):
         return CheckStatus.SKIPPED
     variable = NonFiniteValuesHandler.mask_non_finite_values(variable)
