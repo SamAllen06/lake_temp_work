@@ -71,6 +71,7 @@ def check_freezing_latent_heat(
     test_col_es_t_lake: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
+    test_col_es_t_soisno: npt.NDArray,
 
     test_col_wf_qflx_snofrz_lyr: npt.NDArray,
     test_col_wf_qflx_snomelt: npt.NDArray,
@@ -83,23 +84,27 @@ def check_freezing_latent_heat(
     if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
             test_col_ws_h2osno, test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, 
             test_col_ef_imelt, test_col_ws_snow_depth, test_col_ws_h2osoi_ice, 
-            test_col_es_hc_soisno):
+            test_col_es_hc_soisno, test_col_es_t_soisno):
         return CheckStatus.SKIPPED
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno,
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
      test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, test_col_ef_imelt,
-     test_col_ws_snow_depth, test_col_ws_h2osoi_ice, test_col_es_hc_soisno)=(
+     test_col_ws_snow_depth, test_col_ws_h2osoi_ice, test_col_es_hc_soisno, 
+     test_col_es_t_soisno)=(
          NonFiniteValuesHandler.mask_non_finite_values(
              test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno,
              test_col_wf_qflx_snofrz_lyr, test_col_wf_qflx_snomelt, test_col_ef_imelt,
-             test_col_ws_snow_depth, test_col_ws_h2osoi_ice, test_col_es_hc_soisno))
+             test_col_ws_snow_depth, test_col_ws_h2osoi_ice, test_col_es_hc_soisno, 
+             test_col_es_t_soisno))
     
     some_snow_layers = test_col_pp_snl > 0
     some_snow_water = test_col_ws_h2osno > 0.0
 
     lake_surface_is_at_or_below_freezing = np.all(test_col_es_t_lake <= TFRZ)
+    soil_snow_layers_below_freezing = np.all(test_col_es_t_soisno < TFRZ)
 
     snow_present = some_snow_layers & some_snow_water
-    if not np.any(snow_present) or not lake_surface_is_at_or_below_freezing:
+    if (not np.any(snow_present) or not lake_surface_is_at_or_below_freezing 
+            or not soil_snow_layers_below_freezing):
         return CheckStatus.SKIPPED
 
     # Verify snow is freezing
