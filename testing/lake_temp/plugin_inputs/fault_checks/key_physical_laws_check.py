@@ -174,9 +174,8 @@ def check_melting_latent_heat(
 
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_is_melting = test_col_wf_qflx_snomelt > 0.0
-    assert np.all(snow_is_melting), "snow is not melting"
     snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
-    assert np.all(snow_has_melted), "snow has not melted"
+    assert np.all(~soil_water_present | (snow_is_melting & snow_has_melted))
     
     # Verify energy flux is consistent with latent heat from snow melt rate.
     assert np.all(test_col_ef_eflx_snomelt == test_col_wf_qflx_snomelt * hfus), (
