@@ -10,15 +10,15 @@ def check_methane_conductance_frozen_lake(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
     test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
 ) -> None:
+    if not use_lch4:
+        return CheckStatus.SKIPPED
+
     if NonFiniteValuesHandler.is_all_not_finite(use_lch4, 
             test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col):
         return CheckStatus.SKIPPED
     use_lch4, test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col = (
         NonFiniteValuesHandler.mask_non_finite_values(use_lch4, 
                 test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col))
-
-    if not use_lch4:
-        return CheckStatus.SKIPPED
 
     top_layers = test_lakestate_vars_lake_icefrac_col[:, 0, :]
 
