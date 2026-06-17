@@ -149,7 +149,7 @@ Skipped because we are unsure how to check these.
 ## Physics Sanity
 
 `lakestate_vars%lake_icefrac_col` $\approx 1 \rightarrow$
-`|col_es%t_lake|` $\le 10^{-3}$
+`|col_es%t_lake - tfrz|` $\le 10^{-3}$
 - `physics_check.check_temp_at_freezing_where_lake_is_frozen`
 - Condition: `lakestate_vars%lake_icefrac_col` $\approx 1$ somewhere
 
