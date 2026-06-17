@@ -96,7 +96,7 @@ def check_freezing_latent_heat(
              test_col_ws_snow_depth, test_col_ws_h2osoi_ice, test_col_es_hc_soisno, 
              test_col_es_t_soisno))
     
-    some_snow_layers = test_col_pp_snl > 0
+    some_snow_layers = test_col_pp_snl < 0
     some_snow_water = test_col_ws_h2osno > 0.0
 
     lake_surface_is_at_or_below_freezing = np.all(test_col_es_t_lake <= TFRZ)

@@ -31,7 +31,7 @@ check.
 ## Snow Freezing (Latent Heat)
 
 Conditions:
-- `col_pp%snl` $> 0$
+- `col_pp%snl` $< 0$
 - `col_es%t_soisno(:, 0, :)` $<$ `tfrz`
 - `col_ws%h2osno` $> 0$
 - `col_es%t_lake(:, 0, :)` $\le$ `tfrz`
