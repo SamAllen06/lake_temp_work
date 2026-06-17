@@ -15,7 +15,7 @@ Conditions:
 
 Checks:
 - `col_ef%errsoi` $\approx 0$ after correction
-  - Handled by `energy_residual_handling_check.check_errsoi_almost_zero`
+  - Handled by `key_physical_laws_check.check_energy_conservation`
 - `col_es%hc_soisno`$(t + dt)$ - `col_es%hc_soisno`$(t) \approx \int(
 f_{\text{in}} + \phi_{\text{lake}} + \phi_{\text{soil}}
 )dt$
