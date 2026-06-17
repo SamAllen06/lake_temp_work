@@ -130,13 +130,6 @@ $\sum\limits_j$ `lakestate_vars%lake_icefrac_col(:, j, :)` `col_pp%dz_lake(:, j,
 `col_ef%imelt` $\in {0, 1, 2}$ per snow layer
 - `aggregation_and_consistency_check.check_imelt_uses_valid_enum_values`
 
-## Energy Residual Handling
-`col_ef%errsoi` driven to $0$ after incorporation, or `|col_ef%errsoi|`$\le 10^{-6}$
-post-correction
-- `energy_residual_handling_check.check_errsoi_almost_zero`
-- We test the second condition, unsure what incorporation and post-correction mean in
-this context.
-
 ## CH4 Conductance Behavior
 
 `lakestate_vars%lake_icefrac_col(:, 0, :)` $> 0.1 \rightarrow$
