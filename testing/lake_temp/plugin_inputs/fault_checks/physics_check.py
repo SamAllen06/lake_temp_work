@@ -48,9 +48,9 @@ def check_no_tke_when_surface_frozen(
 
     tke_present = test_lakestate_vars_savedtke1_col > 0.0
 
-    surface_frozen = test_col_es_t_lake[:, 0, :] <= TFRZ
-    snow_present = test_col_pp_snl > 0
-    unfrozen = ~surface_frozen & ~snow_present
+    surface_not_frozen = test_col_es_t_lake[:, 0, :] > TFRZ
+    snow_not_present = test_col_pp_snl == 0
+    unfrozen = surface_not_frozen & snow_not_present
 
     if not np.any(tke_present):
         return CheckStatus.SKIPPED
