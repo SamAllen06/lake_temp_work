@@ -48,12 +48,12 @@ def check_no_tke_when_surface_frozen(
 
     tke_present = test_lakestate_vars_savedtke1_col > 0.0
 
+    if not np.any(tke_present):
+        return CheckStatus.SKIPPED
+
     surface_not_frozen = test_col_es_t_lake[:, 0, :] > TFRZ
     snow_not_present = test_col_pp_snl == 0
     unfrozen = surface_not_frozen & snow_not_present
-
-    if not np.any(tke_present):
-        return CheckStatus.SKIPPED
 
     assert np.all(~tke_present | unfrozen), (
         "Turbulant kinentic energy present on a frozen surface"

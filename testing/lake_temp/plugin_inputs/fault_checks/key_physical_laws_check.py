@@ -188,12 +188,11 @@ def check_methane_conductance_gated_by_ice(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
     test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
 ):
-    if NonFiniteValuesHandler.is_all_not_finite(use_lch4, 
-                                                test_lakestate_vars_lake_icefrac_col, 
+    if NonFiniteValuesHandler.is_all_not_finite(test_lakestate_vars_lake_icefrac_col, 
                                                 test_ch4_vars_grnd_ch4_cond_col):
         return CheckStatus.SKIPPED
-    use_lch4, test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col = (
-        NonFiniteValuesHandler.mask_non_finite_values(use_lch4, 
+    test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col = (
+        NonFiniteValuesHandler.mask_non_finite_values(
                                                 test_lakestate_vars_lake_icefrac_col, 
                                                 test_ch4_vars_grnd_ch4_cond_col))
 
@@ -215,13 +214,13 @@ def check_methane_conductance_allowed_without_ice(
     test_lakestate_vars_lakeresist_col: npt.NDArray,
     test_lakestate_vars_lake_raw_col: npt.NDArray,
 ):
-    if NonFiniteValuesHandler.is_all_not_finite(use_lch4, 
-            test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col,
-            test_lakestate_vars_lakeresist_col, test_lakestate_vars_lake_raw_col):
+    if NonFiniteValuesHandler.is_all_not_finite(test_lakestate_vars_lake_icefrac_col, 
+            test_ch4_vars_grnd_ch4_cond_col, test_lakestate_vars_lakeresist_col, 
+            test_lakestate_vars_lake_raw_col):
         return CheckStatus.SKIPPED
-    (use_lch4, test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col,
+    (test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col,
      test_lakestate_vars_lakeresist_col, test_lakestate_vars_lake_raw_col) = (
-        NonFiniteValuesHandler.mask_non_finite_values(use_lch4, 
+        NonFiniteValuesHandler.mask_non_finite_values(
             test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col,
             test_lakestate_vars_lakeresist_col, test_lakestate_vars_lake_raw_col))
 
