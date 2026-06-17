@@ -145,7 +145,7 @@ $\sum\limits_j$ `lakestate_vars%lake_icefrac_col(:, j, :)` `col_pp%dz_lake(:, j,
 not (`ch4_vars%grnd_ch4_cond_col` $> 0$ and `lakestate_vars%lake_icefrac_col` $> 0.1$)
 - `key_physical_laws_check.check_methane_conductance_gated_by_ice`
 
-`lakestate_vars%lake_icefrac_col` $= 0 \rightarrow (1 / ($`lakestate_vars%lakeresist_col` $+$ `lakestate_vars%lake_raw_col`$)) \approx$ `ch4_vars%grnd_ch4_cond_col`
+`lakestate_vars%lake_icefrac_col` $= 0 \rightarrow $($1 / $(`lakestate_vars%lakeresist_col` $+$ `lakestate_vars%lake_raw_col`)) $\approx$ `ch4_vars%grnd_ch4_cond_col`
 - `key_physical_laws_check.check_methane_conductance_allowed_without_ice`
 
 ## Flux Sign Conventions
