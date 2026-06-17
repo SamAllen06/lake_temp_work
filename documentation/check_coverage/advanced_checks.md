@@ -39,6 +39,7 @@ Conditions:
 Checks:
 - `col_wf%qflx_snofrz_lyr(:, 0, :)` $> 0$
 - `col_ef%imelt(:, 0, :)` $= 2$ (freezing)
+- `col_wf%qflx_snomelt` not melting
 - `col_ws%h2osno` non-decreasing
 - `col_ws%snow_depth` non-decreasing
 - $\sum\limits_j$ `col_wf%qflx_snofrz_lyr(:, j, :)` $=$ `col_wf%qflx_snofrz(:, :)`
@@ -58,3 +59,8 @@ Conditions:
 - `h2osno` $> 0$
 - `t_lake(1)` $>$ `tfrz`
 
+Checks:
+- `col_wf%qflx_snomelt` $> 0$
+- `col_wf%qflx_snow_melt` $> 0$
+- `col_ef%eflx_snomelt` $=$ `col_wf%qflx_snomelt*hfus`
+- `col_ws%snow_depth`$* 1000/$`dtime_mod` $=$ `col_wf%qflx_snomelt`
