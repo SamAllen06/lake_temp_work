@@ -33,25 +33,25 @@ def check_temp_around_freezing_where_lake_is_almost_frozen(
 
 
 def check_no_tke_when_surface_frozen(
-    test_col_es_t_lake: npt.NDArray,
+    test_lakestate_vars_lake_icefrac_col: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_lakestate_vars_savedtke1_col: npt.NDArray,
 ) -> None:
-    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, 
+    if NonFiniteValuesHandler.is_all_not_finite(test_lakestate_vars_lake_icefrac_col,
                                                 test_col_pp_snl, 
                                                 test_lakestate_vars_savedtke1_col):
         return CheckStatus.SKIPPED
-    test_col_es_t_lake, test_col_pp_snl, test_lakestate_vars_savedtke1_col = (
-        NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
-                                               test_col_pp_snl, 
-                                               test_lakestate_vars_savedtke1_col))
+    (test_lakestate_vars_lake_icefrac_col, test_col_pp_snl, 
+     test_lakestate_vars_savedtke1_col)=(NonFiniteValuesHandler.mask_non_finite_values(
+         test_lakestate_vars_lake_icefrac_col, test_col_pp_snl, 
+         test_lakestate_vars_savedtke1_col))
 
 
-    surface_not_frozen = test_col_es_t_lake[:, 0, :] > TFRZ
+    surface_not_frozen = test_lakestate_vars_lake_icefrac_col[:, 0, :] <1E-6
     snow_not_present = test_col_pp_snl == 0
     unfrozen = surface_not_frozen & snow_not_present
 
-    if np.all(unfrozen):
+    if (np.all(unfrozen) or unfrozen.mask.all()):
         return CheckStatus.SKIPPED
 
     tke_present = test_lakestate_vars_savedtke1_col > 0.0
