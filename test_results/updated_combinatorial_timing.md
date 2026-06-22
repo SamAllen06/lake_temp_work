@@ -5,9 +5,9 @@ Date: 06/16/26
 Using the same steps as the `REPO:/test_results/outdated_combinatorial_timing.md` except
 using the Powershell `Measure-Command{}` instead of the bash `time` command, new 
 combinatorial tests were created that included all of the model constants instead of 
-just the ones with confirmed effects on the model output. However, this timing was done
+just the ones with confirmed effects on the model outputs. However, this timing was done
 on all of the model constants rather than just the ones confirmed to have an effect on 
-model outputall of the timing and generation was done on a different device than
+model outputs. All of the timings and generations were done on a different device than
 previous timings and generations, resulting in differences of estimated and actual 
 timing statistics. 
 
