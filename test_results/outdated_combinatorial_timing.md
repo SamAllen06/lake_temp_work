@@ -50,7 +50,7 @@ version of our testing framework.
 
 ## Raw Data: ACTS CSV Generation
 
-Raw data is also included in this report as, when doing multiple runs of Acts, the time
+Raw data is also included in this report as, when doing multiple runs of ACTS, the time
 for subsequent runs is likely reduced due to caching, so the distribution is not 
 necessarily normal.
 
