@@ -36,7 +36,7 @@ version of our testing framework.
 | 4                     | 53,170      | 0 days, 09:11:12         | - days, --:--:--       |
 | 5                     | 688,290     | 4 days, 22:55:16         | - days, --:--:--       |
 
-* Actual Execution Time was based on a single run of the test cases.
+*Actual Execution Time was based on a single run of the test cases.
 
 ## Timing Statistics
 
@@ -60,7 +60,7 @@ version of our testing framework.
 | 4                     | 88.892              | 0.382                     |
 | 5                     | 1155.359            | 16.407                    |
 
-### Cases Including Only Constants Originally Believed to have Effects on Output
+### Cases Including Only Constants Originally Believed to Affect Outputs
 
 #### ACTS
 
@@ -85,7 +85,7 @@ version of our testing framework.
 
 ### Cases with All Constants
 
-Raw data is also included in this report as, when doing multiple runs of Acts, the time
+Raw data is also included in this report as, when doing multiple runs of ACTS, the time
 for subsequent runs is likely reduced due to caching, so the distribution is not 
 necessarily normal.
 
@@ -189,7 +189,7 @@ necessarily normal.
 | 1149.613       |
 | 1143.587       |
 
-### Cases Including Only Constants Originally Believed to have Effects on Output
+### Cases Including Only Constants Originally Believed to Affect Outputs
 
 #### ACTS CSV Generation
 
