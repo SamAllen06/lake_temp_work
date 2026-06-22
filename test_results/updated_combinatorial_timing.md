@@ -21,22 +21,22 @@ version of our testing framework.
 ### Cases Including All Constants
 
 | Degree of Interaction | Case Count  | Estimated Execution Time | Actual Execution Time* |
-|:---------------------:|:-----------:|:-------------------------------------------------:|
+|:---------------------:|:-----------:|:------------------------:|:----------------------:|
 | 2                     | 231         | 0 days, 00:02:24         | 0 days, 00:02:17       |
 | 3                     | 4,706       | 0 days, 00:48:47         | 0 days, 00:46:50       |
 | 4                     | 72,964      | 0 days, 12:36:24         | - days, --:--:--       |
 | 5                     | 1,009,602   | 7 days, 06:26:12         | - days, --:--:--       |
 
-### Cases Including Only Constants Originally Believed to have Effects on Output
+### Cases Including Only Constants Originally Believed to Affect Outputs
 
 | Degree of Interaction | Case Count  | Estimated Execution Time | Actual Execution Time* |
-|:---------------------:|:-----------:|:-------------------------------------------------:|
+|:---------------------:|:-----------:|:------------------------:|:----------------------:|
 | 2                     | 231         | 0 days, 00:02:24         | 0 days, 00:02:20       |
 | 3                     | 3,685       | 0 days, 00:38:12         | 0 days, 00:37:28       |
 | 4                     | 53,170      | 0 days, 09:11:12         | - days, --:--:--       |
 | 5                     | 688,290     | 4 days, 22:55:16         | - days, --:--:--       |
 
-*Actual Execution Time was based on a single run of the test cases
+* Actual Execution Time was based on a single run of the test cases.
 
 ## Timing Statistics
 
