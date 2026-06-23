@@ -122,6 +122,15 @@ def check_soil_heat_content_not_negative(
     assert_not_negative(test_col_es_hc_soi, "col_es%hc_soi")
 
 
+def check_combined_heat_content_not_negative(
+    test_col_es_hc_soisno: npt.NDArray
+) -> None:
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_hc_soisno):
+        return CheckStatus.SKIPPED
+
+    assert_not_negative(test_col_es_hc_soisno, "col_es%hc_soisno")
+
+
 def check_combined_heat_content_not_less_than_soil_heat_content(
     test_col_es_hc_soi: npt.NDArray, test_col_es_hc_soisno: npt.NDArray
 ) -> None:
