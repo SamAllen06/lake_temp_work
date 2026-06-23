@@ -18,7 +18,7 @@ def check_temp_around_freezing_where_lake_is_almost_frozen(
         NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
                                                test_lakestate_vars_lake_icefrac_col))
 
-    almost_frozen = (np.isclose(test_lakestate_vars_lake_icefrac_col, 1.0) 
+    almost_frozen = ((test_lakestate_vars_lake_icefrac_col > 0.999) 
                      & (test_lakestate_vars_lake_icefrac_col != 1.0))
 
     if not np.any(almost_frozen):
