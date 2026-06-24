@@ -298,7 +298,7 @@ def is_passing_melting_latent_heat_preconditions(
     return np.any(soil_water_present)
 
 
-def check_snow_melting_and_melted_where_soil_water_present(
+def check_snow_melting_where_soil_water_present(
     test_col_es_t_lake: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
@@ -319,6 +319,36 @@ def check_snow_melting_and_melted_where_soil_water_present(
 
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_is_melting = test_col_wf_qflx_snomelt > 0.0
+
+    no_snow_layers = test_col_pp_snl == 0 # is set at the beginning to the negative of snow layers and then never changed
+    some_snow_water = test_col_ws_h2osno > 0.0
+    lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
+    soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
+
+    assert np.all(~soil_water_present | snow_is_melting), (
+        'Snow not melting where soil water present')
+
+
+def check_snow_melted_where_soil_water_present(
+    test_col_es_t_lake: npt.NDArray,
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
+
+    test_col_wf_qflx_snomelt: npt.NDArray,
+    test_col_wf_qflx_snow_melt: npt.NDArray,
+):
+    if not is_passing_melting_latent_heat_preconditions(test_col_es_t_lake, 
+            test_col_pp_snl, test_col_ws_h2osno):
+        return CheckStatus.SKIPPED
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
+                                                test_col_wf_qflx_snow_melt):
+        return CheckStatus.SKIPPED
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+     test_col_wf_qflx_snow_melt)=(NonFiniteValuesHandler.mask_non_finite_values(
+         test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
+         test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt))
+
+    # Verify snow is melting and has melted on all columns were soil water is present.
     snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
 
     no_snow_layers = test_col_pp_snl == 0 # is set at the beginning to the negative of snow layers and then never changed
@@ -326,7 +356,8 @@ def check_snow_melting_and_melted_where_soil_water_present(
     lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
     soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
 
-    assert np.all(~soil_water_present | (snow_is_melting & snow_has_melted))
+    assert np.all(~soil_water_present | snow_has_melted), (
+        'Snow not melted where soil water present')
     
 
 def check_energy_flux_consistent_with_latent_heat(
