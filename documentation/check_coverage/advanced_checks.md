@@ -66,9 +66,9 @@ Conditions:
 
 Checks:
 - `col_wf%qflx_snomelt` $> 0$
-  - Handled by `key_physical_laws_check.check_snow_melting_and_melted_where_soil_water_present`
+  - Handled by `key_physical_laws_check.check_snow_melting_where_soil_water_present`
 - `col_wf%qflx_snow_melt` $> 0$
-  - Handled by `key_physical_laws_check.check_snow_melting_and_melted_where_soil_water_present`
+  - Handled by `key_physical_laws_check.check_snow_melted_where_soil_water_present`
 - `col_ef%eflx_snomelt` $=$ `col_wf%qflx_snomelt*hfus`
   - Handled by `key_physical_laws_check.check_energy_flux_consistent_with_latent_heat`
 - `col_ws%snow_depth`$* 1000/$`dtime_mod` $=$ `col_wf%qflx_snomelt`

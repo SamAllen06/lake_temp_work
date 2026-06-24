@@ -21,8 +21,11 @@ to fail, and are not something that would change with the constants.
 `veg_ef%eflx_sh_tot` is finite
 - `finite_values_check.check_total_sensible_heat_flux_finite`
 
-`veg_ef%eflx_soil_grnd` is finite
+`veg_ef%eflx_sh_grnd` is finite
 - `finite_values_check.check_ground_sensible_heat_flux_finite`
+
+`veg_ef%eflx_soil_grnd` is finite
+- `finite_values_check.check_ground_heat_flux_finite`
 
 `col_ef%eflx_snomelt` is finite
 - `finite_values_check.check_snow_melt_heat_flux_finite`
@@ -109,9 +112,7 @@ to fail, and are not something that would change with the constants.
 - `physical_bounds_check.check_soil_heat_content_not_negative`
 
 `col_es%hc_soisno` $\ge 0$
-- Mathematically covered by:
-  - `physical_bounds_check.check_soil_heat_content_not_negative`
-  - `physical_bounds_check.check_combined_heat_content_not_less_than_soil_heat_content`
+- `physical_bounds_check.check_combined_heat_content_not_negative`
 
 `col_es%hc_soisno` $\ge$ `col_es%hc_soi`
 - `physical_bounds_check.check_combined_heat_content_not_less_than_soil_heat_content`
