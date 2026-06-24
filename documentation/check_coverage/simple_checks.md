@@ -85,7 +85,7 @@ to fail, and are not something that would change with the constants.
 - `physical_bounds_check.check_surface_absorption_fraction_is_fraction`
 
 `col_ws%h2osno` $\ge 0$
-- `physical_bounds_check.check_water_snow_equivilant_not_negative`
+- `physical_bounds_check.check_water_snow_equivalent_not_negative`
 
 `col_ws%snow_depth` $\ge 0$
 - `physical_bounds_check.check_snow_depth_not_negative`
@@ -148,6 +148,7 @@ not (`ch4_vars%grnd_ch4_cond_col` $> 0$ and `lakestate_vars%lake_icefrac_col` $>
 
 `lakestate_vars%lake_icefrac_col` $= 0 \rightarrow $($1 / $(`lakestate_vars%lakeresist_col` $+$ `lakestate_vars%lake_raw_col`)) $\approx$ `ch4_vars%grnd_ch4_cond_col`
 - `key_physical_laws_check.check_methane_conductance_allowed_without_ice`
+- Tolerance (not provided): np.isclose used
 
 ## Flux Sign Conventions
 

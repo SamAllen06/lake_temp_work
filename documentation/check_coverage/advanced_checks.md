@@ -49,13 +49,15 @@ Checks:
   - Handled by `key_physical_laws_check.check_snow_depth_not_decreasing`
 - $\sum\limits_j$ `col_wf%qflx_snofrz_lyr(:, j, :)` $=$ `col_wf%qflx_snofrz(:, :)`
   - Handled by `aggregation_and_consistency_check.check_snofrz_lyr_sums_to_snofrz_col`
-- Increase in snow ice content multiplied by heat of fusion matches reduction in 
+- ($\sum\limits_j$ `col_ws%h2osoi_ice(c, j, t)`)$\frac{\mathrm{dc}}{\mathrm{dt}} *$ `hfus` $* 1E-6 \approx$ (`col_es%hc_soisno(c, t)`)$\frac{\mathrm{dc}}{\mathrm{dt}}$
+  - Increase in snow ice content multiplied by heat of fusion matches reduction in 
 sensible energy within a tolerance.
   - Implemented by aggregating `col_ws_h2osoi_ice` from `(time, layer, column)` to
   `(time, column)`, then finding the difference between each time step, and multiplying
   that by `hfus`. Difference by time step for `col_es%hc_soisno` was computed and these
   were compared for equality.
   - Handled by `key_physical_laws_check.check_heat_diff_close`
+  - Tolerance (not provided): np.isclose used
 
 ## Snow Melting (Latent Heat)
 
