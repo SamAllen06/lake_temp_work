@@ -32,7 +32,7 @@ def check_temp_around_freezing_where_lake_is_almost_frozen(
     )
 
 
-def check_no_tke_when_surface_frozen(
+def check_surface_unfrozen_when_tke_present(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_lakestate_vars_savedtke1_col: npt.NDArray,
@@ -51,7 +51,7 @@ def check_no_tke_when_surface_frozen(
     snow_not_present = test_col_pp_snl == 0
     unfrozen = surface_not_frozen & snow_not_present
 
-    if (np.all(unfrozen) or unfrozen.mask.all()):
+    if (not np.any(tke_present) or unfrozen.mask.all()):
         return CheckStatus.SKIPPED
 
     tke_present = test_lakestate_vars_savedtke1_col > 0.0
