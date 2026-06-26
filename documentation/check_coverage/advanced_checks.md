@@ -10,8 +10,8 @@ make these setups the conditions for running the check.
 Conditions:
 - `col_pp%snl` $= 0$
 - `col_ws%h2osno` $= 0$
-- `col_es%t_lake(:, 0, :)` $>$ `tfrz`
-- `lakestate_vars%lake_icefrac_col(:, 0, :)` $= 0$
+- `col_es%t_lake[:, 0, :]` $>$ `tfrz`
+- `lakestate_vars%lake_icefrac_col[:, 0, :]` $= 0$
 
 Checks:
 - `col_ef%errsoi` $\approx 0$ after correction
@@ -32,24 +32,24 @@ check.
 
 Conditions:
 - `col_pp%snl` $< 0$
-- `col_es%t_soisno(:, 0, :)` $<$ `tfrz`
+- `col_es%t_soisno[:, 0, :]` $<$ `tfrz`
 - `col_ws%h2osno` $> 0$
-- `col_es%t_lake(:, 0, :)` $\le$ `tfrz`
+- `col_es%t_lake[:, 0, :]` $\le$ `tfrz`
 
 Checks:
-- `col_wf%qflx_snofrz_lyr(:, 0, :)` $> 0$
+- `col_wf%qflx_snofrz_lyr[:, 0, :]` $> 0$
   - Handled by `key_physical_laws_check.check_snow_freezing_where_snow_present`
-- `col_ef%imelt(:, 0, :)` $= 2$ (freezing)
+- `col_ef%imelt[:, 0, :]` $= 2$ (freezing)
   - Handled by `key_physical_laws_check.check_snow_labeled_freezing_where_snow_present`
-- `col_wf%qflx_snomelt` not melting
+- (`col_wf%qflx_snomelt[:,:]` $= 0$) = (`col_pp%snl[:,:]` $< 0$ and `col_ws$h2osno[t,c]` $> 0$)
   - Handled by `key_physical_laws_check.check_snow_not_melting_where_snow_present`
-- `col_ws%h2osno` non-decreasing
+- ($\delta$(`col_ws%h2osno[t,c]`) $/\delta$ t) $≥ 0$
   - Handled by `key_physical_laws_check.check_snow_water_not_decreasing`
-- `col_ws%snow_depth` non-decreasing
+- ($\delta$(`col_ws%snow_depth[t,c]`) $/\delta$ t) $≥ 0$
   - Handled by `key_physical_laws_check.check_snow_depth_not_decreasing`
-- $\sum\limits_j$ `col_wf%qflx_snofrz_lyr(:, j, :)` $=$ `col_wf%qflx_snofrz(:, :)`
+- $\sum\limits_j$ `col_wf%qflx_snofrz_lyr[:, j, :` $=$ `col_wf%qflx_snofrz[:, :]`
   - Handled by `aggregation_and_consistency_check.check_snofrz_lyr_sums_to_snofrz_col`
-- ($\sum\limits_j$ `col_ws%h2osoi_ice(c, j, t)`)$\frac{\mathrm{dc}}{\mathrm{dt}} *$ `hfus` $* 1E-6 \approx$ (`col_es%hc_soisno(c, t)`)$\frac{\mathrm{dc}}{\mathrm{dt}}$
+- ($\sum\limits_j$ `col_ws%h2osoi_ice[:,:,:]`)$\frac{\mathrm{dc}}{\mathrm{dt}} *$ `hfus` $* 1E-6 \approx$ (`col_es%hc_soisno[:,:]`)$\frac{\mathrm{dc}}{\mathrm{dt}}$
   - Increase in snow ice content multiplied by heat of fusion matches reduction in 
 sensible energy within a tolerance.
   - Implemented by aggregating `col_ws_h2osoi_ice` from `(time, layer, column)` to
@@ -67,9 +67,9 @@ Conditions:
 - `t_lake(1)` $>$ `tfrz`
 
 Checks:
-- `col_wf%qflx_snomelt` $> 0$
+- `col_pp%snl[:,0,:]` $= 0$ and `col_ws%h2osno[:,:]` $> 0$ and `col_es%t_lake[:,0,:]` $>$ `tfrz` $\rightarrow$ `col_wf%qflx_snomelt[:,:]` $> 0$
   - Handled by `key_physical_laws_check.check_snow_melting_where_soil_water_present`
-- `col_wf%qflx_snow_melt` $> 0$
+- `col_pp%snl[:,0,:]` $= 0$ and `col_ws%h2osno[:,:]` $> 0$ and `col_es%t_lake[:,0,:]` $>$ `tfrz` $\rightarrow$ `col_wf%qflx_snow_melt[:,:]` $> 0$
   - Handled by `key_physical_laws_check.check_snow_melted_where_soil_water_present`
 - `col_ef%eflx_snomelt` $=$ `col_wf%qflx_snomelt*hfus`
   - Handled by `key_physical_laws_check.check_energy_flux_consistent_with_latent_heat`

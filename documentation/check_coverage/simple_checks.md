@@ -119,11 +119,11 @@ to fail, and are not something that would change with the constants.
 
 ## Aggregation and Consistency
 
-$\sum\limits_j$ `col_wf%qflx_snofrz_lyr(:, j, :)` $=$ `col_wf%qflx_snofrz(:, :)`
+$\sum\limits_j$ `col_wf%qflx_snofrz_lyr[:, j, :]` $=$ `col_wf%qflx_snofrz[:, :]`
 - `aggregation_and_consistency_check.check_snofrz_lyr_sums_to_snofrz_col`
 - Tolerance (provided): $10^{-10}$
 
-$\sum\limits_j$ `lakestate_vars%lake_icefrac_col(:, j, :)` `col_pp%dz_lake(:, j, :)`
+$\sum\limits_j$ `lakestate_vars%lake_icefrac_col[, j, :]` `col_pp%dz_lake[:, j, :]`
 (`denh2o` $/$ `denice`) $=$ `lakestate_vars%lake_icethick_col`
 - `aggregation_and_consistency_check.check_icethick_col_is_sum`
 - Tolerance (provided): $10^{-9}$
@@ -133,8 +133,8 @@ $\sum\limits_j$ `lakestate_vars%lake_icefrac_col(:, j, :)` `col_pp%dz_lake(:, j,
 
 ## CH4 Conductance Behavior
 
-`lakestate_vars%lake_icefrac_col(:, 0, :)` $> 0.1 \rightarrow$
-`ch4_vars%grnd_ch4_cond_col` $= 0$
+`lakestate_vars%lake_icefrac_col[:, 0, :]` $> 0.1 \rightarrow$
+`ch4_vars%grnd_ch4_cond_col` $\approx 0$
 - `ch4_conductance_check.check_methane_conductance_frozen_lake`
 - Condition: `use_lch4` is true
 - Tolerance (not provided): `np.isclose` used
@@ -143,12 +143,14 @@ $\sum\limits_j$ `lakestate_vars%lake_icefrac_col(:, j, :)` `col_pp%dz_lake(:, j,
 - `ch4_conductance_check.check_methane_conductance_not_negative`
 - Condition: `use_lch4` is true
 
-not (`ch4_vars%grnd_ch4_cond_col` $> 0$ and `lakestate_vars%lake_icefrac_col` $> 0.1$)
+not ever (`ch4_vars%grnd_ch4_cond_col[:,:,:]` $> 0$ and `lakestate_vars%lake_icefrac_col[:,:,:]` $> 0.1$)
 - `key_physical_laws_check.check_methane_conductance_gated_by_ice`
+- Condition: use_lch4 is true
 
 `lakestate_vars%lake_icefrac_col` $= 0 \rightarrow $($1 / $(`lakestate_vars%lakeresist_col` $+$ `lakestate_vars%lake_raw_col`)) $\approx$ `ch4_vars%grnd_ch4_cond_col`
 - `key_physical_laws_check.check_methane_conductance_allowed_without_ice`
 - Tolerance (not provided): np.isclose used
+- Condition: `use_lch4` is true
 
 ## Flux Sign Conventions
 
@@ -159,9 +161,7 @@ Skipped because we are unsure how to check these.
 `lakestate_vars%lake_icefrac_col` $\approx 1$ and `lakestate_vars%lake_icefrac_col` $\neq 1 \rightarrow$
 `|col_es%t_lake - tfrz|` $\le 10^{-3}$
 - `physics_check.check_temp_around_freezing_where_lake_is_almost_frozen`
-- Condition: `lakestate_vars%lake_icefrac_col` $\approx 1$ somewhere
 
-`lakestate_vars%savedtke1_col` $> 0 \rightarrow$
-`col_es%t_lake` $>$ `tfrz` and `col_pp%snl` $= 0$
-- `physics_check.check_no_tke_when_surface_frozen`
-- Condition: `lakestate_vars%savedtke1_col` $> 0$ somewhere
+`lakestate_vars%savedtke1_col[:,:]` $> 0 \rightarrow$
+`lakestate_vars%lake_icefrac_col[:,0,:]` $\approx 0$ and `col_pp%snl[:,:]` $= 0$
+- `physics_check.check_surface_unfrozen_when_tke_present`
