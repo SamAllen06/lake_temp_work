@@ -24,9 +24,6 @@ def check_methane_conductance_frozen_lake(
 
     frozen_top_layers = top_layers > 0.1
 
-    if not np.any(frozen_top_layers):
-        return CheckStatus.SKIPPED
-
     nonconducting_columns = np.isclose(test_ch4_vars_grnd_ch4_cond_col, 0.0)
 
     assert np.all(~frozen_top_layers | nonconducting_columns), (

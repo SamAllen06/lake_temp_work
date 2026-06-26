@@ -317,9 +317,6 @@ def check_snow_melting_where_soil_water_present(
          test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
          test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt))
     
-    if not np.any(soil_water_present):
-        return CheckStatus.SKIPPED
-
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_is_melting = test_col_wf_qflx_snomelt > 0.0
 
@@ -351,9 +348,6 @@ def check_snow_melted_where_soil_water_present(
          test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
          test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt))
     
-    if not np.any(soil_water_present):
-        return CheckStatus.SKIPPED
-
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
 
@@ -448,6 +442,9 @@ def check_methane_conductance_allowed_without_ice(
     test_lakestate_vars_lakeresist_col: npt.NDArray,
     test_lakestate_vars_lake_raw_col: npt.NDArray,
 ):
+    if not use_lch4 == 1:
+        return CheckStatus.SKIPPED
+    
     if NonFiniteValuesHandler.is_all_not_finite(test_lakestate_vars_lake_icefrac_col, 
             test_ch4_vars_grnd_ch4_cond_col, test_lakestate_vars_lakeresist_col, 
             test_lakestate_vars_lake_raw_col):
@@ -459,9 +456,6 @@ def check_methane_conductance_allowed_without_ice(
             test_lakestate_vars_lakeresist_col, test_lakestate_vars_lake_raw_col))
 
     no_surface_ice = test_lakestate_vars_lake_icefrac_col[:, 0, :] == 0.0
-
-    if not use_lch4 == 1 or not np.any(no_surface_ice):
-        return CheckStatus.SKIPPED
 
     expected_methane = 1.0 / (
         test_lakestate_vars_lakeresist_col + test_lakestate_vars_lake_raw_col
