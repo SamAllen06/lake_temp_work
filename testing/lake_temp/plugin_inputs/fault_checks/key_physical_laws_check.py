@@ -395,6 +395,9 @@ def check_methane_conductance_gated_by_ice(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
     test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
 ):
+    if not use_lch4 == 1:
+        return CheckStatus.SKIPPED
+
     if NonFiniteValuesHandler.is_all_not_finite(test_lakestate_vars_lake_icefrac_col, 
                                                 test_ch4_vars_grnd_ch4_cond_col):
         return CheckStatus.SKIPPED
@@ -404,9 +407,6 @@ def check_methane_conductance_gated_by_ice(
                                                 test_ch4_vars_grnd_ch4_cond_col))
 
     some_surface_ice = test_lakestate_vars_lake_icefrac_col[:, 0, :] > 0.1
-
-    if not use_lch4 == 1 or not np.any(some_surface_ice):
-        return CheckStatus.SKIPPED
 
     conducting_methane = test_ch4_vars_grnd_ch4_cond_col > 0.0
 
