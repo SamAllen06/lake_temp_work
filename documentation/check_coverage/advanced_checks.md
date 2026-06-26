@@ -16,7 +16,7 @@ Conditions:
 Checks:
 - `col_ef%errsoi` $\approx 0$ after correction
   - Handled by `key_physical_laws_check.check_errsoi_threshold`
-- `col_es%hc_soisno`$(t + dt)$ - `col_es%hc_soisno`$(t) \approx \int(
+- $\Delta$ `col_es%hc_soisno` $/ \Delta t \approx \int(
 f_{\text{in}} + \phi_{\text{lake}} + \phi_{\text{soil}}
 )dt$
   - We are given that $f_{\text{in}}$ is `veg_ef%eflx_gnet`. However, we don't know what
@@ -43,13 +43,13 @@ Checks:
   - Handled by `key_physical_laws_check.check_snow_labeled_freezing_where_snow_present`
 - (`col_wf%qflx_snomelt[:,:]` $= 0$) = (`col_pp%snl[:,:]` $< 0$ and `col_ws$h2osno[t,c]` $> 0$)
   - Handled by `key_physical_laws_check.check_snow_not_melting_where_snow_present`
-- ($\delta$(`col_ws%h2osno[t,c]`) $/\delta$ t) $≥ 0$
+- ($\Delta$(`col_ws%h2osno[t,c]`) $/\Delta$ t) $≥ 0$
   - Handled by `key_physical_laws_check.check_snow_water_not_decreasing`
-- ($\delta$(`col_ws%snow_depth[t,c]`) $/\delta$ t) $≥ 0$
+- ($\Delta$(`col_ws%snow_depth[t,c]`) $/\Delta$ t) $≥ 0$
   - Handled by `key_physical_laws_check.check_snow_depth_not_decreasing`
-- $\sum\limits_j$ `col_wf%qflx_snofrz_lyr[:, j, :` $=$ `col_wf%qflx_snofrz[:, :]`
+- $\sum\limits_j$ `col_wf%qflx_snofrz_lyr[:, j, :]` $=$ `col_wf%qflx_snofrz[:, :]`
   - Handled by `aggregation_and_consistency_check.check_snofrz_lyr_sums_to_snofrz_col`
-- ($\sum\limits_j$ `col_ws%h2osoi_ice[:,:,:]`)$\frac{\mathrm{dc}}{\mathrm{dt}} *$ `hfus` $* 1E-6 \approx$ (`col_es%hc_soisno[:,:]`)$\frac{\mathrm{dc}}{\mathrm{dt}}$
+- ($\Delta$ ($\sum\limits_j$ `col_ws%h2osoi_ice[:,:,:]`)/ $\Delta$ t) $* $`hfus` $* 1E-6 \approx$ $\Delta$ (`col_es%hc_soisno[:,:]`)/ $\Delta$ t
   - Increase in snow ice content multiplied by heat of fusion matches reduction in 
 sensible energy within a tolerance.
   - Implemented by aggregating `col_ws_h2osoi_ice` from `(time, layer, column)` to
