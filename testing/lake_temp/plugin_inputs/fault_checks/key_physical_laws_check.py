@@ -25,10 +25,9 @@ def is_passing_energy_conservation_preconditions(
             test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col):
         return False
     (test_col_pp_snl, test_col_ws_h2osno, test_col_es_t_lake, 
-     test_lakestate_vars_lake_icefrac_col)=(
-         NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
-            test_col_ws_h2osno, test_col_es_t_lake, 
-            test_lakestate_vars_lake_icefrac_col))
+     test_lakestate_vars_lake_icefrac_col
+     )= NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
+        test_col_ws_h2osno, test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col)
     
     no_snow_layers = test_col_pp_snl == 0
     no_snow_water = test_col_ws_h2osno == 0.0
@@ -49,8 +48,9 @@ def check_errsoi_threshold(
 
     test_col_ef_errsoi: npt.NDArray,
 ):
-    if not is_passing_energy_conservation_preconditions(test_col_pp_snl, test_col_ws_h2osno, 
-            test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col):
+    if not is_passing_energy_conservation_preconditions(test_col_pp_snl, 
+            test_col_ws_h2osno, test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col
+    ):
         return CheckStatus.SKIPPED
     if NonFiniteValuesHandler.is_all_not_finite(test_col_ef_errsoi):
         return CheckStatus.SKIPPED
@@ -60,39 +60,52 @@ def check_errsoi_threshold(
     assert np.all(np.abs(test_col_ef_errsoi) < 1E-6), "error above threshold"
 
 
-# #unfinished check
-# def check_heat_contents_close(
-#     test_col_pp_snl: npt.NDArray,
-#     test_col_ws_h2osno: npt.NDArray,
-#     test_col_es_t_lake: npt.NDArray,
-#     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
+#TODO finish check
+def check_heat_contents_close(
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
+    test_col_es_t_lake: npt.NDArray,
+    test_lakestate_vars_lake_icefrac_col: npt.NDArray,
 
-#     test_col_es_hc_soisno: npt.NDArray,
-#     test_veg_ef_eflx_gnet: npt.NDArray,
-#     test_veg_ef_eflx_soil_grnd: npt.NDArray,
-#     test_veg_ef_eflx_sh_grnd: npt.NDArray,
-# ):
-#     if not is_passing_energy_conservation_preconditions(test_col_pp_snl, test_col_ws_h2osno, 
-#            test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col):
-#           return CheckStatus.SKIPPED
-#     if NonFiniteValuesHandler.is_all_not_finite(test_col_es_hc_soisno, 
-#             test_veg_ef_eflx_gnet, test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd
-#             ):
-#         return CheckStatus.SKIPPED
-#     (test_col_es_hc_soisno, test_veg_ef_eflx_gnet,test_veg_ef_eflx_soil_grnd, 
-#      test_veg_ef_eflx_sh_grnd)=(NonFiniteValuesHandler.mask_non_finite_values(
-#          test_col_es_hc_soisno, test_veg_ef_eflx_gnet, test_veg_ef_eflx_soil_grnd, 
-#            test_veg_ef_eflx_sh_grnd))
+    test_col_es_hc_soisno: npt.NDArray,
+    test_veg_ef_eflx_gnet: npt.NDArray,
+    test_veg_ef_eflx_soil_grnd: npt.NDArray,
+    test_veg_ef_eflx_sh_grnd: npt.NDArray,
+):
+    if not is_passing_energy_conservation_preconditions(test_col_pp_snl, 
+            test_col_ws_h2osno, test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col
+    ):
+          return CheckStatus.SKIPPED
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_hc_soisno, 
+            test_veg_ef_eflx_gnet, test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd
+            ):
+        return CheckStatus.SKIPPED
+    (test_col_es_hc_soisno, test_veg_ef_eflx_gnet,test_veg_ef_eflx_soil_grnd, 
+     test_veg_ef_eflx_sh_grnd)=NonFiniteValuesHandler.mask_non_finite_values(
+         test_col_es_hc_soisno, test_veg_ef_eflx_gnet, test_veg_ef_eflx_soil_grnd, 
+           test_veg_ef_eflx_sh_grnd)
 
-    
-#     change_in_combined_heat_content = np.diff(test_col_es_hc_soisno, axis=0)
-#     #change_in_individual_heat_contents_added = integral(fin + lake energy flux (probably veg_ef_eflx_soil_grnd) + soil energy flux (probably veg_ef_eflx_gnet))dt
-#     change_in_individual_heat_contents_added = np.trapezoid(np.add(test_veg_ef_eflx_gnet,
-#                             test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd), axis=0)
+    change_in_combined_heat_content = np.diff(test_col_es_hc_soisno, axis=0)
 
-#     heat_content_diff = np.subtract(change_in_combined_heat_content,
-#                                      change_in_individual_heat_contents_added)
-#     assert np.all(np.abs(heat_content_diff) < 1E-6)
+    individual_heat_contents_added = np.add(test_veg_ef_eflx_gnet,
+                            test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd)
+    #initialize array and set shape
+    integrated_individual_heat_contents_added = np.empty(
+        (individual_heat_contents_added.shape[0]-1, individual_heat_contents_added.shape[1]))
+    #integrate patch values over each time step using trapezoidal rule, dt = 1
+    i = 0
+    while i < individual_heat_contents_added.shape[0]-1:
+        #average values at t and t+dt then multiply by dt to get integral
+        integrated_individual_heat_contents_added[i, :] = np.add(
+            individual_heat_contents_added[i, :], individual_heat_contents_added[i+1, :])/2
+        i += 1
+    #TODO convert patches (681) to columns (345) or vice versa. time (35) is the same for both
+
+    heat_content_abs_diff = np.abs(np.subtract(change_in_combined_heat_content,
+                                     integrated_individual_heat_contents_added))
+
+    assert np.all(heat_content_abs_diff < 1E-6), (
+        "change in combined heat content not close to integral of individual heat contents added")
 
 
 def is_passing_freezing_latent_heat_preconditions(
@@ -289,9 +302,9 @@ def check_snow_melting_where_soil_water_present(
                                                 test_col_wf_qflx_snow_melt):
         return CheckStatus.SKIPPED
     (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-     test_col_wf_qflx_snow_melt)=(NonFiniteValuesHandler.mask_non_finite_values(
+     test_col_wf_qflx_snow_melt)=NonFiniteValuesHandler.mask_non_finite_values(
          test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
-         test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt))
+         test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt)
     
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_is_melting = test_col_wf_qflx_snomelt > 0.0
@@ -317,9 +330,9 @@ def check_snow_melted_where_soil_water_present(
                                                 test_col_wf_qflx_snow_melt):
         return CheckStatus.SKIPPED
     (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-     test_col_wf_qflx_snow_melt)=(NonFiniteValuesHandler.mask_non_finite_values(
+     test_col_wf_qflx_snow_melt)=NonFiniteValuesHandler.mask_non_finite_values(
          test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
-         test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt))
+         test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt)
     
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
@@ -342,9 +355,6 @@ def check_energy_flux_consistent_with_latent_heat(
     test_col_wf_qflx_snomelt: npt.NDArray,
     test_col_ef_eflx_snomelt: npt.NDArray,
 ):
-    if not is_passing_melting_latent_heat_preconditions(test_col_es_t_lake, 
-            test_col_pp_snl, test_col_ws_h2osno):
-        return CheckStatus.SKIPPED
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
                                                 test_col_ef_eflx_snomelt):
         return CheckStatus.SKIPPED
@@ -358,36 +368,39 @@ def check_energy_flux_consistent_with_latent_heat(
     soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
 
     # Verify energy flux is consistent with latent heat from snow melt rate.
-    assert np.all(~soil_water_present|(test_col_ef_eflx_snomelt == test_col_wf_qflx_snomelt * hfus)), (
+    assert np.all(~soil_water_present | (test_col_ef_eflx_snomelt == test_col_wf_qflx_snomelt * hfus)), (
         "energy flux is not consistent with latent heat from snow melt rate where soil water present")
 
 
-# #unfinished check
-# def check_snow_depth_decreases_with_snow_melt_rate(
-#     test_col_es_t_lake: npt.NDArray,
-#     test_col_pp_snl: npt.NDArray,
-#     test_col_ws_h2osno: npt.NDArray,
+#TODO finish check
+#TODO duplicate check but with h2osno
+def check_snow_depth_decreases_with_snow_melt_rate(
+    test_col_es_t_lake: npt.NDArray,
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
 
-#     dtime_mod: npt.NDArray,
-#     test_col_wf_qflx_snomelt: npt.NDArray,
-#     test_col_ws_snow_depth: npt.NDArray,
-# ):
-#     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
-#                                                 test_col_ws_snow_depth):
-#         return CheckStatus.SKIPPED
-#     test_col_wf_qflx_snomelt, test_col_ws_snow_depth=(
-#         NonFiniteValuesHandler.mask_non_finite_values(test_col_wf_qflx_snomelt, 
-#                                                       test_col_ws_snow_depth))
+    dtime_mod: npt.NDArray,
+    test_col_wf_qflx_snomelt: npt.NDArray,
+    test_col_ws_snow_depth: npt.NDArray,
+):
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
+                                                test_col_ws_snow_depth):
+        return CheckStatus.SKIPPED
+    test_col_wf_qflx_snomelt, test_col_ws_snow_depth=(
+        NonFiniteValuesHandler.mask_non_finite_values(test_col_wf_qflx_snomelt, 
+                                                      test_col_ws_snow_depth))
 
-#     no_snow_layers = test_col_pp_snl == 0 
-#     some_snow_water = test_col_ws_h2osno > 0.0
-#     lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
-#     soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
+    no_snow_layers = test_col_pp_snl == 0 
+    some_snow_water = test_col_ws_h2osno > 0.0
+    lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
+    soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
 
-#     # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
-#     assert (~soil_water_present | (np.diff(test_col_ws_snow_depth * 1000.0, axis=0) / dtime_mod 
-#             == test_col_wf_qflx_snomelt)), (
-#         "snow depth does not decrease consistently with now melt rate where soil water present")
+    change_in_snow_depth_over_time = np.diff(test_col_ws_snow_depth * 1000.0, axis=0) / dtime_mod
+    #TODO match shape of change_in_snow_depth_over_time (35, 345) to shape of test_col_wf_qflx_snomelt (36, 345)
+    # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
+    assert (~soil_water_present | change_in_snow_depth_over_time 
+            == test_col_wf_qflx_snomelt), (
+        "snow depth does not decrease consistently with snow melt rate where soil water present")
 
 
 def check_methane_conductance_gated_by_ice(
