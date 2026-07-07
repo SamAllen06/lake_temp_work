@@ -296,15 +296,12 @@ def check_snow_melting_where_soil_water_present(
     test_col_ws_h2osno: npt.NDArray,
 
     test_col_wf_qflx_snomelt: npt.NDArray,
-    test_col_wf_qflx_snow_melt: npt.NDArray,
 ):
-    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
-                                                test_col_wf_qflx_snow_melt):
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt):
         return CheckStatus.SKIPPED
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-     test_col_wf_qflx_snow_melt)=NonFiniteValuesHandler.mask_non_finite_values(
-         test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
-         test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt)
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt
+     )=NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
+        test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt)
     
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_is_melting = test_col_wf_qflx_snomelt > 0.0
@@ -323,16 +320,14 @@ def check_snow_melted_where_soil_water_present(
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
 
-    test_col_wf_qflx_snomelt: npt.NDArray,
     test_col_wf_qflx_snow_melt: npt.NDArray,
 ):
-    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
-                                                test_col_wf_qflx_snow_melt):
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snow_melt):
         return CheckStatus.SKIPPED
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-     test_col_wf_qflx_snow_melt)=NonFiniteValuesHandler.mask_non_finite_values(
-         test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
-         test_col_wf_qflx_snomelt, test_col_wf_qflx_snow_melt)
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snow_melt
+     )=NonFiniteValuesHandler.mask_non_finite_values(
+        test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
+        test_col_wf_qflx_snow_melt)
     
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
