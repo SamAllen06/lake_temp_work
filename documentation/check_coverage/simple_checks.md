@@ -128,7 +128,7 @@ $\sum\limits_j$ `lakestate_vars%lake_icefrac_col[, j, :]` `col_pp%dz_lake[:, j, 
 - `aggregation_and_consistency_check.check_icethick_col_is_sum`
 - Tolerance (provided): $10^{-9}$
 
-`col_ef%imelt` $\in {0, 1, 2}$ per snow layer
+`col_ef%imelt` $\in$ {0, 1, 2} per snow layer
 - `aggregation_and_consistency_check.check_imelt_uses_valid_enum_values`
 
 ## CH4 Conductance Behavior
