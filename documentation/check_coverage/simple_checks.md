@@ -53,7 +53,7 @@ to fail, and are not something that would change with the constants.
 
 `lakestate_vars%grnd_ch4_cond_col` is finite
 - `finite_values_check.check_ground_methane_conductance_finite`
-- Condition: `use_lch4` is true
+- Precondition: `use_lch4` is true
 
 `col_ef%errsoi` is finite
 - `finite_values_check.check_energy_conservation_residual_finite`
@@ -136,21 +136,21 @@ $\sum\limits_j$ `lakestate_vars%lake_icefrac_col[, j, :]` `col_pp%dz_lake[:, j, 
 `lakestate_vars%lake_icefrac_col[:, 0, :]` $> 0.1 \rightarrow$
 `ch4_vars%grnd_ch4_cond_col` $\approx 0$
 - `ch4_conductance_check.check_methane_conductance_frozen_lake`
-- Condition: `use_lch4` is true
+- Precondition: `use_lch4` is true
 - Tolerance (not provided): `np.isclose` used
 
 `ch4_vars%grnd_ch4_cond_col` $\ge 0$
 - `ch4_conductance_check.check_methane_conductance_not_negative`
-- Condition: `use_lch4` is true
+- Precondition: `use_lch4` is true
 
 not ever (`ch4_vars%grnd_ch4_cond_col[:,:,:]` $> 0$ and `lakestate_vars%lake_icefrac_col[:,:,:]` $> 0.1$)
 - `key_physical_laws_check.check_methane_conductance_gated_by_ice`
-- Condition: use_lch4 is true
+- Precondition: use_lch4 is true
 
 `lakestate_vars%lake_icefrac_col` $= 0 \rightarrow $($1 / $(`lakestate_vars%lakeresist_col` $+$ `lakestate_vars%lake_raw_col`)) $\approx$ `ch4_vars%grnd_ch4_cond_col`
 - `key_physical_laws_check.check_methane_conductance_allowed_without_ice`
 - Tolerance (not provided): np.isclose used
-- Condition: `use_lch4` is true
+- Precondition: `use_lch4` is true
 
 ## Flux Sign Conventions
 

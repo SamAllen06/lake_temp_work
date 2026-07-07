@@ -1,13 +1,13 @@
 # Advanced Checks
 
 These checks are derived from the focused test scenarios provided by Dali in the file
-`LakeTemperatureTestPlan`. These tests included setup conditions that would require us
+`LakeTemperatureTestPlan`. These tests included setup preconditions that would require us
 to modify input variables, which we currently do not have the ability to do. Instead, we
-make these setups the conditions for running the check.
+make these setups the preconditions for running the check.
 
 ## Energy Conservation (Unfrozen Lake)
 
-Conditions:
+Preconditions:
 - `col_pp%snl` $= 0$
 - `col_ws%h2osno` $= 0$
 - `col_es%t_lake[:, 0, :]` $>$ `tfrz`
@@ -30,7 +30,7 @@ check.
 
 ## Snow Freezing (Latent Heat)
 
-Conditions:
+Preconditions:
 - `col_pp%snl` $< 0$
 - `col_es%t_soisno[:, 0, :]` $<$ `tfrz`
 - `col_ws%h2osno` $> 0$
@@ -61,7 +61,7 @@ sensible energy within a tolerance.
 
 ## Snow Melting (Latent Heat)
 
-Conditions:
+Preconditions:
 - `snl` $= 0$
 - `h2osno` $> 0$
 - `t_lake(1)` $>$ `tfrz`
