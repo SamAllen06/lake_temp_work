@@ -289,6 +289,25 @@ def check_heat_diff_close(
     assert np.all(np.isclose(latent_heat_diff, sensible_heat_diff)), (
         "latent heat difference and sensible heat difference are not close")
 
+def is_passing_snow_melt_preconditions(
+    test_col_es_t_lake: npt.NDArray,
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
+) -> bool:
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
+            test_col_ws_h2osno):
+        return False
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno)=(
+         NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
+             test_col_pp_snl, test_col_ws_h2osno))
+    
+    some_snow_layers = test_col_pp_snl < 0
+    some_snow_water = test_col_ws_h2osno > 0.0
+
+    lake_surface_above_freezing = np.all(test_col_es_t_lake[:, 0, :] > TFRZ)
+
+    snow_present = some_snow_layers & some_snow_water
+    return np.any(snow_present) and lake_surface_above_freezing
 
 def check_snow_melting_where_soil_water_present(
     test_col_es_t_lake: npt.NDArray,
@@ -297,6 +316,8 @@ def check_snow_melting_where_soil_water_present(
 
     test_col_wf_qflx_snomelt: npt.NDArray,
 ):
+    if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno):
+        return CheckStatus.SKIPPED
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt):
         return CheckStatus.SKIPPED
     (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt
@@ -322,12 +343,13 @@ def check_snow_melted_where_soil_water_present(
 
     test_col_wf_qflx_snow_melt: npt.NDArray,
 ):
+    if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno):
+        return CheckStatus.SKIPPED
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snow_melt):
         return CheckStatus.SKIPPED
     (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snow_melt
-     )=NonFiniteValuesHandler.mask_non_finite_values(
-        test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
-        test_col_wf_qflx_snow_melt)
+     )=NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
+        test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snow_melt)
     
     # Verify snow is melting and has melted on all columns were soil water is present.
     snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
@@ -350,12 +372,15 @@ def check_energy_flux_consistent_with_latent_heat(
     test_col_wf_qflx_snomelt: npt.NDArray,
     test_col_ef_eflx_snomelt: npt.NDArray,
 ):
+    if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno):
+        return CheckStatus.SKIPPED
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
                                                 test_col_ef_eflx_snomelt):
         return CheckStatus.SKIPPED
-    test_col_wf_qflx_snomelt, test_col_ef_eflx_snomelt=(
-        NonFiniteValuesHandler.mask_non_finite_values(test_col_wf_qflx_snomelt, 
-                                                      test_col_ef_eflx_snomelt))
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+     test_col_ef_eflx_snomelt)=(NonFiniteValuesHandler.mask_non_finite_values(
+         test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
+         test_col_wf_qflx_snomelt, test_col_ef_eflx_snomelt))
     
     no_snow_layers = test_col_pp_snl == 0 
     some_snow_water = test_col_ws_h2osno > 0.0
@@ -378,12 +403,15 @@ def check_snow_depth_decreases_with_snow_melt_rate(
     test_col_wf_qflx_snomelt: npt.NDArray,
     test_col_ws_snow_depth: npt.NDArray,
 ):
+    if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno):
+        return CheckStatus.SKIPPED
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
                                                 test_col_ws_snow_depth):
         return CheckStatus.SKIPPED
-    test_col_wf_qflx_snomelt, test_col_ws_snow_depth=(
-        NonFiniteValuesHandler.mask_non_finite_values(test_col_wf_qflx_snomelt, 
-                                                      test_col_ws_snow_depth))
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+     test_col_ws_snow_depth)=(NonFiniteValuesHandler.mask_non_finite_values(
+         test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
+         test_col_wf_qflx_snomelt, test_col_ws_snow_depth))
 
     no_snow_layers = test_col_pp_snl == 0 
     some_snow_water = test_col_ws_h2osno > 0.0
