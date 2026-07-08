@@ -426,8 +426,8 @@ def check_snow_depth_decreases_with_snow_melt_rate(
                                       / dtime_mod)
     #TODO match shape of change_in_snow_depth_over_time (35, 345) to shape of test_col_wf_qflx_snomelt (36, 345)
     # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
-    assert (~snow_water_present | change_in_snow_depth_over_time 
-            == test_col_wf_qflx_snomelt), (
+    assert (~snow_water_present | (change_in_snow_depth_over_time 
+            == test_col_wf_qflx_snomelt)), (
         "snow depth does not decrease consistently with snow melt rate where snow water "
         +"present")
 
