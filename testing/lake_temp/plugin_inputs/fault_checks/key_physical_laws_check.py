@@ -131,14 +131,13 @@ def is_passing_freezing_latent_heat_preconditions(
     
     some_snow_layers = test_col_pp_snl < 0
     some_snow_water = test_col_ws_h2osno > 0.0
+    some_snow_present = np.any(some_snow_layers & some_snow_water)
 
-    lake_surface_is_at_or_below_freezing = np.all(test_col_es_t_lake[:, 0, :] <= TFRZ)
     soil_snow_layers_below_freezing = np.all(test_col_es_t_soisno[:, 0, :] < TFRZ)
+    lake_surface_is_at_or_below_freezing = np.all(test_col_es_t_lake[:, 0, :] <= TFRZ)
+    temp_below_freezing = soil_snow_layers_below_freezing and lake_surface_is_at_or_below_freezing
 
-    snow_present = some_snow_layers & some_snow_water
-    return (np.any(snow_present) and lake_surface_is_at_or_below_freezing 
-            and soil_snow_layers_below_freezing)
-
+    return (some_snow_present and temp_below_freezing)
 
 
 def check_snow_freezing_where_snow_present(
@@ -160,11 +159,11 @@ def check_snow_freezing_where_snow_present(
     
     some_snow_layers = test_col_pp_snl < 0
     some_snow_water = test_col_ws_h2osno > 0.0
-
     snow_present = some_snow_layers & some_snow_water
-    
+
     # Verify snow is freezing
     surface_snow_freezing = test_col_wf_qflx_snofrz_lyr[:, 0, :] > 0.0
+
     assert np.all(surface_snow_freezing == snow_present), (
         "snow is not freezing where snow is present")
     
@@ -307,15 +306,15 @@ def is_passing_snow_melt_preconditions(
          NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
              test_col_pp_snl, test_col_ws_h2osno))
     
-    some_snow_layers = test_col_pp_snl < 0
+    no_snow_layers = test_col_pp_snl == 0 
     some_snow_water = test_col_ws_h2osno > 0.0
+    some_snow_water_present = np.any(no_snow_layers & some_snow_water)
 
     lake_surface_above_freezing = np.all(test_col_es_t_lake[:, 0, :] > TFRZ)
+    return some_snow_water_present and lake_surface_above_freezing
 
-    snow_present = some_snow_layers & some_snow_water
-    return np.any(snow_present) and lake_surface_above_freezing
 
-def check_snow_melting_where_soil_water_present(
+def check_snow_melting_where_snow_water_present(
     test_col_es_t_lake: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
@@ -327,22 +326,20 @@ def check_snow_melting_where_soil_water_present(
         return CheckStatus.SKIPPED
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt):
         return CheckStatus.SKIPPED
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt
-     )=NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
-        test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt)
+    (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt
+     )=NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
+                        test_col_ws_h2osno, test_col_wf_qflx_snomelt)
     
     snow_is_melting = test_col_wf_qflx_snomelt > 0.0
 
     no_snow_layers = test_col_pp_snl == 0 
     some_snow_water = test_col_ws_h2osno > 0.0
-    lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
-    soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
-
-    assert np.all(~soil_water_present | snow_is_melting), (
-        'Snow not melting where soil water present')
+    snow_water_present = no_snow_layers & some_snow_water
+    assert np.all(~snow_water_present | snow_is_melting), (
+        'Snow not melting where snow water present')
 
 
-def check_snow_melted_where_soil_water_present(
+def check_snow_melted_where_snow_water_present(
     test_col_es_t_lake: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
@@ -354,19 +351,18 @@ def check_snow_melted_where_soil_water_present(
         return CheckStatus.SKIPPED
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snow_melt):
         return CheckStatus.SKIPPED
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snow_melt
-     )=NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
-        test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snow_melt)
+    (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snow_melt
+     )=NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
+                    test_col_ws_h2osno, test_col_wf_qflx_snow_melt)
     
     snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
 
     no_snow_layers = test_col_pp_snl == 0 
     some_snow_water = test_col_ws_h2osno > 0.0
-    lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
-    soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
+    snow_water_present = no_snow_layers & some_snow_water
 
-    assert np.all(~soil_water_present | snow_has_melted), (
-        'Snow not melted where soil water present')
+    assert np.all(~snow_water_present | snow_has_melted), (
+        'Snow not melted where snow water present')
     
 
 def check_energy_flux_consistent_with_latent_heat(
@@ -384,20 +380,19 @@ def check_energy_flux_consistent_with_latent_heat(
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
                                                 test_col_ef_eflx_snomelt):
         return CheckStatus.SKIPPED
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+    (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
      test_col_ef_eflx_snomelt)=(NonFiniteValuesHandler.mask_non_finite_values(
-         test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
-         test_col_wf_qflx_snomelt, test_col_ef_eflx_snomelt))
+         test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+         test_col_ef_eflx_snomelt))
     
     no_snow_layers = test_col_pp_snl == 0 
     some_snow_water = test_col_ws_h2osno > 0.0
-    lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
-    soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
+    snow_water_present = no_snow_layers & some_snow_water
 
     # Verify energy flux is consistent with latent heat from snow melt rate.
-    assert np.all(~soil_water_present | (test_col_ef_eflx_snomelt == 
+    assert np.all(~snow_water_present | (test_col_ef_eflx_snomelt == 
                                          test_col_wf_qflx_snomelt * hfus)), (
-        "energy flux is not consistent with latent heat from snow melt rate where soil "
+        "energy flux is not consistent with latent heat from snow melt rate where snow "
         +"water present")
 
 
@@ -418,23 +413,22 @@ def check_snow_depth_decreases_with_snow_melt_rate(
     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
                                                 test_col_ws_snow_depth):
         return CheckStatus.SKIPPED
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+    (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
      test_col_ws_snow_depth)=(NonFiniteValuesHandler.mask_non_finite_values(
-         test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
-         test_col_wf_qflx_snomelt, test_col_ws_snow_depth))
+         test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+         test_col_ws_snow_depth))
 
     no_snow_layers = test_col_pp_snl == 0 
     some_snow_water = test_col_ws_h2osno > 0.0
-    lake_surface_above_freezing = test_col_es_t_lake[:, 0, :] > TFRZ
-    soil_water_present = no_snow_layers & some_snow_water & lake_surface_above_freezing
+    snow_water_present = no_snow_layers & some_snow_water
 
     change_in_snow_depth_over_time = (np.diff(test_col_ws_snow_depth * 1000.0, axis=0) 
                                       / dtime_mod)
     #TODO match shape of change_in_snow_depth_over_time (35, 345) to shape of test_col_wf_qflx_snomelt (36, 345)
     # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
-    assert (~soil_water_present | change_in_snow_depth_over_time 
+    assert (~snow_water_present | change_in_snow_depth_over_time 
             == test_col_wf_qflx_snomelt), (
-        "snow depth does not decrease consistently with snow melt rate where soil water "
+        "snow depth does not decrease consistently with snow melt rate where snow water "
         +"present")
 
 
