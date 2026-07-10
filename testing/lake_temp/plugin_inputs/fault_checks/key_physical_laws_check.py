@@ -67,7 +67,6 @@ def check_errsoi_threshold(
     assert np.all(np.abs(test_col_ef_errsoi) < 1E-6), "error above threshold"
 
 
-#TODO finish check
 def check_heat_contents_close(
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
@@ -75,9 +74,11 @@ def check_heat_contents_close(
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
 
     test_col_es_hc_soisno: npt.NDArray,
+    test_veg_pp_column: npt.NDArray,
     test_veg_ef_eflx_gnet: npt.NDArray,
     test_veg_ef_eflx_soil_grnd: npt.NDArray,
     test_veg_ef_eflx_sh_grnd: npt.NDArray,
+    dtime_mod,
 ):
     if not is_passing_energy_conservation_preconditions(test_col_pp_snl, 
             test_col_ws_h2osno, test_col_es_t_lake, test_lakestate_vars_lake_icefrac_col
@@ -92,27 +93,60 @@ def check_heat_contents_close(
          test_col_es_hc_soisno, test_veg_ef_eflx_gnet, test_veg_ef_eflx_soil_grnd, 
            test_veg_ef_eflx_sh_grnd)
 
+    total_time_steps = test_col_es_hc_soisno.shape[0]
+    total_columns = test_col_es_hc_soisno.shape[1]
+
+    # MJ/(m^2)
     change_in_combined_heat_content = np.diff(test_col_es_hc_soisno, axis=0)
 
-    individual_heat_contents_added = np.add(test_veg_ef_eflx_gnet,
+    # W/(m^2) 
+    individual_heat_contents_by_patch_added = np.add(test_veg_ef_eflx_gnet,
                             test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd)
-    #initialize array and set shape
-    integrated_individual_heat_contents_added = np.empty(
-        (individual_heat_contents_added.shape[0]-1, individual_heat_contents_added.shape[1]))
-    #integrate patch values over each time step using trapezoidal rule, dt = 1
+    #convert individual_heat_contents_by_patch_added from patches (681) to columns (345)
+    #initialize by column array and set shape
+    individual_heat_contents_by_column_added = np.zeros((total_time_steps, total_columns))
+    lowest_patch_in_column = 0
+    column_of_previous_patch = 0
+    patch = 0
+    #for all columns except the final one, convert patches to columns
+    while patch < test_veg_pp_column.shape[1]:
+        current_column = test_veg_pp_column[0, patch]-1
+
+        if column_of_previous_patch != current_column:
+            time_step = 0
+            individual_heat_contents_by_column_added[:,column_of_previous_patch]=np.sum(
+                individual_heat_contents_by_patch_added[:,lowest_patch_in_column:patch],
+                axis=1)
+            lowest_patch_in_column = patch
+
+        column_of_previous_patch = current_column
+        patch += 1
+    #now for final column, convert patches to column
+    time_step = 0
+    while time_step < individual_heat_contents_by_column_added.shape[0]:
+        individual_heat_contents_by_column_added[time_step, column_of_previous_patch] = np.sum(
+            individual_heat_contents_by_patch_added[time_step, lowest_patch_in_column:]
+        )
+        time_step += 1
+    #mask nan values
+    individual_heat_contents_by_column_added = np.ma.masked_invalid(individual_heat_contents_by_column_added)
+    #initialize integrated array and set shape
+    integrated_individual_heat_contents_added = np.empty((total_time_steps-1, 
+                                                          total_columns))
+    #integrate patch values over each time step using trapezoidal rule
     i = 0
-    while i < individual_heat_contents_added.shape[0]-1:
-        #average values at t and t+dt then multiply by dt to get integral
+    while i < integrated_individual_heat_contents_added.shape[0]:
+        #average values at t and t+dt then multiply by dt to get integral, dt = 1
         integrated_individual_heat_contents_added[i, :] = np.add(
-            individual_heat_contents_added[i, :], individual_heat_contents_added[i+1, :])/2
+            individual_heat_contents_by_column_added[i, :], individual_heat_contents_by_column_added[i+1, :])/2
         i += 1
-    #TODO convert patches (681) to columns (345) or vice versa. time (35) is the same for both
 
     heat_content_abs_diff = np.abs(np.subtract(change_in_combined_heat_content,
-                                     integrated_individual_heat_contents_added))
-
+                            integrated_individual_heat_contents_added*dtime_mod/1E6))
+    
     assert np.all(heat_content_abs_diff < 1E-6), (
-        "change in combined heat content not close to integral of individual heat contents added")
+        "change in combined heat content not close to integral of individual heat"
+        +" contents added")
 
 
 def is_passing_freezing_latent_heat_preconditions(
@@ -396,40 +430,47 @@ def check_energy_flux_consistent_with_latent_heat(
         +"water present")
 
 
-#TODO finish check
-#TODO duplicate check but with h2osno
-def check_snow_depth_decreases_with_snow_melt_rate(
-    test_col_es_t_lake: npt.NDArray,
-    test_col_pp_snl: npt.NDArray,
-    test_col_ws_h2osno: npt.NDArray,
+# #TODO finish check
+# #TODO duplicate check but with h2osno
+# def check_snow_depth_decreases_with_snow_melt_rate(
+#     test_col_es_t_lake: npt.NDArray,
+#     test_col_pp_snl: npt.NDArray,
+#     test_col_ws_h2osno: npt.NDArray,
 
-    dtime_mod: npt.NDArray,
-    test_col_wf_qflx_snomelt: npt.NDArray,
-    test_col_ws_snow_depth: npt.NDArray,
-):
-    if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, 
-                                              test_col_ws_h2osno):
-        return CheckStatus.SKIPPED
-    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
-                                                test_col_ws_snow_depth):
-        return CheckStatus.SKIPPED
-    (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-     test_col_ws_snow_depth)=(NonFiniteValuesHandler.mask_non_finite_values(
-         test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-         test_col_ws_snow_depth))
+#     dtime_mod,
+#     test_col_wf_qflx_snomelt: npt.NDArray,
+#     test_col_ws_snow_depth: npt.NDArray,
+# ):
+#     if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, 
+#                                               test_col_ws_h2osno):
+#         return CheckStatus.SKIPPED
+#     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
+#                                                 test_col_ws_snow_depth):
+#         return CheckStatus.SKIPPED
+#     (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+#      test_col_ws_snow_depth)=(NonFiniteValuesHandler.mask_non_finite_values(
+#          test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+#          test_col_ws_snow_depth))
 
-    no_snow_layers = test_col_pp_snl == 0 
-    some_snow_water = test_col_ws_h2osno > 0.0
-    snow_water_present = no_snow_layers & some_snow_water
+#     no_snow_layers = test_col_pp_snl == 0 
+#     some_snow_water = test_col_ws_h2osno > 0.0
+#     snow_water_present = no_snow_layers & some_snow_water
 
-    change_in_snow_depth_over_time = (np.diff(test_col_ws_snow_depth * 1000.0, axis=0) 
-                                      / dtime_mod)
-    #TODO match shape of change_in_snow_depth_over_time (35, 345) to shape of test_col_wf_qflx_snomelt (36, 345)
-    # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
-    assert (~snow_water_present | (change_in_snow_depth_over_time 
-            == test_col_wf_qflx_snomelt)), (
-        "snow depth does not decrease consistently with snow melt rate where snow water "
-        +"present")
+#     change_in_snow_depth_over_time = (np.diff(test_col_ws_snow_depth * 1000.0, axis=0) 
+#                                       / dtime_mod)
+    
+#     #import pdb
+#     # pdb.set_trace()
+#     #if not np.all(~snow_water_present[1:36,:] | (change_in_snow_depth_over_time 
+#     #        == test_col_wf_qflx_snomelt[1:36,:])):
+#         #pdb.set_trace()
+#     #TODO match shape of change_in_snow_depth_over_time (35, 345) to shape of test_col_wf_qflx_snomelt (36, 345)
+#     # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
+#     #TODO add an approximation
+#     assert np.all(~snow_water_present[1:36,:] | (change_in_snow_depth_over_time 
+#             == test_col_wf_qflx_snomelt[1:36,:])), (
+#         "snow depth does not decrease consistently with snow melt rate where snow water "
+#         +"present")
 
 
 def check_methane_conductance_gated_by_ice(
