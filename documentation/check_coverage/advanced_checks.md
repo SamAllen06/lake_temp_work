@@ -16,13 +16,8 @@ Preconditions:
 Checks:
 - `col_ef%errsoi` $\approx 0$ after correction
   - Handled by `key_physical_laws_check.check_errsoi_threshold`
-- $\Delta$ `col_es%hc_soisno` $/ \Delta t \approx \int(
-f_{\text{in}} + \phi_{\text{lake}} + \phi_{\text{soil}}
-)dt$
-  - We are given that $f_{\text{in}}$ is `veg_ef%eflx_gnet`. However, we don't know what
-$\phi_{\text{lake}}$ and $\phi_{\text{soil}}$ are represented by, so we've skipped this
-check.
-  - Will be handled by `key_physical_laws_check.check_heat_contents_close`
+- $\Delta$ `col_es%hc_soisno`/ $\Delta$ t $\approx \int$ (`veg_ef%eflx_gnet` + `veg_ef%eflx_soil_grnd` + `veg_ef%eflx_sh_grnd`)dt
+  - Handled by `key_physical_laws_check.check_heat_contents_close`
 - All temps finite
   - Handled by `finite_values_check.check_lake_temperature_finite`
 - `lakestate_vars%saved_tke1_col` $> 0$
