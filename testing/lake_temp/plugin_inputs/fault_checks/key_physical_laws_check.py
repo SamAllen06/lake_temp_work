@@ -432,7 +432,6 @@ def check_energy_flux_consistent_with_latent_heat(
         +"water present")
 
 
-#TODO duplicate check but with h2osno
 def check_snow_depth_decreases_with_snow_melt_rate(
     test_col_es_t_lake: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
@@ -474,6 +473,50 @@ def check_snow_depth_decreases_with_snow_melt_rate(
                 (abs_diff_snow_depth_change_and_snow_melt_rate <= 1e-3)),(
         "snow depth does not decrease consistently with snow melt rate where snow water"
         +" present")
+
+
+def check_snow_water_equivalent_decreases_with_snow_melt_rate(
+    test_col_es_t_lake: npt.NDArray,
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
+
+    dtime_mod,
+    test_col_wf_qflx_snomelt: npt.NDArray,
+):
+    if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, 
+                                              test_col_ws_h2osno):
+        return CheckStatus.SKIPPED
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt):
+        return CheckStatus.SKIPPED
+    (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt)=(
+        NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
+                        test_col_ws_h2osno, test_col_wf_qflx_snomelt))
+
+    no_snow_layers = test_col_pp_snl == 0 
+    some_snow_water = test_col_ws_h2osno > 0.0
+    snow_water_present = no_snow_layers & some_snow_water
+
+    change_in_snow_water_equivalent_over_time = (np.diff(test_col_ws_h2osno * 1000.0, axis=0) 
+                                      / dtime_mod)
+   
+    # test_col_wf_qflx_snomelt is always 0 at timestep 0 because snow melt rate is
+    # calculated from the previous timestep to the current one, so we can skip that 
+    # timestep in the check.
+    abs_diff_snow_water_equivalent_change_and_snow_melt_rate = np.abs(np.subtract(
+        change_in_snow_water_equivalent_over_time, test_col_wf_qflx_snomelt[1:36,:]))
+    
+    # Verify snow water equivalent (m) decreases consistently with snow melt rate (mm/s)
+    # for snow melt rate to make sense, snow water has to be present at the initial 
+    # timestep and the end timestep of the time interval over which the snow water 
+    # equivalent change is calculated.
+    if not np.all(~(snow_water_present[0:35,:] & snow_water_present[1:36,:]) | 
+                (abs_diff_snow_water_equivalent_change_and_snow_melt_rate <= 1e-3)):
+        import pdb
+        pdb.set_trace()
+    assert np.all(~(snow_water_present[0:35,:] & snow_water_present[1:36,:]) | 
+                (abs_diff_snow_water_equivalent_change_and_snow_melt_rate <= 1e-3)),(
+        "snow water equivalent does not decrease consistently with snow melt rate where"
+        +" snow water present")
 
 
 def check_methane_conductance_gated_by_ice(
