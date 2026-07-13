@@ -509,10 +509,6 @@ def check_snow_water_equivalent_decreases_with_snow_melt_rate(
     # for snow melt rate to make sense, snow water has to be present at the initial 
     # timestep and the end timestep of the time interval over which the snow water 
     # equivalent change is calculated.
-    if not np.all(~(snow_water_present[0:35,:] & snow_water_present[1:36,:]) | 
-                (abs_diff_snow_water_equivalent_change_and_snow_melt_rate <= 1e-3)):
-        import pdb
-        pdb.set_trace()
     assert np.all(~(snow_water_present[0:35,:] & snow_water_present[1:36,:]) | 
                 (abs_diff_snow_water_equivalent_change_and_snow_melt_rate <= 1e-3)),(
         "snow water equivalent does not decrease consistently with snow melt rate where"
