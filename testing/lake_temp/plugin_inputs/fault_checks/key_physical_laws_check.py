@@ -174,7 +174,7 @@ def is_passing_freezing_latent_heat_preconditions(
     return (some_snow_present and temp_below_freezing)
 
 
-def check_snow_freezing_where_snow_present(
+def check_surface_snow_freezing_where_snow_present(
     test_col_es_t_lake: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
@@ -198,7 +198,7 @@ def check_snow_freezing_where_snow_present(
     # Verify snow is freezing
     surface_snow_freezing = test_col_wf_qflx_snofrz_lyr[:, 0, :] > 0.0
 
-    assert np.all(surface_snow_freezing == snow_present), (
+    assert np.all(~snow_present | surface_snow_freezing), (
         "snow is not freezing where snow is present")
     
 
@@ -226,7 +226,7 @@ def check_snow_labeled_freezing_where_snow_present(
 
     snow_present = some_snow_layers & some_snow_water
 
-    assert np.all(surface_snow_labeled_freezing == snow_present), (
+    assert np.all(~snow_present | surface_snow_labeled_freezing), (
         "snow not labeled freezing where snow present")
 
 
@@ -254,7 +254,7 @@ def check_snow_not_melting_where_snow_present(
 
     snow_present = some_snow_layers & some_snow_water
 
-    assert np.all(snow_not_melting == snow_present), (
+    assert np.all(~snow_present | snow_not_melting), (
         "snow melting where snow present")
 
 
@@ -423,54 +423,57 @@ def check_energy_flux_consistent_with_latent_heat(
     some_snow_water = test_col_ws_h2osno > 0.0
     snow_water_present = no_snow_layers & some_snow_water
 
+    abs_diff_energy_flux_and_latent_heat = np.abs(np.subtract(
+        test_col_ef_eflx_snomelt, test_col_wf_qflx_snomelt * hfus))
+
     # Verify energy flux is consistent with latent heat from snow melt rate.
-    assert np.all(~snow_water_present | (test_col_ef_eflx_snomelt == 
-                                         test_col_wf_qflx_snomelt * hfus)), (
+    assert np.all(~snow_water_present | (abs_diff_energy_flux_and_latent_heat <= 1e-6)), (
         "energy flux is not consistent with latent heat from snow melt rate where snow "
         +"water present")
 
 
-# #TODO finish check
-# #TODO duplicate check but with h2osno
-# def check_snow_depth_decreases_with_snow_melt_rate(
-#     test_col_es_t_lake: npt.NDArray,
-#     test_col_pp_snl: npt.NDArray,
-#     test_col_ws_h2osno: npt.NDArray,
+#TODO duplicate check but with h2osno
+def check_snow_depth_decreases_with_snow_melt_rate(
+    test_col_es_t_lake: npt.NDArray,
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
 
-#     dtime_mod,
-#     test_col_wf_qflx_snomelt: npt.NDArray,
-#     test_col_ws_snow_depth: npt.NDArray,
-# ):
-#     if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, 
-#                                               test_col_ws_h2osno):
-#         return CheckStatus.SKIPPED
-#     if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
-#                                                 test_col_ws_snow_depth):
-#         return CheckStatus.SKIPPED
-#     (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-#      test_col_ws_snow_depth)=(NonFiniteValuesHandler.mask_non_finite_values(
-#          test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
-#          test_col_ws_snow_depth))
+    dtime_mod,
+    test_col_wf_qflx_snomelt: npt.NDArray,
+    test_col_ws_snow_depth: npt.NDArray,
+):
+    if not is_passing_snow_melt_preconditions(test_col_es_t_lake, test_col_pp_snl, 
+                                              test_col_ws_h2osno):
+        return CheckStatus.SKIPPED
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_wf_qflx_snomelt, 
+                                                test_col_ws_snow_depth):
+        return CheckStatus.SKIPPED
+    (test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+     test_col_ws_snow_depth)=(NonFiniteValuesHandler.mask_non_finite_values(
+         test_col_pp_snl, test_col_ws_h2osno, test_col_wf_qflx_snomelt, 
+         test_col_ws_snow_depth))
 
-#     no_snow_layers = test_col_pp_snl == 0 
-#     some_snow_water = test_col_ws_h2osno > 0.0
-#     snow_water_present = no_snow_layers & some_snow_water
+    no_snow_layers = test_col_pp_snl == 0 
+    some_snow_water = test_col_ws_h2osno > 0.0
+    snow_water_present = no_snow_layers & some_snow_water
 
-#     change_in_snow_depth_over_time = (np.diff(test_col_ws_snow_depth * 1000.0, axis=0) 
-#                                       / dtime_mod)
+    change_in_snow_depth_over_time = (np.diff(test_col_ws_snow_depth * 1000.0, axis=0) 
+                                      / dtime_mod)
+   
+    # test_col_wf_qflx_snomelt is always 0 at timestep 0 because snow melt rate is
+    # calculated from the previous timestep to the current one, so we can skip that 
+    # timestep in the check.
+    abs_diff_snow_depth_change_and_snow_melt_rate = np.abs(np.subtract(
+        change_in_snow_depth_over_time, test_col_wf_qflx_snomelt[1:36,:]))
     
-#     #import pdb
-#     # pdb.set_trace()
-#     #if not np.all(~snow_water_present[1:36,:] | (change_in_snow_depth_over_time 
-#     #        == test_col_wf_qflx_snomelt[1:36,:])):
-#         #pdb.set_trace()
-#     #TODO match shape of change_in_snow_depth_over_time (35, 345) to shape of test_col_wf_qflx_snomelt (36, 345)
-#     # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
-#     #TODO add an approximation
-#     assert np.all(~snow_water_present[1:36,:] | (change_in_snow_depth_over_time 
-#             == test_col_wf_qflx_snomelt[1:36,:])), (
-#         "snow depth does not decrease consistently with snow melt rate where snow water "
-#         +"present")
+    # Verify snow depth (m) decreases consistently with snow melt rate (mm/s)
+    # for snow melt rate to make sense, snow water has to be present at the initial 
+    # timestep and the end timestep of the time interval over which the snow depth 
+    # change is calculated.
+    assert np.all(~(snow_water_present[0:35,:] & snow_water_present[1:36,:]) | 
+                (abs_diff_snow_depth_change_and_snow_melt_rate <= 1e-3)),(
+        "snow depth does not decrease consistently with snow melt rate where snow water"
+        +" present")
 
 
 def check_methane_conductance_gated_by_ice(
@@ -523,9 +526,12 @@ def check_methane_conductance_allowed_without_ice(
         test_lakestate_vars_lakeresist_col + test_lakestate_vars_lake_raw_col
     )
 
+    abs_diff_expected_and_actual_methane = np.abs(np.subtract(
+        expected_methane, test_ch4_vars_grnd_ch4_cond_col))
+
     # Verify columns without ice conduct the expected methane.
     assert np.all(
-        ~no_surface_ice | np.isclose(expected_methane, test_ch4_vars_grnd_ch4_cond_col)
+        ~no_surface_ice | (abs_diff_expected_and_actual_methane <= 1e-6)
     ), "columns without ice do not conduct the expected methane"
 
 # Skipping radiation absorption for now because I'm not sure how patches and columns
