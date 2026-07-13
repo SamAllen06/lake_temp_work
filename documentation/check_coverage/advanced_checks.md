@@ -33,10 +33,10 @@ Preconditions:
 
 Checks:
 - `col_wf%qflx_snofrz_lyr[:, 0, :]` $> 0$
-  - Handled by `key_physical_laws_check.check_snow_freezing_where_snow_present`
+  - Handled by `key_physical_laws_check.check_surface_snow_freezing_where_snow_present`
 - `col_ef%imelt[:, 0, :]` $= 2$ (freezing)
   - Handled by `key_physical_laws_check.check_snow_labeled_freezing_where_snow_present`
-- (`col_wf%qflx_snomelt[:,:]` $= 0$) = (`col_pp%snl[:,:]` $< 0$ and `col_ws$h2osno[t,c]` $> 0$)
+- `col_wf%qflx_snomelt[:,:]` $= 0$
   - Handled by `key_physical_laws_check.check_snow_not_melting_where_snow_present`
 - ($\Delta$(`col_ws%h2osno[t,c]`) $/\Delta$ t) $≥ 0$
   - Handled by `key_physical_laws_check.check_snow_water_not_decreasing`
@@ -68,5 +68,7 @@ Checks:
   - Handled by `key_physical_laws_check.check_snow_melted_where_soil_water_present`
 - `col_ef%eflx_snomelt` $=$ `col_wf%qflx_snomelt*hfus`
   - Handled by `key_physical_laws_check.check_energy_flux_consistent_with_latent_heat`
-- `col_ws%snow_depth`$* 1000/$`dtime_mod` $=$ `col_wf%qflx_snomelt`
-  - Will be handled by `key_physical_laws_check.check_snow_depth_decreases_with_snow_melt_rate`
+- ($\Delta$ (`col_ws%snow_depth`$* 1000)/ \Delta t)/$`dtime_mod` $=$ `col_wf%qflx_snomelt`
+  - Handled by `key_physical_laws_check.check_snow_depth_decreases_with_snow_melt_rate`
+- ($\Delta$ (`col_ws%h2osno`$* 1000)/ \Delta t)/$`dtime_mod` $=$ `col_wf%qflx_snomelt`
+  - Handled by `key_physical_laws_check.check_snow_water_equivalent_decreases_with_snow_melt_rate`
