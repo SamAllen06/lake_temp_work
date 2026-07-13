@@ -14,7 +14,7 @@ Preconditions:
 - `lakestate_vars%lake_icefrac_col[:, 0, :]` $= 0$
 
 Checks:
-- `col_ef%errsoi` $\approx 0$ after correction
+- `col_ef%errsoi` $\approx 0$
   - Handled by `key_physical_laws_check.check_errsoi_threshold`
 - $\Delta$ `col_es%hc_soisno`/ $\Delta$ t $\approx \int$ (`veg_ef%eflx_gnet` + `veg_ef%eflx_soil_grnd` + `veg_ef%eflx_sh_grnd`)dt
   - Handled by `key_physical_laws_check.check_heat_contents_close`
@@ -66,9 +66,9 @@ Checks:
   - Handled by `key_physical_laws_check.check_snow_melting_where_soil_water_present`
 - `col_pp%snl[:,0,:]` $= 0$ and `col_ws%h2osno[:,:]` $> 0$ and `col_es%t_lake[:,0,:]` $>$ `tfrz` $\rightarrow$ `col_wf%qflx_snow_melt[:,:]` $> 0$
   - Handled by `key_physical_laws_check.check_snow_melted_where_soil_water_present`
-- `col_ef%eflx_snomelt` $=$ `col_wf%qflx_snomelt*hfus`
+- `col_ef%eflx_snomelt` $\approx$ `col_wf%qflx_snomelt*hfus`
   - Handled by `key_physical_laws_check.check_energy_flux_consistent_with_latent_heat`
-- ($\Delta$ (`col_ws%snow_depth`$* 1000)/ \Delta t)/$`dtime_mod` $=$ `col_wf%qflx_snomelt`
+- ($\Delta$ (`col_ws%snow_depth`$* 1000)/ \Delta t)/$`dtime_mod` $\approx$ `col_wf%qflx_snomelt`
   - Handled by `key_physical_laws_check.check_snow_depth_decreases_with_snow_melt_rate`
-- ($\Delta$ (`col_ws%h2osno`$* 1000)/ \Delta t)/$`dtime_mod` $=$ `col_wf%qflx_snomelt`
+- ($\Delta$ (`col_ws%h2osno`$* 1000)/ \Delta t)/$`dtime_mod` $\approx$ `col_wf%qflx_snomelt`
   - Handled by `key_physical_laws_check.check_snow_water_equivalent_decreases_with_snow_melt_rate`
