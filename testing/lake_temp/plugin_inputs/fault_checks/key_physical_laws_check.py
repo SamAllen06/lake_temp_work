@@ -327,7 +327,7 @@ def check_heat_diff_close(
 
     abs_heat_diff = np.abs(np.subtract(latent_heat_diff, sensible_heat_diff))
 
-    assert np.all(abs_heat_diff <= 1e-6), (
+    assert np.all(abs_heat_diff <= 1E-6), (
         "latent heat difference and sensible heat difference are not close")
 
 def is_passing_snow_melt_preconditions(
@@ -429,7 +429,7 @@ def check_energy_flux_consistent_with_latent_heat(
         test_col_ef_eflx_snomelt, test_col_wf_qflx_snomelt * hfus))
 
     # Verify energy flux is consistent with latent heat from snow melt rate.
-    assert np.all(~snow_water_present | (abs_diff_energy_flux_and_latent_heat <= 1e-6)), (
+    assert np.all(~snow_water_present | (abs_diff_energy_flux_and_latent_heat <= 1E-6)), (
         "energy flux is not consistent with latent heat from snow melt rate where snow "
         +"water present")
 
@@ -472,7 +472,7 @@ def check_snow_depth_decreases_with_snow_melt_rate(
     # timestep and the end timestep of the time interval over which the snow depth 
     # change is calculated.
     assert np.all(~(snow_water_present[0:35,:] & snow_water_present[1:36,:]) | 
-                (abs_diff_snow_depth_change_and_snow_melt_rate <= 1e-3)),(
+                (abs_diff_snow_depth_change_and_snow_melt_rate <= 1E-3)),(
         "snow depth does not decrease consistently with snow melt rate where snow water"
         +" present")
 
@@ -512,7 +512,7 @@ def check_snow_water_equivalent_decreases_with_snow_melt_rate(
     # timestep and the end timestep of the time interval over which the snow water 
     # equivalent change is calculated.
     assert np.all(~(snow_water_present[0:35,:] & snow_water_present[1:36,:]) | 
-                (abs_diff_snow_water_equivalent_change_and_snow_melt_rate <= 1e-3)),(
+                (abs_diff_snow_water_equivalent_change_and_snow_melt_rate <= 1E-3)),(
         "snow water equivalent does not decrease consistently with snow melt rate where"
         +" snow water present")
 
@@ -572,7 +572,7 @@ def check_methane_conductance_allowed_without_ice(
 
     # Verify columns without ice conduct the expected methane.
     assert np.all(
-        ~no_surface_ice | (abs_diff_expected_and_actual_methane <= 1e-6)
+        ~no_surface_ice | (abs_diff_expected_and_actual_methane <= 1E-6)
     ), "columns without ice do not conduct the expected methane"
 
 # Skipping radiation absorption for now because I'm not sure how patches and columns

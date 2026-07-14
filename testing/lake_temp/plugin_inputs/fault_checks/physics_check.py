@@ -44,7 +44,7 @@ def check_surface_unfrozen_when_tke_present(
          test_lakestate_vars_savedtke1_col)
 
 
-    surface_not_frozen = test_lakestate_vars_lake_icefrac_col[:, 0, :] <1E-6
+    surface_not_frozen = test_lakestate_vars_lake_icefrac_col[:, 0, :] < 1E-6
     snow_not_present = test_col_pp_snl == 0
     unfrozen = surface_not_frozen & snow_not_present
 
