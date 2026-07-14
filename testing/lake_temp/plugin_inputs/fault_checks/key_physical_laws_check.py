@@ -325,7 +325,9 @@ def check_heat_diff_close(
     # Change in sensible heat (MJ/m2) per time step
     sensible_heat_diff = np.diff(test_col_es_hc_soisno, axis=0)
 
-    assert np.all(np.isclose(latent_heat_diff, sensible_heat_diff)), (
+    abs_heat_diff = np.abs(np.subtract(latent_heat_diff, sensible_heat_diff))
+
+    assert np.all(abs_heat_diff <= 1e-6), (
         "latent heat difference and sensible heat difference are not close")
 
 def is_passing_snow_melt_preconditions(
