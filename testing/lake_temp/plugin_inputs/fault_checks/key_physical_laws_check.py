@@ -16,7 +16,7 @@ class IMelt(Enum):
     FREEZING = 2
 
 def convert_patches_to_columns(
-        patch_to_column_converter,
+        patch_to_column_converter: npt.NDArray,
         num_time_steps: int, 
         num_columns: int, 
         patch_variable: npt.NDArray
