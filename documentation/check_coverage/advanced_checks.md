@@ -78,3 +78,17 @@ Checks:
 - ($\Delta$ (`col_ws%h2osno`$* 1000)/ \Delta t)/$`dtime_mod` $\approx$ `col_wf%qflx_snomelt`
   - Handled by `key_physical_laws_check.check_snow_water_equivalent_decreases_with_snow_melt_rate`
   - Tolerance (not provided): 1E-3
+
+## Radiation Absorption
+
+Checks:
+- `lakestate_vars%betaprime_col` $\approx$ `solarabs_vars%sabg_lyr_patch[:, 0, :]` $/$ `solarabs_vars%sabg_patch[:, :]`
+  - Handled by `key_physical_laws_check.check_betaprime_close_to_solar_rad_with_snow`
+  - Tolerance (not provided): 1E-6
+  - Preconditions: `col_pp%snl[:, :]` $= 0$ and `solarabs_vars%sabg_lyr_patch[:, 0, :]` $!= 0$
+- *Unfinished check*
+  - Will be Handled by `key_physical_laws_check.check_betaprime_close_to_solar_rad_without_snow`
+- *Unfinished check*
+  - Will be Handled by `key_physical_laws_check.check_flux_allocation`
+- *Unfinished check*
+  - Will be Handled by `key_physical_laws_check.check_energy_consistency`

@@ -15,6 +15,43 @@ class IMelt(Enum):
     MELTING = 1
     FREEZING = 2
 
+def convert_patches_to_columns(
+        patch_to_column_converter,
+        num_time_steps: int, 
+        num_columns: int, 
+        patch_variable: npt.NDArray
+) -> npt.NDArray:
+    #initialize column array and set shape
+    variable_by_column_added = np.zeros((num_time_steps, num_columns))
+    lowest_patch_in_column = 0
+    column_of_previous_patch = 0
+    patch = 0
+    #for all columns except the final one, convert patches to columns
+    while patch < patch_variable.shape[1]:
+        current_column = patch_to_column_converter[0, patch]-1
+
+        if column_of_previous_patch != current_column:
+            time_step = 0
+            variable_by_column_added[:, column_of_previous_patch] = np.sum(
+                patch_variable[:, lowest_patch_in_column:patch],
+                axis=1)
+            lowest_patch_in_column = patch
+
+        column_of_previous_patch = current_column
+        patch += 1
+    #now for final column, convert patches to column
+    time_step = 0
+    while time_step < variable_by_column_added.shape[0]:
+        variable_by_column_added[time_step, column_of_previous_patch] = np.sum(
+            patch_variable[time_step, lowest_patch_in_column:]
+        )
+        time_step += 1
+    #mask nan values
+    variable_by_column_added = np.ma.masked_invalid(variable_by_column_added)
+    #initialize integrated array and set shape
+    return variable_by_column_added
+
+
 def is_passing_energy_conservation_preconditions(
     test_col_pp_snl: npt.NDArray,
     test_col_ws_h2osno: npt.NDArray,
@@ -102,34 +139,12 @@ def check_heat_contents_close(
     # W/(m^2) 
     individual_heat_contents_by_patch_added = np.add(test_veg_ef_eflx_gnet,
                             test_veg_ef_eflx_soil_grnd, test_veg_ef_eflx_sh_grnd)
+    
     #convert individual_heat_contents_by_patch_added from patches (681) to columns (345)
-    #initialize by column array and set shape
-    individual_heat_contents_by_column_added = np.zeros((total_time_steps, total_columns))
-    lowest_patch_in_column = 0
-    column_of_previous_patch = 0
-    patch = 0
-    #for all columns except the final one, convert patches to columns
-    while patch < test_veg_pp_column.shape[1]:
-        current_column = test_veg_pp_column[0, patch]-1
+    individual_heat_contents_by_column_added = convert_patches_to_columns(
+        test_veg_pp_column, test_col_es_hc_soisno.shape[0], 
+        test_col_es_hc_soisno.shape[1], individual_heat_contents_by_patch_added)
 
-        if column_of_previous_patch != current_column:
-            time_step = 0
-            individual_heat_contents_by_column_added[:,column_of_previous_patch]=np.sum(
-                individual_heat_contents_by_patch_added[:,lowest_patch_in_column:patch],
-                axis=1)
-            lowest_patch_in_column = patch
-
-        column_of_previous_patch = current_column
-        patch += 1
-    #now for final column, convert patches to column
-    time_step = 0
-    while time_step < individual_heat_contents_by_column_added.shape[0]:
-        individual_heat_contents_by_column_added[time_step, column_of_previous_patch] = np.sum(
-            individual_heat_contents_by_patch_added[time_step, lowest_patch_in_column:]
-        )
-        time_step += 1
-    #mask nan values
-    individual_heat_contents_by_column_added = np.ma.masked_invalid(individual_heat_contents_by_column_added)
     #initialize integrated array and set shape
     integrated_individual_heat_contents_added = np.empty((total_time_steps-1, 
                                                           total_columns))
@@ -578,4 +593,80 @@ def check_methane_conductance_allowed_without_ice(
 # Skipping radiation absorption for now because I'm not sure how patches and columns
 # correspond.
 
+def check_betaprime_close_to_solar_rad_with_snow(
+    test_col_pp_snl: npt.NDArray,
+    test_solarabs_vars_sabg_patch: npt.NDArray,
+    test_solarabs_vars_sabg_lyr_patch: npt.NDArray,
+    test_lakestate_vars_betaprime_col: npt.NDArray,
+    test_veg_pp_column: npt.NDArray
+):
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_pp_snl, 
+            test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
+            test_lakestate_vars_betaprime_col):
+        return CheckStatus.SKIPPED
+    (test_col_pp_snl, test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch,
+     test_lakestate_vars_betaprime_col) = (
+        NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
+         test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
+         test_lakestate_vars_betaprime_col))
+    
+    snow_layers = np.all(test_col_pp_snl < 0)
+    radiation_absorbed_into_top = np.all(test_solarabs_vars_sabg_lyr_patch[:, 0, :] != 0)
+    if not (snow_layers and radiation_absorbed_into_top):
+        return CheckStatus.SKIPPED
+    
+    top_lyr_radiation_frac_patch = (test_solarabs_vars_sabg_lyr_patch[:, 0, :]
+                              /test_solarabs_vars_sabg_patch)
 
+    #convert individual_heat_contents_by_patch_added from patches (681) to columns (345)
+    top_lyr_radiation_frac_col = convert_patches_to_columns(
+        test_veg_pp_column, test_lakestate_vars_betaprime_col.shape[0], 
+        test_lakestate_vars_betaprime_col.shape[1], top_lyr_radiation_frac_patch)
+
+    abs_diff_betaprime_and_solar_radiation = np.abs(np.subtract(
+        test_lakestate_vars_betaprime_col, top_lyr_radiation_frac_col))
+    assert np.all(abs_diff_betaprime_and_solar_radiation <= 1E-6), (
+        "betaprime not close to solar radiation absorbed into top layer when snow"
+        +" present"
+    )
+
+
+# def check_betaprime_close_to_solar_rad_without_snow(
+#     test_col_pp_snl: npt.NDArray,
+#     test_solarabs_vars_sabg_patch: npt.NDArray,
+#     test_solarabs_vars_sabg_lyr_patch: npt.NDarray,
+#     test_lakestate_vars_betaprime_col: npt.NDArray
+# ):
+#     if NonFiniteValuesHandler.is_all_not_finite(test_col_pp_snl, 
+#             test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
+#             test_lakestate_vars_betaprime_col):
+#         return CheckStatus.SKIPPED
+#     (test_col_pp_snl, test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch,
+#      test_lakestate_vars_betaprime_col) = (
+#         NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
+#          test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
+#          test_lakestate_vars_betaprime_col))
+    
+#     no_snow_layers = np.all(test_col_pp_snl == 0)
+#     radiation_absorbed = np.all(test_solarabs_vars_sabg_patch > 0)
+#     if not (no_snow_layers and radiation_absorbed):
+#         return CheckStatus.SKIPPED
+
+#     # set up done TODO finish check
+
+
+# def check_flux_allocation(
+#     test_solarabs_vars_sabg_patch: npt.NDArray,
+#     test_solarabs_vars_sabg_lyr_patch: npt.NDarray,
+#     test_lakestate_vars_betaprime_col: npt.NDArray
+# ):
+#     #TODO no set up needed, finish check
+#     #check more surface absorption in high betaprime cases
+
+
+# def check_energy_consistency(
+#     test_col_es_hc_soisno: npt.NDArray,
+#     test_col_ef_errsoi: npt.NDArray,
+# ):
+#     #TODO no set up needed, finish check
+#     #check energy consistency via hc_soisno change and col_ef_errsoi approximately 0

@@ -152,10 +152,6 @@ not ever (`ch4_vars%grnd_ch4_cond_col[:,:,:]` $> 0$ and `lakestate_vars%lake_ice
 - Tolerance (not provided): 1E-6 used
 - Precondition: `use_lch4` is true
 
-## Flux Sign Conventions
-
-Skipped because we are unsure how to check these.
-
 ## Physics Sanity
 
 `lakestate_vars%lake_icefrac_col` $> 0.999$ and `lakestate_vars%lake_icefrac_col` $\neq 1 \rightarrow$
