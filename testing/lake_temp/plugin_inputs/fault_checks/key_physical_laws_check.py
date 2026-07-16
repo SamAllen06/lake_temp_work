@@ -77,6 +77,51 @@ def is_passing_energy_conservation_preconditions(
     )
 
 
+def is_passing_freezing_latent_heat_preconditions(
+    test_col_es_t_lake: npt.NDArray,
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
+    test_col_es_t_soisno: npt.NDArray,
+) -> bool:
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
+            test_col_ws_h2osno, test_col_es_t_soisno):
+        return False
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_es_t_soisno)=(
+         NonFiniteValuesHandler.mask_non_finite_values(
+             test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
+             test_col_es_t_soisno))
+    
+    some_snow_layers = test_col_pp_snl < 0
+    some_snow_water = test_col_ws_h2osno > 0.0
+    some_snow_present = np.any(some_snow_layers & some_snow_water)
+
+    soil_snow_layers_below_freezing = np.all(test_col_es_t_soisno[:, 0, :] < TFRZ)
+    lake_surface_is_at_or_below_freezing = np.all(test_col_es_t_lake[:, 0, :] <= TFRZ)
+    temp_below_freezing = soil_snow_layers_below_freezing and lake_surface_is_at_or_below_freezing
+
+    return (some_snow_present and temp_below_freezing)
+
+
+def is_passing_snow_melt_preconditions(
+    test_col_es_t_lake: npt.NDArray,
+    test_col_pp_snl: npt.NDArray,
+    test_col_ws_h2osno: npt.NDArray,
+) -> bool:
+    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
+            test_col_ws_h2osno):
+        return False
+    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno)=(
+         NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
+             test_col_pp_snl, test_col_ws_h2osno))
+    
+    no_snow_layers = test_col_pp_snl == 0 
+    some_snow_water = test_col_ws_h2osno > 0.0
+    some_snow_water_present = np.any(no_snow_layers & some_snow_water)
+
+    lake_surface_above_freezing = np.all(test_col_es_t_lake[:, 0, :] > TFRZ)
+    return some_snow_water_present and lake_surface_above_freezing
+
+
 def check_errsoi_threshold(
     #variables used in preconditions method
     test_col_pp_snl: npt.NDArray,
@@ -162,31 +207,6 @@ def check_heat_contents_close(
     assert np.all(heat_content_abs_diff < 1E-6), (
         "change in combined heat content not close to integral of individual heat"
         +" contents added")
-
-
-def is_passing_freezing_latent_heat_preconditions(
-    test_col_es_t_lake: npt.NDArray,
-    test_col_pp_snl: npt.NDArray,
-    test_col_ws_h2osno: npt.NDArray,
-    test_col_es_t_soisno: npt.NDArray,
-) -> bool:
-    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
-            test_col_ws_h2osno, test_col_es_t_soisno):
-        return False
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, test_col_es_t_soisno)=(
-         NonFiniteValuesHandler.mask_non_finite_values(
-             test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno, 
-             test_col_es_t_soisno))
-    
-    some_snow_layers = test_col_pp_snl < 0
-    some_snow_water = test_col_ws_h2osno > 0.0
-    some_snow_present = np.any(some_snow_layers & some_snow_water)
-
-    soil_snow_layers_below_freezing = np.all(test_col_es_t_soisno[:, 0, :] < TFRZ)
-    lake_surface_is_at_or_below_freezing = np.all(test_col_es_t_lake[:, 0, :] <= TFRZ)
-    temp_below_freezing = soil_snow_layers_below_freezing and lake_surface_is_at_or_below_freezing
-
-    return (some_snow_present and temp_below_freezing)
 
 
 def check_surface_snow_freezing_where_snow_present(
@@ -344,25 +364,6 @@ def check_heat_diff_close(
 
     assert np.all(abs_heat_diff <= 1E-6), (
         "latent heat difference and sensible heat difference are not close")
-
-def is_passing_snow_melt_preconditions(
-    test_col_es_t_lake: npt.NDArray,
-    test_col_pp_snl: npt.NDArray,
-    test_col_ws_h2osno: npt.NDArray,
-) -> bool:
-    if NonFiniteValuesHandler.is_all_not_finite(test_col_es_t_lake, test_col_pp_snl, 
-            test_col_ws_h2osno):
-        return False
-    (test_col_es_t_lake, test_col_pp_snl, test_col_ws_h2osno)=(
-         NonFiniteValuesHandler.mask_non_finite_values(test_col_es_t_lake, 
-             test_col_pp_snl, test_col_ws_h2osno))
-    
-    no_snow_layers = test_col_pp_snl == 0 
-    some_snow_water = test_col_ws_h2osno > 0.0
-    some_snow_water_present = np.any(no_snow_layers & some_snow_water)
-
-    lake_surface_above_freezing = np.all(test_col_es_t_lake[:, 0, :] > TFRZ)
-    return some_snow_water_present and lake_surface_above_freezing
 
 
 def check_snow_melting_where_snow_water_present(
