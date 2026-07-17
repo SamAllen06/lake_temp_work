@@ -2,8 +2,8 @@
 ## Purpose
 Our goal is to determine how changing the values of certain constants in
 [Docker4SPEL's](https://github.com/daliwang/Docker4SPEL) LakeTemperature unit
-test module impact that module's outputs. We are looking to identify the
-overall most impactful constants on the test's outputs, as well as looking to
+test module impacts that module's outputs. We are looking to identify the
+constants that impact the test's outputs as well as looking to
 find faults in the module, such as impossible output values.
 
 ## Model Testing Framework
@@ -21,19 +21,27 @@ easily interpret the results.
 You will need Python 3 and Docker installed for this.
 
 ## Get Started
-1. Enter the testing directory
+1. Download and open the zip file of the latest release. If there's no release, use the main branch.
 ```
-cd testing/
+git clone https://github.com/SamAllen06/lake_temp_work.git
 ```
-2. Run the Lake Temperature testing script.
+2. Enter the testing directory
+```
+cd testing
+```
+3. Run the Lake Temperature testing script.
 ```
 python test_laketemperature.py
 ```
-3. Run Lake Temperature Mapper
+4. Choose the desired plugins.
 ```
-python src/cli.py config/
+vim /app/config/plugin_whitelist/json
 ```
-4. Review output (file output is in `/app/testing_output/`)
+6. Run the Lake Temperature Mapper
+```
+mtf config
+```
+6. Review output (file output is in `/app/testing_output/`)
 
 ## Test Model
 Test Model (test_model.exe) is an executable with the same interface as the
