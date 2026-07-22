@@ -54,5 +54,5 @@ def check_surface_unfrozen_when_tke_present(
     tke_present = test_lakestate_vars_savedtke1_col > 0.0
 
     assert np.all(~tke_present | unfrozen), (
-        "Turbulant kinentic energy present on a frozen surface"
+        "Turbulant kinetic energy present on a frozen surface"
     )
