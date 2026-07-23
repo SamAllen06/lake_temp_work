@@ -23,7 +23,7 @@ def delete_image_if_exists() -> None:
 
     for image in image_data:
         if image["Repository"] == IMAGE_NAME:
-            if int(image["Containers"]) > 0:
+            if type(int(image["Containers"])) == 'N/A' or int(image["Containers"]) > 0:
                 delete_containers_for_image(image["ID"])
             subprocess.run(
                 ["docker", "rmi", image["ID"]],
