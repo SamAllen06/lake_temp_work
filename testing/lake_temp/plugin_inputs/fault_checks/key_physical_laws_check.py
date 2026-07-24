@@ -1,5 +1,4 @@
 from enum import Enum
-import pdb
 
 import numpy as np
 import numpy.typing as npt
@@ -16,71 +15,55 @@ class IMelt(Enum):
     MELTING = 1
     FREEZING = 2
 
-#TODO replace stuff with num_time_steps, remove time_step
-#TODO clean up/combine these first two methods, clean up the last few methods
 def convert_patches_to_columns(
         patch_to_column_converter: npt.NDArray,
-        num_time_steps: int, 
         num_columns: int, 
         patch_variable: npt.NDArray
 ) -> npt.NDArray:
-    #initialize column array and set shape
-    variable_by_column_added = np.zeros((num_time_steps, num_columns))
+    num_time_steps = patch_to_column_converter.shape[0]
+    num_patches = patch_to_column_converter.shape[1]
+
     lowest_patch_in_column = 0
     column_of_previous_patch = 0
     patch = 0
-    #for all columns except the final one, convert patches to columns
-    while patch < patch_variable.shape[1]:
-        current_column = patch_to_column_converter[0, patch]-1
 
-        if column_of_previous_patch != current_column:
-            time_step = 0
-            variable_by_column_added[:, column_of_previous_patch] = np.sum(
-                patch_variable[:, lowest_patch_in_column:patch],
-                axis=1)
-            lowest_patch_in_column = patch
+    if len(patch_variable.shape) == 2:
+        #initialize column array and set shape
+        variable_by_column_added = np.zeros((num_time_steps, num_columns))
+        
+        #for all columns except the final one, convert patches to columns
+        while patch < num_patches:
+            current_column = patch_to_column_converter[0, patch]-1
 
-        column_of_previous_patch = current_column
-        patch += 1
-    #now for final column, convert patches to column
-    time_step = 0
-    while time_step < variable_by_column_added.shape[0]:
-        variable_by_column_added[time_step, column_of_previous_patch] = np.sum(
-            patch_variable[time_step, lowest_patch_in_column:]
-        )
-        time_step += 1
-    #mask nan values
-    variable_by_column_added = np.ma.masked_invalid(variable_by_column_added)
-    return variable_by_column_added
+            if column_of_previous_patch != current_column:
+                variable_by_column_added[:, column_of_previous_patch] = np.sum(
+                    patch_variable[:, lowest_patch_in_column:patch], axis=1)
+                lowest_patch_in_column = patch
 
-#TODO replace stuff with num_time_steps, remove time_step
-def convert_patches_to_columns_3(
-        patch_to_column_converter: npt.NDArray,
-        num_time_steps: int, 
-        num_columns: int, 
-        patch_variable: npt.NDArray
-) -> npt.NDArray:
-    num_snow_layers = patch_variable.shape[1]
-    #initialize column array and set shape
-    variable_by_column_added = np.zeros((num_time_steps, num_snow_layers, num_columns))
-    lowest_patch_in_column = 0
-    column_of_previous_patch = 0
-    patch = 0
-    #for all columns except the final one, convert patches to columns
-    while patch < patch_variable.shape[2]:
-        current_column = patch_to_column_converter[0, patch]-1
+            column_of_previous_patch = current_column
+            patch += 1
+        #now for final column, convert patches to column
+        variable_by_column_added[:, column_of_previous_patch] = np.sum(
+            patch_variable[:, lowest_patch_in_column:], axis=1)
+    elif len(patch_variable.shape) == 3:
+        num_snow_layers = patch_variable.shape[1]
+        #initialize column array and set shape
+        variable_by_column_added = np.zeros((num_time_steps, num_snow_layers, num_columns))
+        #for all columns except the final one, convert patches to columns
+        while patch < num_patches:
+            current_column = patch_to_column_converter[0, patch]-1
 
-        if column_of_previous_patch != current_column:
-            variable_by_column_added[:, :, column_of_previous_patch] = np.sum(
-                patch_variable[:, :, lowest_patch_in_column:patch],
-                axis=2)
-            lowest_patch_in_column = patch
+            if column_of_previous_patch != current_column:
+                variable_by_column_added[:, :, column_of_previous_patch] = np.sum(
+                    patch_variable[:, :, lowest_patch_in_column:patch], axis=2)
+                lowest_patch_in_column = patch
 
-        column_of_previous_patch = current_column
-        patch += 1
-    #now for final column, convert patches to column
-    variable_by_column_added[:, :, column_of_previous_patch] = np.sum(
-        patch_variable[:, :, lowest_patch_in_column:], axis=2)
+            column_of_previous_patch = current_column
+            patch += 1
+        #now for final column, convert patches to column
+        variable_by_column_added[:, :, column_of_previous_patch] = np.sum(
+            patch_variable[:, :, lowest_patch_in_column:], axis=2)
+        
     #mask nan values
     variable_by_column_added = np.ma.masked_invalid(variable_by_column_added)
     return variable_by_column_added
@@ -221,8 +204,8 @@ def check_heat_contents_close(
     
     #convert individual_heat_contents_by_patch_added from patches (681) to columns (345)
     individual_heat_contents_by_column_added = convert_patches_to_columns(
-        test_veg_pp_column, test_col_es_hc_soisno.shape[0], 
-        test_col_es_hc_soisno.shape[1], individual_heat_contents_by_patch_added)
+        test_veg_pp_column, test_col_es_hc_soisno.shape[1], 
+        individual_heat_contents_by_patch_added)
 
     #initialize integrated array and set shape
     integrated_individual_heat_contents_added = np.empty((total_time_steps-1, 
@@ -591,6 +574,7 @@ def check_methane_conductance_gated_by_ice(
     assert not np.any(some_surface_ice & conducting_methane), (
         "methane conductance is not blocked by ice")
 
+
 def check_methane_conductance_allowed_without_ice(
     use_lch4: npt.NDArray,
     test_lakestate_vars_lake_icefrac_col: npt.NDArray,
@@ -625,89 +609,8 @@ def check_methane_conductance_allowed_without_ice(
         ~no_surface_ice | (abs_diff_expected_and_actual_methane <= 1E-6)
     ), "columns without ice do not conduct the expected methane"
 
-# Skipping radiation absorption for now because I'm not sure how patches and columns
-# correspond.
 
-# def check_betaprime_close_to_solar_rad_with_snow(
-#     test_col_pp_snl: npt.NDArray,
-#     test_solarabs_vars_sabg_patch: npt.NDArray,
-#     test_solarabs_vars_sabg_lyr_patch: npt.NDArray,
-#     test_lakestate_vars_betaprime_col: npt.NDArray,
-#     test_veg_pp_column: npt.NDArray
-# ):
-#     if NonFiniteValuesHandler.is_all_not_finite(test_col_pp_snl, 
-#             test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
-#             test_lakestate_vars_betaprime_col):
-#         return CheckStatus.SKIPPED
-#     (test_col_pp_snl, test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch,
-#      test_lakestate_vars_betaprime_col) = (
-#         NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
-#          test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
-#          test_lakestate_vars_betaprime_col))
-    
-#     snow_layers = np.all(test_col_pp_snl < 0)
-#     if not snow_layers:
-#         return CheckStatus.SKIPPED
-
-#     top_lyr_radiation_frac_patch = (test_solarabs_vars_sabg_lyr_patch[:, 0, :]
-#                               /test_solarabs_vars_sabg_patch)
-
-#     #convert individual_heat_contents_by_patch_added from patches (681) to columns (345)
-#     top_lyr_radiation_frac_col = convert_patches_to_columns(
-#         test_veg_pp_column, test_lakestate_vars_betaprime_col.shape[0], 
-#         test_lakestate_vars_betaprime_col.shape[1], top_lyr_radiation_frac_patch)
-
-#     abs_diff_betaprime_and_solar_radiation = np.abs(np.subtract(
-#         test_lakestate_vars_betaprime_col, top_lyr_radiation_frac_col))
-#     assert np.all(abs_diff_betaprime_and_solar_radiation <= 1E-6), (
-#         "betaprime not close to solar radiation absorbed into top layer when snow"
-#         +" present"
-#     )
-
-
-# def check_betaprime_close_to_solar_rad_without_snow(
-#     betavis,
-#     test_veg_pp_column: npt.NDArray,
-#     test_col_pp_snl: npt.NDArray,
-#     test_solarabs_vars_sabg_patch: npt.NDArray,
-#     test_solarabs_vars_sabg_lyr_patch: npt.NDArray,
-#     test_lakestate_vars_betaprime_col: npt.NDArray,
-#     test_solarabs_vars_fsds_nir_d_patch: npt.NDArray,
-#     test_solarabs_vars_fsds_nir_i_patch: npt.NDArray,
-#     test_solarabs_vars_fsr_nir_d_patch: npt.NDArray,
-#     test_solarabs_vars_fsr_nir_i_patch: npt.NDArray
-# ):
-#     if NonFiniteValuesHandler.is_all_not_finite(test_col_pp_snl, 
-#             test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
-#             test_lakestate_vars_betaprime_col):
-#         return CheckStatus.SKIPPED
-#     (test_col_pp_snl, test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch,
-#      test_lakestate_vars_betaprime_col) = (
-#         NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
-#          test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
-#          test_lakestate_vars_betaprime_col))
-#     import pdb
-    
-#     no_snow_layers = np.all(test_col_pp_snl == 0)
-#     if not no_snow_layers:
-#         return CheckStatus.SKIPPED
-
-#     sabg_nir = ((test_solarabs_vars_fsds_nir_d_patch 
-#                  + test_solarabs_vars_fsds_nir_i_patch) 
-#                  - (test_solarabs_vars_fsr_nir_d_patch 
-#                     + test_solarabs_vars_fsr_nir_i_patch))
-#     NIR_frac = sabg_nir / test_solarabs_vars_sabg_patch
-#     something_patches = NIR_frac + (1 - NIR_frac)*betavis
-#     something_column = convert_patches_to_columns(test_veg_pp_column, 
-#             test_lakestate_vars_betaprime_col.shape[0], 
-#             test_lakestate_vars_betaprime_col.shape[1], something_patches)
-
-#     abs_dif_betaprime_something = np.abs(np.subtract(test_lakestate_vars_betaprime_col, 
-#                                                      something_column))
-#     assert np.all(abs_dif_betaprime_something <= 1E-6)
-
-
-def check_betaprime_close_to_solar_rad_where_snow2(
+def check_betaprime_close_to_solar_rad_where_snow(
     test_col_pp_snl: npt.NDArray,
     test_solarabs_vars_sabg_patch: npt.NDArray,
     test_solarabs_vars_sabg_lyr_patch: npt.NDArray,
@@ -725,18 +628,16 @@ def check_betaprime_close_to_solar_rad_where_snow2(
          test_lakestate_vars_betaprime_col))
     
     #convert individual_heat_contents_by_patch_added from patches (681) to columns (345)
-    radiation_lyr_patch_col = convert_patches_to_columns_3(test_veg_pp_column, test_lakestate_vars_betaprime_col.shape[0], 
+    radiation_lyr_patch_col = convert_patches_to_columns(test_veg_pp_column, 
         test_lakestate_vars_betaprime_col.shape[1], test_solarabs_vars_sabg_lyr_patch)
-    radiation_patch_col = convert_patches_to_columns(test_veg_pp_column, test_lakestate_vars_betaprime_col.shape[0], 
+    radiation_patch_col = convert_patches_to_columns(test_veg_pp_column, 
         test_lakestate_vars_betaprime_col.shape[1], test_solarabs_vars_sabg_patch)
 
-    #TODO figure out what snl + 1 means
+    #TODO see if I can use np. to simplify this
     top_snow_lyr_radiation = np.empty((radiation_lyr_patch_col.shape[0], radiation_lyr_patch_col.shape[2]))
     for i in range(0, radiation_lyr_patch_col.shape[0]-1):
         for j in range(0, radiation_lyr_patch_col.shape[2]-1):
-                top_snow_lyr_radiation[i, j] = radiation_lyr_patch_col[i, np.abs(test_col_pp_snl[i, j])+1, j]
-
-    #TODO see if most answers being undefined is a problem
+                top_snow_lyr_radiation[i, j] = radiation_lyr_patch_col[i, test_col_pp_snl[i, j] + 1, j]
     top_snow_lyr_radiation_frac = top_snow_lyr_radiation/radiation_patch_col
 
     abs_diff_betaprime_and_solar_radiation = np.abs(np.subtract(
@@ -752,7 +653,6 @@ def check_betaprime_close_to_solar_rad_where_no_snow(
     test_veg_pp_column: npt.NDArray,
     test_col_pp_snl: npt.NDArray,
     test_solarabs_vars_sabg_patch: npt.NDArray,
-    test_solarabs_vars_sabg_lyr_patch: npt.NDArray,
     test_lakestate_vars_betaprime_col: npt.NDArray,
     test_solarabs_vars_fsds_nir_d_patch: npt.NDArray,
     test_solarabs_vars_fsds_nir_i_patch: npt.NDArray,
@@ -760,31 +660,31 @@ def check_betaprime_close_to_solar_rad_where_no_snow(
     test_solarabs_vars_fsr_nir_i_patch: npt.NDArray
 ):
     if NonFiniteValuesHandler.is_all_not_finite(test_col_pp_snl, 
-            test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
-            test_lakestate_vars_betaprime_col):
+            test_solarabs_vars_sabg_patch, test_lakestate_vars_betaprime_col, 
+            test_solarabs_vars_fsds_nir_d_patch, test_solarabs_vars_fsds_nir_i_patch, 
+            test_solarabs_vars_fsr_nir_d_patch, test_solarabs_vars_fsr_nir_i_patch):
         return CheckStatus.SKIPPED
-    (test_col_pp_snl, test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch,
-     test_lakestate_vars_betaprime_col) = (
+    (test_col_pp_snl, test_solarabs_vars_sabg_patch, test_lakestate_vars_betaprime_col, 
+     test_solarabs_vars_fsds_nir_d_patch, test_solarabs_vars_fsds_nir_i_patch, 
+     test_solarabs_vars_fsr_nir_d_patch, test_solarabs_vars_fsr_nir_i_patch) = (
         NonFiniteValuesHandler.mask_non_finite_values(test_col_pp_snl, 
-         test_solarabs_vars_sabg_patch, test_solarabs_vars_sabg_lyr_patch, 
-         test_lakestate_vars_betaprime_col))
+            test_solarabs_vars_sabg_patch, test_lakestate_vars_betaprime_col, 
+            test_solarabs_vars_fsds_nir_d_patch, test_solarabs_vars_fsds_nir_i_patch, 
+            test_solarabs_vars_fsr_nir_d_patch, test_solarabs_vars_fsr_nir_i_patch))
     
     sabg_nir = ((test_solarabs_vars_fsds_nir_d_patch 
                  + test_solarabs_vars_fsds_nir_i_patch) 
                  - (test_solarabs_vars_fsr_nir_d_patch 
                     + test_solarabs_vars_fsr_nir_i_patch))
     NIR_frac = sabg_nir / test_solarabs_vars_sabg_patch
-    #TODO remove something
-    something_patches = NIR_frac + (1 - NIR_frac)*betavis
-    something_column = convert_patches_to_columns(test_veg_pp_column, 
-            test_lakestate_vars_betaprime_col.shape[0], 
-            test_lakestate_vars_betaprime_col.shape[1], something_patches)
+    NIR_betavis_blend_patches = NIR_frac + (1 - NIR_frac)*betavis
+    NIR_betavis_blend_column = convert_patches_to_columns(test_veg_pp_column, 
+            test_lakestate_vars_betaprime_col.shape[1], NIR_betavis_blend_patches)
 
-    abs_dif_betaprime_something = np.abs(np.subtract(test_lakestate_vars_betaprime_col, 
-                                                     something_column))
-    pdb.set_trace()
-    assert np.all(~(test_col_pp_snl == 0) | (abs_dif_betaprime_something <= 1E-6)), (
-        "betaprime not close to something where no snow present"
+    abs_dif_betaprime_NIR_betavis_blend = np.abs(np.subtract(test_lakestate_vars_betaprime_col, 
+                                                     NIR_betavis_blend_column))
+    assert np.all(~(test_col_pp_snl == 0) | (abs_dif_betaprime_NIR_betavis_blend <= 1E-6)), (
+        "betaprime not close to NIR betavis blend where no snow present"
     )
 
 
