@@ -163,7 +163,7 @@ def check_errsoi_threshold(
     test_col_ef_errsoi=NonFiniteValuesHandler.mask_non_finite_values(test_col_ef_errsoi)
 
     # Verify error is below threshold used in LakeTemperature.
-    assert np.all(np.abs(test_col_ef_errsoi) < 1E-6), "error above threshold"
+    assert np.all(np.abs(test_col_ef_errsoi) <= 1E-6), "error above threshold"
 
 
 def check_heat_contents_close(
@@ -221,7 +221,7 @@ def check_heat_contents_close(
     heat_content_abs_diff = np.abs(np.subtract(change_in_combined_heat_content,
                             integrated_individual_heat_contents_added*dtime_mod/1E6))
     
-    assert np.all(heat_content_abs_diff < 1E-6), (
+    assert np.all(heat_content_abs_diff <= 1E-6), (
         "change in combined heat content not close to integral of individual heat"
         +" contents added")
 
