@@ -687,19 +687,43 @@ def check_betaprime_close_to_solar_rad_where_no_snow(
         "betaprime not close to NIR betavis blend where no snow present"
     )
 
+import pdb
+def check_betaprime_consistent_with_surface_heating(
+    test_veg_pp_column: npt.NDArray,
+    test_solarabs_vars_sabg_patch: npt.NDArray,
+    test_lakestate_vars_betaprime_col: npt.NDArray,
+    test_solarabs_vars_sabg_lyr_patch: npt.NDArray
+):
+    #surface_heating = 
+    expected_surface_heating = (test_solarabs_vars_sabg_patch[:, :]
+                    *test_lakestate_vars_betaprime_col[:,test_veg_pp_column[0, :]-1])
+    pdb.set_trace()
+    abs_dif_surface_heating = np.abs(surface_heating-expected_surface_heating)
 
-# def check_flux_allocation(
-#     test_solarabs_vars_sabg_patch: npt.NDArray,
-#     test_solarabs_vars_sabg_lyr_patch: npt.NDarray,
-#     test_lakestate_vars_betaprime_col: npt.NDArray
-# ):
-#     #TODO no set up needed, finish check
-#     #check more surface absorption in high betaprime cases
+    assert np.all(abs_dif_surface_heating <= 1E-6), (
+        "betaprime times absorption rate not consistent with surface heating")
 
+    
+def check_betaprime_match_penetration(
+    test_veg_pp_column: npt.NDArray,
+    test_solarabs_vars_sabg_patch: npt.NDArray,
+    test_lakestate_vars_betaprime_col: npt.NDArray,
+    test_veg_ef_eflx_gnet: npt.NDArray, 
+    test_veg_ef_eflx_soil_grnd: npt.NDArray
+):
+    if NonFiniteValuesHandler.is_all_not_finite(test_solarabs_vars_sabg_patch, 
+            test_lakestate_vars_betaprime_col, test_veg_ef_eflx_gnet, 
+            test_veg_ef_eflx_soil_grnd):
+        return CheckStatus.SKIPPED
+    (test_solarabs_vars_sabg_patch, test_lakestate_vars_betaprime_col, 
+     test_veg_ef_eflx_gnet, test_veg_ef_eflx_soil_grnd
+     ) = NonFiniteValuesHandler.mask_non_finite_values(test_solarabs_vars_sabg_patch, 
+        test_lakestate_vars_betaprime_col, test_veg_ef_eflx_gnet, 
+        test_veg_ef_eflx_soil_grnd)
 
-# def check_energy_consistency(
-#     test_col_es_hc_soisno: npt.NDArray,
-#     test_col_ef_errsoi: npt.NDArray,
-# ):
-#     #TODO no set up needed, finish check
-#     #check energy consistency via hc_soisno change and col_ef_errsoi approximately 0
+    penetration = test_veg_ef_eflx_soil_grnd[:,:]-test_veg_ef_eflx_gnet[:, :]
+    expected_penetration = test_solarabs_vars_sabg_patch[:, :] * np.subtract(
+        1, test_lakestate_vars_betaprime_col[:,test_veg_pp_column[0, :]-1])
+    abs_dif_penetration = np.abs(penetration-expected_penetration)
+
+    assert np.all(abs_dif_penetration <= 1E-6)
