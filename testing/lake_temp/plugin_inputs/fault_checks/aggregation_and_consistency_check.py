@@ -36,9 +36,9 @@ def check_icethick_col_is_sum(
                                                 test_col_pp_dz_lake):
         return CheckStatus.SKIPPED
     (test_lakestate_vars_lake_icethick_col, test_lakestate_vars_lake_icefrac_col, 
-     test_col_pp_dz_lake) = (NonFiniteValuesHandler.mask_non_finite_values(
+     test_col_pp_dz_lake) = NonFiniteValuesHandler.mask_non_finite_values(
          test_lakestate_vars_lake_icethick_col, test_lakestate_vars_lake_icefrac_col, 
-         test_col_pp_dz_lake))
+         test_col_pp_dz_lake)
 
     tolerance = 1E-9
 
@@ -64,4 +64,5 @@ def check_imelt_uses_valid_enum_values(
         return CheckStatus.SKIPPED
     masked_imelt = NonFiniteValuesHandler.mask_non_finite_values(masked_imelt)
 
-    assert np.all(masked_imelt >= 0) and np.all(masked_imelt <= 2)
+    assert (np.all(masked_imelt >= 0) and np.all(masked_imelt <= 2)), (
+        "imelt has invalid enum values")

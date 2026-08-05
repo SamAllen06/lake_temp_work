@@ -62,10 +62,7 @@ def check_saved_eddy_conductivity_finite(test_lakestate_vars_savedtke1_col: npt.
     assert_variable_is_finite(test_lakestate_vars_savedtke1_col, "lakestate_vars%savedtke1_col")
 
 
-def check_ground_methane_conductance_finite(
-    test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,
-    use_lch4: int
-) -> None:
+def check_ground_methane_conductance_finite(test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,use_lch4: int) -> None:
     if use_lch4:
         assert_variable_is_finite(test_ch4_vars_grnd_ch4_cond_col, "ch4_vars%grnd_ch4_cond_col")
 

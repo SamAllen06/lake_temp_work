@@ -21,8 +21,11 @@ to fail, and are not something that would change with the constants.
 `veg_ef%eflx_sh_tot` is finite
 - `finite_values_check.check_total_sensible_heat_flux_finite`
 
-`veg_ef%eflx_soil_grnd` is finite
+`veg_ef%eflx_sh_grnd` is finite
 - `finite_values_check.check_ground_sensible_heat_flux_finite`
+
+`veg_ef%eflx_soil_grnd` is finite
+- `finite_values_check.check_ground_heat_flux_finite`
 
 `col_ef%eflx_snomelt` is finite
 - `finite_values_check.check_snow_melt_heat_flux_finite`
@@ -50,7 +53,7 @@ to fail, and are not something that would change with the constants.
 
 `lakestate_vars%grnd_ch4_cond_col` is finite
 - `finite_values_check.check_ground_methane_conductance_finite`
-- Condition: `use_lch4` is true
+- Precondition: `use_lch4` is true
 
 `col_ef%errsoi` is finite
 - `finite_values_check.check_energy_conservation_residual_finite`
@@ -82,7 +85,7 @@ to fail, and are not something that would change with the constants.
 - `physical_bounds_check.check_surface_absorption_fraction_is_fraction`
 
 `col_ws%h2osno` $\ge 0$
-- `physical_bounds_check.check_water_snow_equivilant_not_negative`
+- `physical_bounds_check.check_water_snow_equivalent_not_negative`
 
 `col_ws%snow_depth` $\ge 0$
 - `physical_bounds_check.check_snow_depth_not_negative`
@@ -109,58 +112,54 @@ to fail, and are not something that would change with the constants.
 - `physical_bounds_check.check_soil_heat_content_not_negative`
 
 `col_es%hc_soisno` $\ge 0$
-- Mathematically covered by:
-  - `physical_bounds_check.check_soil_heat_content_not_negative`
-  - `physical_bounds_check.check_combined_heat_content_not_less_than_soil_heat_content`
+- `physical_bounds_check.check_combined_heat_content_not_negative`
 
 `col_es%hc_soisno` $\ge$ `col_es%hc_soi`
 - `physical_bounds_check.check_combined_heat_content_not_less_than_soil_heat_content`
 
 ## Aggregation and Consistency
 
-$\sum\limits_j$ `col_wf%qflx_snofrz_lyr(:, j, :)` $=$ `col_wf%qflx_snofrz(:, :)`
+$\sum\limits_j$ `col_wf%qflx_snofrz_lyr[:, j, :]` $\approx$ `col_wf%qflx_snofrz[:, :]`
 - `aggregation_and_consistency_check.check_snofrz_lyr_sums_to_snofrz_col`
 - Tolerance (provided): $10^{-10}$
 
-$\sum\limits_j$ `lakestate_vars%lake_icefrac_col(:, j, :)` `col_pp%dz_lake(:, j, :)`
-(`denh2o` $/$ `denice`) $=$ `lakestate_vars%lake_icethick_col`
+$\sum\limits_j$ `lakestate_vars%lake_icefrac_col[, j, :]` `col_pp%dz_lake[:, j, :]`
+(`denh2o` $/$ `denice`) $\approx$ `lakestate_vars%lake_icethick_col`
 - `aggregation_and_consistency_check.check_icethick_col_is_sum`
 - Tolerance (provided): $10^{-9}$
 
-`col_ef%imelt` $\in {0, 1, 2}$ per snow layer
+`col_ef%imelt` $\in$ {0, 1, 2} per snow layer
 - `aggregation_and_consistency_check.check_imelt_uses_valid_enum_values`
-
-## Energy Residual Handling
-`col_ef%errsoi` driven to $0$ after incorporation, or `|col_ef%errsoi|`$\le 10^{-6}$
-post-correction
-- `energy_residual_handling_check.check_errsoi_almost_zero`
-- We test the second condition, unsure what incorporation and post-correction mean in
-this context.
 
 ## CH4 Conductance Behavior
 
-`lakestate_vars%lake_icefrac_col(:, 0, :)` $> 0.1 \rightarrow$
-`ch4_vars%grnd_ch4_cond_col` $= 0$
+`lakestate_vars%lake_icefrac_col[:, 0, :]` $> 0.1 \rightarrow$
+`ch4_vars%grnd_ch4_cond_col` $\approx 0$
 - `ch4_conductance_check.check_methane_conductance_frozen_lake`
-- Condition: `use_lch4` is true
-- Tolerance (not provided): `np.isclose` used
+- Precondition: `use_lch4` is true
+- Tolerance (not provided): 1E-5
 
 `ch4_vars%grnd_ch4_cond_col` $\ge 0$
-- `ch4_conductance_check.check_methane_conductance_non_negative`
-- Condition: `use_lch4` is true
+- `ch4_conductance_check.check_methane_conductance_not_negative`
+- Precondition: `use_lch4` is true
 
-## Flux Sign Conventions
+not ever (`ch4_vars%grnd_ch4_cond_col[:,:,:]` $> 0$ and `lakestate_vars%lake_icefrac_col[:,:,:]` $> 0.1$)
+- `key_physical_laws_check.check_methane_conductance_gated_by_ice`
+- Precondition: use_lch4 is true
 
-Skipped because we are unsure how to check these.
+`lakestate_vars%lake_icefrac_col` $= 0 \rightarrow $($1 / $(`lakestate_vars%lakeresist_col` $+$ `lakestate_vars%lake_raw_col`)) $\approx$ `ch4_vars%grnd_ch4_cond_col`
+- `key_physical_laws_check.check_methane_conductance_allowed_without_ice`
+- Tolerance (not provided): 1E-6 used
+- Precondition: `use_lch4` is true
 
 ## Physics Sanity
 
-`lakestate_vars%lake_icefrac_col` $\approx 1 \rightarrow$
-`|col_es%t_lake|` $\le 10^{-3}$
-- `physics_check.check_temp_at_freezing_where_lake_is_frozen`
-- Condition: `lakestate_vars%lake_icefrac_col` $\approx 1$ somewhere
+`lakestate_vars%lake_icefrac_col` $> 0.999$ and `lakestate_vars%lake_icefrac_col` $\neq 1 \rightarrow$
+`|col_es%t_lake - tfrz|` $\approx 0$
+- `physics_check.check_temp_around_freezing_where_lake_is_almost_frozen`
+- Tolerance (provided): 1E-3
 
-`lakestate_vars%savedtke1_col` $> 0 \rightarrow$
-`col_es%t_lake` $>$ `tfrz` and `col_pp%snl` $= 0$
-- `physics_check.no_tke_when_surface_frozen`
-- Condition: `lakestate_vars%savedtke1_col` $> 0$ somewhere
+`lakestate_vars%savedtke1_col[:,:]` $> 0 \rightarrow$
+`lakestate_vars%lake_icefrac_col[:,0,:]` $\approx 0$ and `col_pp%snl[:,:]` $= 0$
+- `physics_check.check_surface_unfrozen_when_tke_present`
+- Tolerance (provided): 1E-6
