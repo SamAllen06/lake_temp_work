@@ -159,10 +159,10 @@ cython_debug/
 testing_output/
 
 # Plugin whitelists
-whitelist
+*plugin_whitelist.json
 
 # .DS_Store files
-.DS_Store
+*.DS_Store
 
 # Ignore .~lock.* files
 .~lock.*
