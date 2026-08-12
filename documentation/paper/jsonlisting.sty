@@ -1,0 +1,14 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{jsonlisting}[JSON language for listings]
+
+\RequirePackage{listings}
+
+\lstdefinelanguage{json}{
+    morestring=[b]",
+    morecomment=[l]{\#},
+    morekeywords={true,false,null}
+}
+
+\lstdefinelanguage{justcomment}{
+    morecomment=[l]{\#}
+}

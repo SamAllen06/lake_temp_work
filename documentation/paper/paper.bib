@@ -1,9 +1,262 @@
-@book{tdd,
-  author = {Kent Beck},
-  publisher = {Addison-Wesley Professional},
-  title = {Test Driven Development: By Example},
-  year = {2002},
-  isbn = {9780321146533},
-  series = {Addison-Wesley Signature Series},
-  address = {Boston, MA}
+% TODO: Unify the month formats to use the latex8 macros.
+% Necessary Background
+
+@misc{e3sm,
+  title = {Energy Exascale Earth System Model v3.0.0},
+  author = {{E3SM Project, DOE}},
+  doi = {10.11578/E3SM/dc.20240301.3},
+  url = {https://doi.org/10.11578/E3SM/dc.20240301.3},
+  howpublished = {[Computer Software] \url{https://doi.org/10.11578/E3SM/dc.20240301.3}},
+  year = 2024,
+  month = mar,
+  note = {Accessed: 05-06-2026}
+}
+
+@inproceedings{spel,
+  author = {Schwartz, Peter and Wang, Dali and Thornton, Peter},
+  title = {{SPEL} - Software Package for {E3SM} Land Model: Code Understanding and 
+  Functional Unit Testing},
+  month = aug,
+  year = 2025,
+  doi = {10.5281/zenodo.16877458},
+  url = {https://doi.org/10.5281/zenodo.16877458},
+  booktitle = {US Research Software Engineering Conference 2025 (USRSE'25)},
+  location = {Philadelphia, PA}
+}
+
+% I am not sure if this is the best source to cite for the E3SM LakeTemperature code.
+% LakeTemperature was carried over from CLM, and was detailed in this source.
+@article{laketemperature,
+  author = {Subin, Zachary M. and Riley, William J. and Mironov, Dmitrii},
+  title = {An improved lake model for climate simulations: Model structure, evaluation, and sensitivity analyses in {CESM1}},
+  journal = {Journal of Advances in Modeling Earth Systems},
+  volume = {4},
+  number = {1},
+  pages = {},
+  doi = {https://doi.org/10.1029/2011MS000072},
+  url = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2011MS000072},
+  eprint = {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/2011MS000072},
+  year = {2012}
+}
+
+% Related Work
+
+@article{test-oracle,
+  author = {Barr, Earl T. and Harman, Mark and McMinn, Phil and Shahbaz, Muzammil and Yoo, Shin},
+  journal = {IEEE Transactions on Software Engineering}, 
+  title = {The Oracle Problem in Software Testing: A Survey}, 
+  year = {2015},
+  volume = {41},
+  number = {5},
+  pages = {507--525},
+  doi = {10.1109/TSE.2014.2372785}
+}
+
+@article{metamorphic-ml-hydro,
+  author = {Reichert, P. and Ma, K. and H\"oge, M. and Fenicia, F. and Baity-Jesi, M. and Feng, D. and Shen, C.},
+  title = {Metamorphic testing of machine learning and conceptual hydrologic models},
+  journal = {Hydrology and Earth System Sciences},
+  volume = {28},
+  year = {2024},
+  number = {11},
+  pages = {2505--2529},
+  url = {https://hess.copernicus.org/articles/28/2505/2024/},
+  doi = {10.5194/hess-28-2505-2024}
+}
+
+@article{e3sm-diag,
+  author = {Zhang, C. and Golaz, J.-C. and Forsyth, R. and Vo, T. and Xie, S. and Shaheen, Z. and Potter, G. L. and Asay-Davis, X. S. and Zender, C. S. and Lin, W. and Chen, C.-C. and Terai, C. R. and Mahajan, S. and Zhou, T. and Balaguru, K. and Tang, Q. and Tao, C. and Zhang, Y. and Emmenegger, T. and Burrows, S. and Ullrich, P. A.},
+  title = {The {E3SM} Diagnostics Package ({E3SM Diags} v2.7): {A} {Python}-based diagnostics package for Earth system model evaluation},
+  journal = {Geoscientific Model Development},
+  volume = {15},
+  year = {2022},
+  number = {24},
+  pages = {9031--9056},
+  url = {https://gmd.copernicus.org/articles/15/9031/2022/},
+  doi = {10.5194/gmd-15-9031-2022}
+}
+
+@misc{cime,
+  author = {Foucar, JamesG. and Salinger, AndrewG. and Deakin, Michael},
+  title = {{CIME}, Common Infrastructure for Modeling the Earth v. 5.0},
+  doi = {10.11578/dc.20201001.26},
+  url = {https://www.osti.gov/biblio/code-45347},
+  place = {United States},
+  year = {2017},
+  month = apr
+}
+
+% I can't actually seem to access the full text on this one, the library's been kind of
+% broken.
+@article{metamorphic-survey,
+  author={Segura, Sergio and Fraser, Gordon and Sanchez, Ana B. and Ruiz-Cortés, Antonio},
+  journal={IEEE Transactions on Software Engineering}, 
+  title={A Survey on Metamorphic Testing}, 
+  year={2016},
+  volume={42},
+  number={9},
+  pages={805--824},
+  doi={10.1109/TSE.2016.2532875}
+}
+
+@inproceedings{metamorphic-graphics,
+  author={Donaldson, Alastair F. and Lascu, Andrei},
+  booktitle={2016 IEEE/ACM 1st International Workshop on Metamorphic Testing (MET'16)}, 
+  title={Metamorphic Testing for (Graphics) Compilers}, 
+  year={2016},
+  volume={},
+  number={},
+  pages={44--47},
+  doi={10.1145/2896971.2896978}
+}
+
+% '16' was appended to the end of the title, but I've removed it because the entry
+% breaks.
+@book{statistical-cleanroom,
+  author = {Stacy J. Prowell and Carmen J. Trammell and Richard C. Linger and Jesse H. Poore},
+  title = {Cleanroom Software Engineering: Technology and Process},
+  publisher = {Addison-Wesley},
+  year = {1999},
+  address = {Reading, MA}
+}
+
+@incollection{statistical-embedded,
+  author = {Poore, Jesse H. and Lin, Lan and Eschbach, Robert and Bauer, Thomas},
+  title = {Automated statistical testing for embedded systems},
+  booktitle = {Model-Based Testing for Embedded Systems in the Series on
+  Computational Analysis and Synthesis, and Design of Dynamic Systems},
+  editor = {Zander, J. and Schieferdecker, I. and Mosterman, P. J.},
+  publisher = {CRC Press-Taylor \& Francis},
+  year = {2011},
+}
+
+@article{combinatorial-emperical,
+  author={Kuhn, D.R. and Wallace, D.R. and Gallo, A.M.},
+  journal={IEEE Transactions on Software Engineering}, 
+  title={Software fault interactions and implications for software testing}, 
+  year={2004},
+  volume={30},
+  number={6},
+  pages={418--421},
+  doi={10.1109/TSE.2004.24}
+}
+
+@inproceedings{combinatorial-rest-apis,
+  author = {Wu, Huayao and Xu, Lixin and Niu, Xintao and Nie, Changhai},
+  title = {Combinatorial testing of {REST}ful {API}s},
+  year = {2022},
+  isbn = {9781450392211},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3510003.3510151},
+  doi = {10.1145/3510003.3510151},
+  booktitle = {Proceedings of the 44th International Conference on Software Engineering},
+  pages = {426--437},
+  numpages = {12},
+  location = {Pittsburgh, Pennsylvania},
+  series = {ICSE'22}
+}
+
+@inproceedings{combinatorial-ml-fairness,
+  author={Patel, Ankita Ramjibhai and Chandrasekaran, Jaganmohan and Lei, Yu and Kacker, Raghu N. and Kuhn, D. Richard},
+  booktitle={2022 IEEE International Conference on Software Testing, Verification and Validation Workshops (ICSTW)}, 
+  title={A Combinatorial Approach to Fairness Testing of Machine Learning Models}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={94--101},
+  doi={10.1109/ICSTW55395.2022.00030}
+}
+
+@article{property-based-abs,
+  author={Thaler, Jonathan and Siebers, Peer-Olaf},
+  title={Specification testing of agent-based simulation using property-based testing},
+  journal={Autonomous Agents and Multi-Agent Systems},
+  year={2020},
+  month=jun,
+  day={19},
+  volume={34},
+  number={2},
+  pages={47},
+  issn={1573--7454},
+  doi={10.1007/s10458-020-09473-8},
+  url={https://doi.org/10.1007/s10458-020-09473-8}
+}
+
+@inproceedings{property-based-ocaml,
+  author = {Midtgaard, Jan},
+  title = {Property-Based Testing of {OCaml} 5’s Runtime System: Fun and Segfaults with Interpreters and State Transition Functions},
+  year = {2025},
+  isbn = {9798400721502},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi-org.proxy.bsu.edu/10.1145/3759427.3760378},
+  doi = {10.1145/3759427.3760378},
+  booktitle = {Proceedings of the Workshop Dedicated to Olivier Danvy on the Occasion of His 64th Birthday},
+  pages = {180--193},
+  numpages = {14},
+  keywords = {garbage collection, model-based testing, property-based testing, run- time system},
+  location = {Singapore, Singapore},
+  series = {OLIVIERFEST'25}
+}
+
+% I can't find a publication date for these.
+@misc{eamxx,
+  title = {{EAMxx} Automated Standalone Testing},
+  author = {{E3SM Project, DOE}},
+  howpublished = {\url{https://docs.e3sm.org/E3SM/EAMxx/developer/dev_testing/test_all_eamxx/}},
+  note = {Accessed: 05-06-2026}
+}
+
+@misc{elm-testing,
+  title = {{ELM} Developer Guide: Testing},
+  author = {{E3SM Project, DOE}},
+  howpublished = {\url{https://docs.e3sm.org/E3SM/ELM/dev-guide/testing/}},
+  note = {Accessed: 05-06-2026}
+}
+
+% Testing Framework
+
+@article{netcdf,
+  author={Rew, R. and Davis, G.},
+  journal={IEEE Computer Graphics and Applications}, 
+  title={{NetCDF}: {A}n interface for scientific data access}, 
+  year={1990},
+  volume={10},
+  number={4},
+  pages={76--82},
+  doi={10.1109/38.56302}
+}
+
+% Application
+
+@inproceedings{acts,
+  author={Yu, Linbin and Lei, Yu and Kacker, Raghu N. and Kuhn, D. Richard},
+  booktitle={2013 IEEE Sixth International Conference on Software Testing, Verification and Validation}, 
+  title={{ACTS}: A Combinatorial Test Generation Tool}, 
+  year={2013},
+  volume={},
+  number={},
+  pages={370--375},
+  doi={10.1109/ICST.2013.52}
+}
+
+@Article{combinatorial-continuous,
+  author={Baumann, Carmen and Koroglu, Yavuz and Wotawa, Franz},
+  title={On the Impact of Input Models on the Fault Detection Capabilities of Combinatorial Testing},
+  journal={SN Computer Science},
+  year={2024},
+  month=aug,
+  day={27},
+  volume={5},
+  number={7},
+  pages={821},
+  issn={2661--8907},
+  doi={10.1007/s42979-024-03134-3},
+  url={https://doi.org/10.1007/s42979-024-03134-3}
+}
+
+@misc{peter-and-dali,
+  author = {Peter Schwartz and Dali Wang},
+  note = {Private communication}
 }

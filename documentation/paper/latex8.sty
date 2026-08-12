@@ -126,6 +126,7 @@
    {
    % additional empty line at the end of the abstract
    \vspace*{12pt}
+   \normalfont
    }
 
 \def\affiliation#1{\gdef\@affiliation{#1}} \gdef\@affiliation{}
@@ -138,7 +139,7 @@
 \setlength{\@figindent}{1pc}
 
 \long\def\@makecaption#1#2{
-   \vskip 10pt
+   %\vskip 10pt
    \setbox\@tempboxa\hbox{\tenhv\noindent #1.~#2}
    \setlength{\@ctmp}{\hsize}
    \addtolength{\@ctmp}{-\@figindent}\addtolength{\@ctmp}{-\@figindent}
@@ -160,7 +161,12 @@
    {13pt plus 2pt minus 2pt}{13pt plus 2pt minus 2pt} {\elvbf}}
 
 % add the period after section numbers
-\newcommand{\Section}[1]{\section{\hskip -1em.~#1}}
-\newcommand{\SubSection}[1]{\subsection{\hskip -1em.~#1}}
+%\newcommand{\Section}[1]{\section{\hskip -1em.~#1}}
+%\newcommand{\SubSection}[1]{\subsection{\hskip -1em.~#1}}
+
+% This replaces the above period workaround, but without breaking PDF metadata.
+\makeatletter
+\renewcommand{\@seccntformat}[1]{\csname the#1\endcsname.~}
+\makeatother
 
 % end of file latex8.sty

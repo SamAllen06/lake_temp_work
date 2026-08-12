@@ -1,0 +1,62 @@
+% Based on https://rosepinetheme.com/
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{rosepine}[Rosepine theming for listings]
+
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+
+\definecolor{dawn-base}{HTML}{FAF4ED}
+\definecolor{dawn-subtle}{HTML}{797593}
+\definecolor{dawn-text}{HTML}{575279}
+\definecolor{dawn-pine}{HTML}{286983}
+\definecolor{dawn-gold}{HTML}{EA9D34}
+
+\lstdefinestyle{dawn}{
+    backgroundcolor=\color{dawn-base},
+    basicstyle=\color{dawn-text}\ttfamily\scriptsize,
+    keywordstyle=\color{dawn-pine}\bfseries,
+    commentstyle=\color{dawn-subtle}\it,
+    stringstyle=\color{dawn-gold},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=2
+}
+
+\definecolor{base}{HTML}{191724}
+\definecolor{subtle}{HTML}{908CAA}
+\definecolor{text}{HTML}{E0DAF4}
+\definecolor{pine}{HTML}{31748F}
+\definecolor{gold}{HTML}{F6C177}
+
+\lstdefinestyle{regular}{
+    backgroundcolor=\color{base},
+    basicstyle=\color{text}\ttfamily\scriptsize,
+    keywordstyle=\color{pine}\bfseries,
+    commentstyle=\color{subtle}\it,
+    stringstyle=\color{gold},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=2
+}
+
+\definecolor{moon-base}{HTML}{232136}
+\definecolor{moon-subtle}{HTML}{908CAA}
+\definecolor{moon-text}{HTML}{E0DEF4}
+\definecolor{moon-pine}{HTML}{3E8FB0}
+\definecolor{moon-gold}{HTML}{F6C177}
+
+\lstdefinestyle{moon}{
+    backgroundcolor=\color{moon-base},
+    basicstyle=\color{moon-text}\ttfamily\scriptsize,
+    keywordstyle=\color{moon-pine}\bfseries,
+    commentstyle=\color{moon-subtle}\it,
+    stringstyle=\color{moon-gold},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=2
+}
+
+\lstset{style=dawn}
