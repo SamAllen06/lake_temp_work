@@ -20,3 +20,15 @@ def get_dimensions(dataset_path: str, variable: str) -> list[str]:
 def get_dimension_size(dataset_path: str, dimension: str) -> int:
     with Dataset(dataset_path, "r", "NETCDF4") as dataset:
         return len(dataset.dimensions[dimension])
+
+
+def get_changed_model_consts(dataset_path: str) -> dict[str: str]:
+    changed_vars = {}
+
+    with Dataset(dataset_path, "r", "NETCDF4") as dataset:
+        for var in dataset.variables:
+            if dataset[var].variable_type == 'constant' and dataset[var][0] != dataset[var][-1]:
+                #TODO limit how the fraction is presented
+                changed_vars.update({var: f"{dataset[var][-1]/(len(dataset[var])-1)}x"})
+
+    return changed_vars

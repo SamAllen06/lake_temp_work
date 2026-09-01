@@ -14,6 +14,7 @@ class AxisInfo:
 class FixedDimension:
     name: str
     value: npt.NDArray
+    mapped_dim_name: str | None = None
 
 
 @dataclass
