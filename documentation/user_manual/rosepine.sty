@@ -1,0 +1,29 @@
+% Based on https://rosepinetheme.com/
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{rosepine}[Rosepine theming for listings]
+
+\RequirePackage[dvipsnames]{xcolor}
+
+\RequirePackage{listings}
+% \RequirePackage{xcolor}
+
+\definecolor{dawn-base}{HTML}{FAF4ED}
+
+\lstdefinestyle{dawn}{
+    backgroundcolor=\color{dawn-base},
+    basicstyle=\ttfamily\scriptsize,
+    frame=single,
+    breaklines=true,
+    columns=flexible,
+    showstringspaces=false,
+    tabsize=2,
+    moredelim=**[is][\color{blue}]{!}{!},
+    moredelim=**[is][\color{Green}]{@}{@},
+    moredelim=**[is][\color{Maroon}]{@@}{@@},
+    moredelim=**[is][\color{gray}]{^}{^},
+    moredelim=**[is][\color{YellowOrange}]{**}{**},
+    moredelim=**[is][\color{TealBlue}]{!!}{!!},
+    moredelim=**[is][\color{red}]{*}{*}
+}
+
+\lstset{style=dawn}
