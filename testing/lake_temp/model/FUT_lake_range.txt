@@ -1,37 +1,31 @@
-iulog
-95 - 100
 tkwat
-0.0 - 1.0
+0.513 - 0.627
 cpice
-2216.0 - 2218.0
+2011.41 - 2223.13
 cnfac
 0.0 - 1.0
 pudz
-8.0 - 14.0 
+0.0 - 0.5
 vkc
-0.0 - 1.0
+0.35 - 0.45
 mixfact
-0.2 - 0.9
-nlevgrnd
-0 - 25
+5.0 - 15.0
 cpliq
 4180.0 - 4190.0
-nlevsno
-0 - 5
 depthcrit
 15.0 - 35.0
 tkice
-1.0 - 3.0
+2.061 - 2.519
 betavis
-0 - 1.0    
+0.0 - 1.0    
 denice
 915.0 - 920.0
 dtime_mod
-3500.0 - 3700.0
+1800.0 - 3600.0
 hfus
 333500.0 - 334000.0
 grav
-5.0 - 15.0
+9.708 - 9.904
 lakepuddling
 0 - 1
 denh2o
@@ -40,10 +34,6 @@ lake_no_ed
 0 - 1
 use_lch4
 0 - 1
-nlevlak
-1 - 15
-nlevsoi
-0 - 15
 tkair
 0.01 - 0.03
 thk_bedrock
