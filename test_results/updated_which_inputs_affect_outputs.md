@@ -1,28 +1,23 @@
 # Which inputs affect which outputs?
 
-Date: 6/8/26
+Date: 9/28/26
 
-After reviewing and updating a couple constant ranges, this test had to be run again. Using the same method as the outdated version of the results, the results for just two constants changed: dtime_mod and nlevlak. Additionally, when looking into why certain constants had no effect on output, it was discovered that they only had an effect when certain conditions were met. If the test cases used did not meet these conditions, some of the constants would appear to cause no observable change in the output. Once a strategy has been made to solve this problem, this test will be run once again. 
+After reviewing and updating a couple constant ranges, this test had to be run again. It also took out all lake layer constants, as the input data we are using requires us to use the default values for nlevgrnd, nlevlak, nlevsoi, and nlevsno or else the output data won't make physical sense. Additionally, iulog was excluded as it is simply a Fortran logical unit number. Using the same method as the outdated version of the results, did not change. Additionally, when looking into why certain constants had no effect on output, it was discovered that they only had an effect when certain conditions were met. If the test cases used did not meet these conditions, some of the constants would appear to cause no observable change in the output. Once a strategy has been made to solve this problem, this test will be run once again. 
 
 ## Outputs that had observed changes
 
 This is a list of outputs that changed in response to a change in at least one variable.
-There are 22 in total.
+There are 17 in total.
 
 ```
 ch4_vars__grnd_ch4_cond_col
 col_ef__eflx_snomelt
-col_ef__errsoi
-col_ef__imelt
 col_es__hc_soi
 col_es__hc_soisno
 col_es__t_lake
 col_es__t_soisno
-col_wf__qflx_snofrz_lyr
 col_wf__qflx_snomelt
 col_wf__qflx_snow_melt
-col_ws__h2osno
-col_ws__snow_depth
 lakestate_vars__betaprime_col
 lakestate_vars__lake_icefrac_col
 lakestate_vars__lake_icethick_col
@@ -36,10 +31,20 @@ veg_ef__eflx_soil_grnd
 
 ## Outputs with no observed changes
 
-This is a list of outputs that did not change at all. There are 43 in total. (Bounds
-variables were not included, though no changes were found to them.)
+This is a list of outputs that did not change at all. There are 58 in total. However, it is 
+important to keep in mind that we expect some of the model outputs to stay the same, like bounds variables, so these results would have to be interpreted by someone with domain knowledge to find the potential issues they expose in LakeTemperature. 
 
 ```
+bounds__begg
+bounds__endg
+bounds__begt
+bounds__endt
+bounds__begl
+bounds__endl
+bounds__begc
+bounds__endc
+bounds__begp
+bounds__endp
 top_pp__active
 lun_pp__topounit
 lun_pp__itype
@@ -74,10 +79,15 @@ col_pp__dz_lake
 col_pp__z_lake
 col_pp__lakedepth
 col_es__t_grnd
+col_ef__errsoi
+col_ef__imelt
+col_ws__h2osno
+col_ws__snow_depth, 
 col_ws__h2osoi_liq
 col_ws__h2osoi_ice
 col_ws__frac_iceold
 col_wf__qflx_snofrz
+col_wf__qflx_snofrz_lyr
 veg_pp__topounit
 veg_pp__landunit
 veg_pp__column
@@ -150,11 +160,10 @@ veg_ef__eflx_sh_tot
 veg_ef__eflx_soil_grnd
 ```
 
-### dtime_mod (14/22)
+### dtime_mod (13/22)
 ```
 ch4_vars__grnd_ch4_cond_col
 col_ef__eflx_snomelt
-col_ef__errsoi
 col_es__hc_soi
 col_es__hc_soisno
 col_es__t_lake
@@ -221,67 +230,6 @@ veg_ef__eflx_sh_tot
 veg_ef__eflx_soil_grnd
 ```
 
-### nlevgrnd (16/22)
-```
-ch4_vars__grnd_ch4_cond_col
-col_ef__eflx_snomelt
-col_ef__errsoi
-col_es__hc_soi
-col_es__hc_soisno
-col_es__t_lake
-col_es__t_soisno
-col_wf__qflx_snomelt
-col_wf__qflx_snow_melt
-col_ws__h2osno
-col_ws__snow_depth
-lakestate_vars__lakeresist_col
-veg_ef__eflx_gnet
-veg_ef__eflx_sh_grnd
-veg_ef__eflx_sh_tot
-veg_ef__eflx_soil_grnd
-```
-
-### nlevlak (19/22)
-```
-ch4_vars__grnd_ch4_cond_col
-col_ef__eflx_snomelt
-col_ef__errsoi
-col_es__hc_soi
-col_es__hc_soisno
-col_es__t_lake
-col_es__t_soisno
-col_wf__qflx_snomelt
-col_wf__qflx_snow_melt
-col_ws__h2osno
-col_ws__snow_depth
-lakestate_vars__lake_icefrac_col
-lakestate_vars__lake_icethick_col
-lakestate_vars__lakeresist_col
-lakestate_vars__savedtke1_col
-veg_ef__eflx_gnet
-veg_ef__eflx_sh_grnd
-veg_ef__eflx_sh_tot
-veg_ef__eflx_soil_grnd
-```
-
-### nlevsno (2/22)
-```
-col_ef__imelt
-col_wf__qflx_snofrz_lyr
-```
-
-### nlevsoi (8/22)
-```
-col_es__hc_soi
-col_es__hc_soisno
-col_es__t_lake
-col_es__t_soisno
-veg_ef__eflx_gnet
-veg_ef__eflx_sh_grnd
-veg_ef__eflx_sh_tot
-veg_ef__eflx_soil_grnd
-```
-
 ### thk_bedrock (7/22)
 ```
 col_es__hc_soi
@@ -336,7 +284,6 @@ These inputs did not affect any outputs:
 cpice
 denice
 depthcrit
-iulog
 mixfact
 pudz
 tkair
@@ -356,8 +303,6 @@ dtime_mod
 grav
 lake_no_ed
 lakepuddling
-nlevgrnd
-nlevlak
 tkwat
 use_lch4
 vkc
@@ -367,19 +312,6 @@ vkc
 ```
 dtime_mod
 hfus
-nlevgrnd
-nlevlak
-```
-
-### col_ef__errsoi (2/17)
-```
-nlevgrnd
-nlevlak
-```
-
-### col_ef__imelt (1/17)
-```
-nlevsno
 ```
 
 ### col_es__hc_soi (13/17)
@@ -391,9 +323,6 @@ denh2o
 dtime_mod
 grav
 lake_no_ed
-nlevgrnd
-nlevlak
-nlevsoi
 thk_bedrock
 tkwat
 vkc
@@ -410,9 +339,6 @@ grav
 hfus
 lake_no_ed
 lakepuddling
-nlevgrnd
-nlevlak
-nlevsoi
 thk_bedrock
 tkwat
 vkc
@@ -429,9 +355,6 @@ grav
 hfus
 lake_no_ed
 lakepuddling
-nlevgrnd
-nlevlak
-nlevsoi
 tkwat
 vkc
 ```
@@ -445,43 +368,19 @@ denh2o
 dtime_mod
 grav
 lake_no_ed
-nlevgrnd
-nlevlak
-nlevsoi
 thk_bedrock
 tkwat
 vkc
 ```
 
-### col_wf__qflx_snofrz_lyr (1/17)
-```
-nlevsno
-```
-
 ### col_wf__qflx_snomelt (3/17)
 ```
 dtime_mod
-nlevgrnd
-nlevlak
 ```
 
 ### col_wf__qflx_snow_melt (3/17)
 ```
 dtime_mod
-nlevgrnd
-nlevlak
-```
-
-### col_ws__h2osno (2/17)
-```
-nlevgrnd
-nlevlak
-```
-
-### col_ws__snow_depth (2/17)
-```
-nlevgrnd
-nlevlak
 ```
 
 ### lakestate_vars__betaprime_col (1/17)
@@ -492,13 +391,11 @@ betavis
 ### lakestate_vars__lake_icefrac_col (2/17)
 ```
 cnfac
-nlevlak
 ```
 
 ### lakestate_vars__lake_icethick_col (2/17)
 ```
 cnfac
-nlevlak
 ```
 
 ### lakestate_vars__lakeresist_col (13/17)
@@ -511,8 +408,6 @@ dtime_mod
 grav
 lake_no_ed
 lakepuddling
-nlevgrnd
-nlevlak
 tkwat
 use_lch4
 vkc
@@ -539,9 +434,6 @@ grav
 hfus
 lake_no_ed
 lakepuddling
-nlevgrnd
-nlevlak
-nlevsoi
 thk_bedrock
 tkwat
 vkc
@@ -558,9 +450,6 @@ grav
 hfus
 lake_no_ed
 lakepuddling
-nlevgrnd
-nlevlak
-nlevsoi
 thk_bedrock
 tkwat
 vkc
@@ -577,9 +466,6 @@ grav
 hfus
 lake_no_ed
 lakepuddling
-nlevgrnd
-nlevlak
-nlevsoi
 thk_bedrock
 tkwat
 vkc
@@ -596,9 +482,6 @@ grav
 hfus
 lake_no_ed
 lakepuddling
-nlevgrnd
-nlevlak
-nlevsoi
 thk_bedrock
 tkwat
 vkc

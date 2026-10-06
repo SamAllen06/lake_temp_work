@@ -36,4 +36,4 @@ Reasoning:
 
 #### Files used to come to these conclusions:
 - [LakeTemperatureInput pdf from Collaborators](documentation/from_collaborators/2025/12/LakeTemperatureInput.pdf)
-- SPEL odel Constant Defaults netcdf file created by SPEL and stored in /app/model when the test_laketemperature.py script is ran
+- SPEL model Constant Defaults netcdf file (spel-constant-defaults0001.nc) created by SPEL and stored in /app/model when the test_laketemperature.py script is ran

@@ -1,5 +1,7 @@
 import numpy as np
 import numpy.typing as npt
+from mtf_fault_finding import CheckStatus
+
 
 
 def assert_variable_is_finite(variable: npt.NDArray, name: str) -> None:
@@ -63,8 +65,9 @@ def check_saved_eddy_conductivity_finite(test_lakestate_vars_savedtke1_col: npt.
 
 
 def check_ground_methane_conductance_finite(test_ch4_vars_grnd_ch4_cond_col: npt.NDArray,use_lch4: int) -> None:
-    if use_lch4:
-        assert_variable_is_finite(test_ch4_vars_grnd_ch4_cond_col, "ch4_vars%grnd_ch4_cond_col")
+    if not use_lch4:
+        return CheckStatus.SKIPPED
+    assert_variable_is_finite(test_ch4_vars_grnd_ch4_cond_col, "ch4_vars%grnd_ch4_cond_col")
 
 
 def check_energy_conservation_residual_finite(test_col_ef_errsoi: npt.NDArray) -> None:
