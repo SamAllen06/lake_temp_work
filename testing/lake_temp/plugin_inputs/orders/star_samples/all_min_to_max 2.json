@@ -1,0 +1,25 @@
+{
+  "samples":11,
+  "ranges":{
+    "betavis": ["r(0)", "r(1)"],
+    "cnfac": ["r(0)", "r(1)"],
+    "cpice": ["r(0)", "r(1)"],
+    "cpliq": ["r(0)", "r(1)"],
+    "denh2o": ["r(0)", "r(1)"],
+    "denice": ["r(0)", "r(1)"],
+    "depthcrit": ["r(0)", "r(1)"],
+    "dtime_mod": ["r(0)", "r(1)"],
+    "grav": ["r(0)", "r(1)"],
+    "hfus": ["r(0)", "r(1)"],
+    "lake_no_ed": ["r(0)", "r(1)"],
+    "lakepuddling": ["r(0)", "r(1)"],
+    "mixfact": ["r(0)", "r(1)"],
+    "pudz": ["r(0)", "r(1)"],
+    "thk_bedrock": ["r(0)", "r(1)"],
+    "tkair": ["r(0)", "r(1)"],
+    "tkice": ["r(0)", "r(1)"],
+    "tkwat": ["r(0)", "r(1)"],
+    "use_lch4": ["r(0)", "r(1)"],
+    "vkc": ["r(0)", "r(1)"]
+  }
+}
