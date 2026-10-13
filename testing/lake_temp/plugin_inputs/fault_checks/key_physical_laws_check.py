@@ -195,6 +195,10 @@ def check_errsoi_threshold(
         test_lakestate_vars_lake_icefrac_col,
         test_col_pp_itype
     )
+
+    if np.all(~selector):
+        CheckStatus.SKIPPED
+
     # Verify error is below threshold used in LakeTemperature.
     assert np.all(~selector | (np.abs(test_col_ef_errsoi) <= 1E-6)), "error above threshold"
 
@@ -230,6 +234,9 @@ def check_surface_snow_freezing_where_snow_present(
 
     freeze_rate = top_snow_layer(test_col_wf_qflx_snofrz_lyr, test_col_pp_snl)
 
+    if np.all(~scenario[:-1]):
+        CheckStatus.SKIPPED
+
     assert np.all(~scenario[:-1] | (freeze_rate[1:] > 0.0)), (
         "snow is not freezing where snow is present")
     
@@ -263,6 +270,9 @@ def check_snow_labeled_freezing_where_snow_present(
     )
     
     surface_snow_labeled_freezing = top_snow_layer(test_col_ef_imelt, test_col_pp_snl)[1:] == IMelt.FREEZING.value
+
+    if np.all(~scenario[:-1]):
+        CheckStatus.SKIPPED
     
     assert np.all(~scenario[:-1] | surface_snow_labeled_freezing), (
         "snow not labeled freezing where snow present")
@@ -295,6 +305,9 @@ def check_snow_water_not_decreasing(
 
     change = np.diff(test_col_ws_h2osno, axis=0)
     selector = scenario[:-1] & scenario[1:]
+
+    if np.all(~selector):
+        CheckStatus.SKIPPED
 
     # Verify snow water is not decreasing
     assert np.all(~selector | (change >= 1e-6)), (
@@ -333,8 +346,10 @@ def check_snow_depth_not_decreasing(
     change = np.diff(test_col_ws_snow_depth, axis=0)
     selector = scenario[:-1] & scenario[1:]
 
+    if np.all(~selector):
+        CheckStatus.SKIPPED
+
     # Verify snow depth is not decreasing
-    snow_depth_not_decreasing = np.diff(test_col_ws_snow_depth, axis=0) >= 0.0
     assert np.all(~selector | (change >= 1e-6)), (
         "snow_depth decreases across an interval that stays in the freezing scenario")
 
@@ -403,6 +418,9 @@ def check_snow_not_melting_where_snow_present(
     # Verify snow is not melting
     snow_not_melting = test_col_wf_qflx_snomelt == 0.0
 
+    if np.all(~scenario[:-1]):
+        CheckStatus.SKIPPED
+
     assert np.all(~scenario[:-1] | snow_not_melting[1:]), (
         "snow melting where snow present")
 
@@ -428,6 +446,9 @@ def check_snow_melting_where_snow_water_present(
 
     snow_is_melting = test_col_wf_qflx_snomelt > 0.0
 
+    if np.all(~scenario[:-1]):
+        CheckStatus.SKIPPED
+
     assert np.all(~scenario[:-1] | snow_is_melting[1:]), (
         'Snow not melting where snow water present')
 
@@ -449,6 +470,9 @@ def check_snow_melted_where_snow_water_present(
                                   test_col_es_t_lake, test_col_pp_itype)
 
     snow_has_melted = test_col_wf_qflx_snow_melt > 0.0
+
+    if np.all(~scenario[:-1]):
+        CheckStatus.SKIPPED
 
     assert np.all(~scenario[:-1] | snow_has_melted[1:]), (
         'Snow not melted where snow water present')
@@ -479,6 +503,9 @@ def check_energy_flux_consistent_with_latent_heat(
     abs_diff = np.abs(difference)
 
     on_lake = test_col_pp_itype[0, :]==5
+
+    if np.all(~on_lake):
+        CheckStatus.SKIPPED
     
     # Verify energy flux is consistent with latent heat from snow melt rate.
     assert np.all(~on_lake | (abs_diff <= 1E-6)), (
@@ -521,6 +548,9 @@ def check_betaprime_matches_nir_blend(
     abs_dif = np.abs(np.subtract(test_lakestate_vars_betaprime_col, blend_by_column))
     
     on_lake = test_col_pp_itype[0, :]==5
+
+    if np.all(~on_lake):
+        CheckStatus.SKIPPED
     
     assert np.all(~on_lake | (abs_dif <= 1E-6)), (
         "betaprime not close to NIR betavis blend"
@@ -547,6 +577,9 @@ def check_snow_depth_not_increasing_while_melting(
         test_col_pp_snl, test_col_ws_h2osno, test_col_es_t_lake, test_col_pp_itype)
     melting = np.ma.filled(test_col_wf_qflx_snomelt[1:] > 0.0, False)
     selector = scenario[:-1] & scenario[1:] & melting
+
+    if np.all(~selector):
+        CheckStatus.SKIPPED
 
     assert np.all(~selector | (snow_depth_change<=1e-6))
 

@@ -21,6 +21,10 @@ def check_temp_around_freezing_where_lake_is_almost_frozen(
         test_lakestate_vars_lake_icefrac_col < 1.0)
 
     abs_temp_dif = np.abs(np.subtract(test_col_es_t_lake, TFRZ))
+
+    if np.all(~partially_frozen):
+        return CheckStatus.SKIPPED
+
     assert np.all(~partially_frozen | (abs_temp_dif <= 1e-3))
 
 
@@ -37,6 +41,9 @@ def check_fully_frozen_layers_not_above_freezing(
     fully_frozen = test_lakestate_vars_lake_icefrac_col == 1
     temp_dif = np.subtract(test_col_es_t_lake, TFRZ)
 
+    if np.all(~fully_frozen):
+        return CheckStatus.SKIPPED
+
     assert np.all(~fully_frozen | (temp_dif <= 1e-3))
 
 
@@ -46,12 +53,12 @@ def check_surface_unfrozen_when_tke_present(
     test_lakestate_vars_savedtke1_col: npt.NDArray,
 ) -> None:
     if NonFiniteValuesHandler.is_all_not_finite(test_lakestate_vars_lake_icefrac_col,
-                                                test_col_pp_snl, 
+                                                test_col_pp_snl,
                                                 test_lakestate_vars_savedtke1_col):
         return CheckStatus.SKIPPED
-    (test_lakestate_vars_lake_icefrac_col, test_col_pp_snl, 
+    (test_lakestate_vars_lake_icefrac_col, test_col_pp_snl,
      test_lakestate_vars_savedtke1_col)=NonFiniteValuesHandler.mask_non_finite_values(
-         test_lakestate_vars_lake_icefrac_col, test_col_pp_snl, 
+         test_lakestate_vars_lake_icefrac_col, test_col_pp_snl,
          test_lakestate_vars_savedtke1_col)
 
 
@@ -63,6 +70,9 @@ def check_surface_unfrozen_when_tke_present(
         return CheckStatus.SKIPPED
 
     tke_present = test_lakestate_vars_savedtke1_col > 0.0
+
+    if np.all(~tke_present):
+        return CheckStatus.SKIPPED
 
     assert np.all(~tke_present | unfrozen), (
         "Turbulant kinetic energy present on a frozen surface"

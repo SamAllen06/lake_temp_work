@@ -73,6 +73,9 @@ def check_methane_conductance_allowed_without_ice(
         ~usable, total_resistance))
     abs_diff = np.abs(test_ch4_vars_grnd_ch4_cond_col - expected)
 
+    if np.all(~no_surface_ice):
+        return CheckStatus.SKIPPED
+
     # Verify columns without ice conduct the expected methane.
     assert np.all(
         ~no_surface_ice | (abs_diff <= 1E-6)
