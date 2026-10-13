@@ -27,6 +27,8 @@
 | use_lch4     | 0-1            | {0, 1}             | int       | boolean                                                                                                                                                                    |
 | tkair        | 0.01-0.03      | (0.01, 0.03)       | double    | Small perturbation around the default 0.023                                                                                                                                |
 | thk_bedrock  | 2-4            | (2, 4)             | double    | Small perturbation around the default of 3                                                                                                                                 |
+
+percrop, crop and iscft were excluded because our framework does not currently have the ability to change these. 
   
 #### Constraints
 Constraint:
