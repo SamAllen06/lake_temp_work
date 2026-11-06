@@ -26,7 +26,7 @@ to generate the cases that were ultimately stored as
 the end of the file representing the degree of interaction.
 
 | Model Constant   | Range Used          |
-|:----------------:|:--------------------|
+|:----------------:|:-------------------:|
 | tkwat            | 0.513 - 0.627       |
 | cpice            | 2011.41 - 2223.13   |
 | cnfac            | 0.0 - 1.0           |
@@ -63,22 +63,104 @@ was simply skipped.
 
 | Elmtest Runtime Mean | Elmtest Runtime Standard Deviation |
 |:--------------------:|:----------------------------------:|
-|                      |                                    |
+| 0.934                | 0.009                              |
+
+### Raw Elmtest Data
+
+| Time (seconds) |
+|----------------|
+| 0.937          |
+| 0.944          |
+| 0.931          |
+| 0.939          |
+| 0.913          |
+| 0.939          |
+| 0.937          |
+
+
+### Test Cases
 
 | DoI | Cases   | Expected Execution Time | Actual Execution Time |
 |:---:|:-------:|:-----------------------:|:---------------------:|
-| 1   | 11      | 0 days, 00:00:00        | 0 days, 00:00:00      | 
-| 2   | 232     | 0 days, 00:00:00        | 0 days, 00:00:00      | 
-| 3   | 4,253   | 0 days, 00:00:00        | 0 days, 00:00:00      | 
-| 4   | 64,149  | 0 days, 00:00:00        | 0 days, 00:00:00      | 
-| 5   |         | 0 days, 00:00:00        | 0 days, 00:00:00      | 
+| 1   | 11      | 0 days, 00:00:10        | 0 days, 00:00:16      | 
+| 2   | 232     | 0 days, 00:03:37        | 0 days, 00:05:02      | 
+| 3   | 4,253   | 0 days, 01:06:12        | 0 days, 00:52:30      | 
+| 4   | 64,149  | 0 days, 16:38:35        | 0 days, 00:00:00      | 
+| 5   | 869,835 | 9 days, 09:40:26        | 0 days, 00:00:00      | 
 
 ## Results
+
+### DoI 1 Summary
+
+0 out of 11 runs exited with an error.
+| Check                                                       | Passed | Skipped | Failed | Errored |
+|:-----------------------------------------------------------:|:------:|:-------:|:------:|:-------:|
+| check_betaprime_matches_nir_blend                           | 11     | 0       | 0      | 0       |
+| check_combined_heat_content_finite                          | 11     | 0       | 0      | 0       |
+| check_combined_heat_content_not_less_than_soil_heat_content | 11     | 0       | 0      | 0       |
+| check_combined_heat_content_not_negative                    | 11     | 0       | 0      | 0       |
+| check_energy_conservation_residual_finite                   | 11     | 0       | 0      | 0       |
+| check_energy_flux_consistent_with_latent_heat               | 11     | 0       | 0      | 0       |
+| check_errsoi_threshold                                      | 11     | 0       | 0      | 0       |
+| check_fully_frozen_layers_not_above_freezing                | 0      | 11      | 0      | 0       |
+| check_ground_heat_flux_finite                               | 11     | 0       | 0      | 0       |
+| check_ground_methane_conductance_finite                     | 4      | 7       | 0      | 0       |
+| check_ground_net_heat_flux_finite                           | 11     | 0       | 0      | 0       |
+| check_ground_sensible_heat_flux_finite                      | 11     | 0       | 0      | 0       |
+| check_ice_mass_fraction_finite                              | 11     | 0       | 0      | 0       |
+| check_ice_thickness_finite                                  | 11     | 0       | 0      | 0       |
+| check_icethick_col_is_sum                                   | 11     | 0       | 0      | 0       |
+| check_imelt_uses_valid_enum_values                          | 11     | 0       | 0      | 0       |
+| check_lake_layer_ice_fraction_is_fraction                   | 11     | 0       | 0      | 0       |
+| check_lake_temperature_finite                               | 11     | 0       | 0      | 0       |
+| check_lake_transport_resistance_finite                      | 11     | 0       | 0      | 0       |
+| check_lake_water_transport_resistance_not_negative          | 11     | 0       | 0      | 0       |
+| check_methane_conductance_allowed_without_ice               | 0      | 11      | 0      | 0       |
+| check_methane_conductance_gated_by_ice                      | 4      | 7       | 0      | 0       |
+| check_methane_conductance_not_negative                      | 4      | 7       | 0      | 0       |
+| check_net_snow_melt_not_negative                            | 11     | 0       | 0      | 0       |
+| check_new_snow_melt_rate_finite                             | 11     | 0       | 0      | 0       |
+| check_saved_eddy_conductivity_finite                        | 11     | 0       | 0      | 0       |
+| check_saved_eddy_conductivity_not_negative                  | 11     | 0       | 0      | 0       |
+| check_snofrz_lyr_sums_to_snofrz_col                         | 11     | 0       | 0      | 0       |
+| check_snow_depth_finite                                     | 11     | 0       | 0      | 0       |
+| check_snow_depth_not_decreasing                             | 11     | 0       | 0      | 0       |
+| check_snow_depth_not_increasing_while_melting               | 11     | 0       | 0      | 0       |
+| check_snow_depth_not_negative                               | 11     | 0       | 0      | 0       |
+| check_snow_freeze_rate_finite                               | 11     | 0       | 0      | 0       |
+| check_snow_freeze_rate_not_negative                         | 11     | 0       | 0      | 0       |
+| check_snow_labeled_freezing_where_snow_present              | 11     | 0       | 0      | 0       |
+| check_snow_layer_flag_finite                                | 11     | 0       | 0      | 0       |
+| check_snow_melt_flux_not_negative                           | 11     | 0       | 0      | 0       |
+| check_snow_melt_heat_flux_finite                            | 11     | 0       | 0      | 0       |
+| check_snow_melt_heat_flux_not_negative                      | 11     | 0       | 0      | 0       |
+| check_snow_melt_water_flux_finite                           | 11     | 0       | 0      | 0       |
+| check_snow_melted_where_snow_water_present                  | 11     | 0       | 0      | 0       |
+| check_snow_melting_where_snow_water_present                 | 11     | 0       | 0      | 0       |
+| check_snow_not_melting_where_snow_present                   | 11     | 0       | 0      | 0       |
+| check_snow_water_equivalent_finite                          | 11     | 0       | 0      | 0       |
+| check_snow_water_not_decreasing                             | 11     | 0       | 0      | 0       |
+| check_soil_heat_content_finite                              | 11     | 0       | 0      | 0       |
+| check_soil_heat_content_not_negative                        | 11     | 0       | 0      | 0       |
+| check_soil_snow_temperature_finite                          | 11     | 0       | 0      | 0       |
+| check_surface_absorption_finite                             | 11     | 0       | 0      | 0       |
+| check_surface_absorption_fraction_is_fraction               | 11     | 0       | 0      | 0       |
+| check_surface_snow_freezing_where_snow_present              | 11     | 0       | 0      | 0       |
+| check_surface_unfrozen_when_tke_present                     | 10     | 0       | 1      | 0       |
+| check_temp_around_freezing_where_lake_is_almost_frozen      | 0      | 10      | 1      | 0       |
+| check_total_sensible_heat_flux_finite                       | 11     | 0       | 0      | 0       |
+| check_water_snow_equivalent_not_negative                    | 11     | 0       | 0      | 0       |
+
+#### Notes
+`check_surface_unfrozen_when_tke_present` and `check_temp_around_freezing_where_lake_is_almost_frozen` 
+failed on the test case where cnfac == 1. 
+
 
 ### DoI 2 Summary
 
 0 out of 232 runs exited with an error.
 | Check                                                       | Passed | Skipped | Failed | Errored |
+|:-----------------------------------------------------------:|:------:|:-------:|:------:|:-------:|
 | check_betaprime_matches_nir_blend                           | 232    | 0       | 0      | 0       |
 | check_combined_heat_content_finite                          | 232    | 0       | 0      | 0       |
 | check_combined_heat_content_not_less_than_soil_heat_content | 232    | 0       | 0      | 0       |
@@ -135,11 +217,82 @@ was simply skipped.
 | check_total_sensible_heat_flux_finite                       | 232    | 0       | 0      | 0       |
 | check_water_snow_equivalent_not_negative                    | 232    | 0       | 0      | 0       |
 
+#### Notes
+`check_surface_unfrozen_when_tke_present` and `check_temp_around_freezing_where_lake_is_almost_frozen `
+failed on all test cases where cnfac == 1. 
+
 ### DoI 3 Summary
 
+0 out of 4253 runs exited with an error.
+| Check                                                       | Passed | Skipped | Failed | Errored |
+|:-----------------------------------------------------------:|:------:|:-------:|:------:|:-------:|
+| check_betaprime_matches_nir_blend                           | 4253   | 0       | 0      | 0       |
+| check_combined_heat_content_finite                          | 4253   | 0       | 0      | 0       |
+| check_combined_heat_content_not_less_than_soil_heat_content | 4253   | 0       | 0      | 0       |
+| check_combined_heat_content_not_negative                    | 4253   | 0       | 0      | 0       |
+| check_energy_conservation_residual_finite                   | 4253   | 0       | 0      | 0       |
+| check_energy_flux_consistent_with_latent_heat               | 4253   | 0       | 0      | 0       |
+| check_errsoi_threshold                                      | 4253   | 0       | 0      | 0       |
+| check_fully_frozen_layers_not_above_freezing                | 0      | 4253    | 0      | 0       |
+| check_ground_heat_flux_finite                               | 4253   | 0       | 0      | 0       |
+| check_ground_methane_conductance_finite                     | 2125   | 2128    | 0      | 0       |
+| check_ground_net_heat_flux_finite                           | 4253   | 0       | 0      | 0       |
+| check_ground_sensible_heat_flux_finite                      | 4253   | 0       | 0      | 0       |
+| check_ice_mass_fraction_finite                              | 4253   | 0       | 0      | 0       |
+| check_ice_thickness_finite                                  | 4253   | 0       | 0      | 0       |
+| check_icethick_col_is_sum                                   | 4253   | 0       | 0      | 0       |
+| check_imelt_uses_valid_enum_values                          | 4253   | 0       | 0      | 0       |
+| check_lake_layer_ice_fraction_is_fraction                   | 4253   | 0       | 0      | 0       |
+| check_lake_temperature_finite                               | 4253   | 0       | 0      | 0       |
+| check_lake_transport_resistance_finite                      | 4253   | 0       | 0      | 0       |
+| check_lake_water_transport_resistance_not_negative          | 4253   | 0       | 0      | 0       |
+| check_methane_conductance_allowed_without_ice               | 0      | 4253    | 0      | 0       |
+| check_methane_conductance_gated_by_ice                      | 2125   | 2128    | 0      | 0       |
+| check_methane_conductance_not_negative                      | 2125   | 2128    | 0      | 0       |
+| check_net_snow_melt_not_negative                            | 4253   | 0       | 0      | 0       |
+| check_new_snow_melt_rate_finite                             | 4253   | 0       | 0      | 0       |
+| check_saved_eddy_conductivity_finite                        | 4253   | 0       | 0      | 0       |
+| check_saved_eddy_conductivity_not_negative                  | 4253   | 0       | 0      | 0       |
+| check_snofrz_lyr_sums_to_snofrz_col                         | 4253   | 0       | 0      | 0       |
+| check_snow_depth_finite                                     | 4253   | 0       | 0      | 0       |
+| check_snow_depth_not_decreasing                             | 4253   | 0       | 0      | 0       |
+| check_snow_depth_not_increasing_while_melting               | 4253   | 0       | 0      | 0       |
+| check_snow_depth_not_negative                               | 4253   | 0       | 0      | 0       |
+| check_snow_freeze_rate_finite                               | 4253   | 0       | 0      | 0       |
+| check_snow_freeze_rate_not_negative                         | 4253   | 0       | 0      | 0       |
+| check_snow_labeled_freezing_where_snow_present              | 4253   | 0       | 0      | 0       |
+| check_snow_layer_flag_finite                                | 4253   | 0       | 0      | 0       |
+| check_snow_melt_flux_not_negative                           | 4253   | 0       | 0      | 0       |
+| check_snow_melt_heat_flux_finite                            | 4253   | 0       | 0      | 0       |
+| check_snow_melt_heat_flux_not_negative                      | 4253   | 0       | 0      | 0       |
+| check_snow_melt_water_flux_finite                           | 4253   | 0       | 0      | 0       |
+| check_snow_melted_where_snow_water_present                  | 4253   | 0       | 0      | 0       |
+| check_snow_melting_where_snow_water_present                 | 4253   | 0       | 0      | 0       |
+| check_snow_not_melting_where_snow_present                   | 4253   | 0       | 0      | 0       |
+| check_snow_water_equivalent_finite                          | 4253   | 0       | 0      | 0       |
+| check_snow_water_not_decreasing                             | 4253   | 0       | 0      | 0       |
+| check_soil_heat_content_finite                              | 4253   | 0       | 0      | 0       |
+| check_soil_heat_content_not_negative                        | 4253   | 0       | 0      | 0       |
+| check_soil_snow_temperature_finite                          | 4253   | 0       | 0      | 0       |
+| check_surface_absorption_finite                             | 4253   | 0       | 0      | 0       |
+| check_surface_absorption_fraction_is_fraction               | 4253   | 0       | 0      | 0       |
+| check_surface_snow_freezing_where_snow_present              | 4253   | 0       | 0      | 0       |
+| check_surface_unfrozen_when_tke_present                     | 3872   | 0       | 381    | 0       |
+| check_temp_around_freezing_where_lake_is_almost_frozen      | 2      | 3870    | 381    | 0       |
+| check_total_sensible_heat_flux_finite                       | 4253   | 0       | 0      | 0       |
+| check_water_snow_equivalent_not_negative                    | 4253   | 0       | 0      | 0       |
 
+#### Notes
+`check_surface_unfrozen_when_tke_present` and `check_temp_around_freezing_where_lake_is_almost_frozen` 
+failed on 381 out of the 383 test cases where `cnfac == 1`. 
 
-### DoI 3 Summary
+`check_surface_unfrozen_when_tke_present` and `check_temp_around_freezing_where_lake_is_almost_frozen`
+both passed on test cases 2390 and 3521. For both of these test cases, `cnfac` == 1, 
+implying some specific relationship with other model constants allowed it to still pass.
+The only values that are the same across both of these test cases are `cnfac` == 1, 
+`pudz` == 0, and `lakepuddling` == 1.
+
+### DoI 4 Summary
 
 
 
