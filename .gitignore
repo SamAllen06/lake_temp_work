@@ -157,6 +157,8 @@ cython_debug/
 
 # Testing output
 testing_output/
+lake_temp_logs/
+lake_temp_output/
 
 # Plugin whitelists
 plugin_whitelist.json
