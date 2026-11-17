@@ -64,7 +64,7 @@ def check_methane_conductance_allowed_without_ice(
             test_lakestate_vars_lake_icefrac_col, test_ch4_vars_grnd_ch4_cond_col,
              test_lakestate_vars_lakeresist_col,test_lakestate_vars_lake_raw_col))
 
-    no_surface_ice = test_lakestate_vars_lake_icefrac_col[:, 0, :] == 0.1
+    no_surface_ice = test_lakestate_vars_lake_icefrac_col[:, 0, :] <= 0.1
 
     total_resistance = test_lakestate_vars_lakeresist_col + test_lakestate_vars_lake_raw_col
     usable = total_resistance > 0
