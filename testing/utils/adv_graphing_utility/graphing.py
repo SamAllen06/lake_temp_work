@@ -32,7 +32,7 @@ def graph(
     y_line_int = data.y_axis.dim_range.step
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-    ax.plot_wireframe(x_data, y_data, var_data, rstride=x_line_int, cstride=y_line_int)
+    ax.plot_wireframe(x_data, y_data, var_data.filled(np.nan), rstride=x_line_int, cstride=y_line_int)
     ax.set_xlabel(x_axis_name)
     ax.set_ylabel(y_axis_name)
     ax.set_zlabel(data.var_name)
@@ -65,22 +65,26 @@ def graph(
 
 def _get_var_data(data: GraphData, dataset: Dataset) -> npt.NDArray:
     variable = dataset.variables[data.var_name]
+    dimension_order = variable.dimensions
 
     slices = {}
 
-    slices[data.x_axis.dim_name] = slice(
+    slices[data.x_axis.dim_name if data.x_axis.dim_name in dimension_order else data.x_axis.mapped_var_name] = slice(
         data.x_axis.dim_range.start,
         data.x_axis.dim_range.stop
     )
-    slices[data.y_axis.dim_name] = slice(
+    slices[data.y_axis.dim_name if data.y_axis.dim_name in dimension_order else data.y_axis.mapped_var_name] = slice(
         data.y_axis.dim_range.start,
         data.y_axis.dim_range.stop
     )
 
+    num_fxd_dims_graphed = 0
     for fixed_dim in data.fixed_dims:
-        slices[fixed_dim.mapped_dim_name] = fixed_dim.value
-
-    dimension_order = variable.dimensions
+        if fixed_dim.name in dimension_order:
+            slices[fixed_dim.name] = fixed_dim.value
+            num_fxd_dims_graphed += 1
+        else:
+            slices[fixed_dim.mapped_dim_name] = fixed_dim.value
 
     full_slice = []
     transpose_flag = False
@@ -92,6 +96,8 @@ def _get_var_data(data: GraphData, dataset: Dataset) -> npt.NDArray:
             transpose_flag = False
         elif name == data.y_axis.dim_name:
             transpose_flag = True
+        elif num_fxd_dims_graphed == 1:
+            transpose_flag = False
 
     array = variable[tuple(full_slice)]
     if transpose_flag:
