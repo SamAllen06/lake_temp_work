@@ -7,6 +7,7 @@ from graph_data import AxisInfo, FixedDimension, GraphData
 import dataset_operations as ds_op
 from pathlib import Path
 import argparse
+import math
 
 dim_index_dict = {
     'sample_index': 0,
@@ -50,7 +51,7 @@ def is_dim_assignment_valid(
 
 
 def read_path() -> list:
-    axis_options = ['time', 'sample_index', 'subgrid_level', 'layer']
+    axis_options = ['sample_index', 'time', 'subgrid_level', 'layer']
 
     Paths = namedtuple("Paths", ["netcdf4_output", "change_detection_outputs", "graphing_output_dir"])
     Dim_Args = namedtuple("Dim_Args", ["x_axis", "y_axis", "fixed_1", "fixed_2"])
@@ -98,8 +99,46 @@ def read_path() -> list:
             j+=1
         i+=1
 
+    if not Path(args.netcdf4_output).exists():
+        parser.error(f"{args.netcdf4_output} is not a valid path")
+    if not Path(args.change_detection_outputs).exists():
+        parser.error(f"{args.change_detection_outputs} is not a valid path")
+
+    second_fixed_dim_index_unused = args.indices_2 != [-1]
+
     with Dataset(Path(args.netcdf4_output), "r", "NETCDF4") as dataset:
         dim_string_dict = {args.x_axis: 'X axis', args.y_axis: 'Y axis', args.fixed_1: 'first fixed dimension'}
+        #validate that the constants that change are proportional to each other
+        interp_list = []
+        for var in dataset.variables:
+            if dataset[var].variable_type=="constant":
+                keepGoing = True
+                val = 0
+                limit = len(dataset[var])
+                add_to_interp_list = False
+                while(keepGoing):
+                    if dataset[var][val] != dataset[var][val+1]:
+                        add_to_interp_list = True
+                        keepGoing = False
+                    if val+1 == limit-1:
+                        keepGoing = False
+                    val += 1
+                if add_to_interp_list:
+                    interp_list.append(dataset[var].name)
+        lengths = []
+        for var in interp_list:
+            values = list(dataset[var])
+            length = len(values)
+            lengths.append(length)
+            first, last = values[0], values[-1]
+            step = (last-first)/(length-1)
+            #scale tolerance to numbers, so it works with really small and large numbers
+            scale = max(abs(first), abs(last), abs(last-first)) or 1.0
+            tolerance = 1e-9*scale
+            if not all(math.isclose(x, first+i*step, rel_tol=0, abs_tol=tolerance) for i, x in enumerate(values)):
+                parser.error(f'values for {var} were not created using order sampling')
+        if not len(set(lengths)) == 1:
+            parser.error(f'constant values did not come from a single line order')
         # validate output var arguments
         for arg_var in args.output_vars:
             if arg_var != 'all_changed':
@@ -117,10 +156,11 @@ def read_path() -> list:
                 # validate index assignments
                 upper_bound = dataset[arg_var].shape[dim_index_dict[args.fixed_1]]
                 if not is_index_assignment_valid(args.indices_1, upper_bound):
-                    parser.error(f'index assigned to fixed_1 ({args.fixed_1}) outside the boundaries for that dimension (0-{upper_bound})')
+                    parser.error(f'index ({args.indices_1[0]}) assigned to fixed_1 ({args.fixed_1}) for output variable ({arg_var}) is outside the boundaries for that dimension (0-{upper_bound-1})')
                 if len(dataset[arg_var].shape) == 4:
                     if not is_index_assignment_valid(args.indices_2, upper_bound):
-                        parser.error(f'index assigned to fixed_1 ({args.fixed_2}) outside the boundaries for that dimension (0-{upper_bound})')
+                        parser.error(f'index ({args.indices_2[0]}) assigned to fixed_2 ({args.fixed_2}) for output variable ({arg_var}) is outside the boundaries for that dimension (0-{upper_bound-1})')
+                    second_fixed_dim_index_unused = False
         if 'all_changed' in args.output_vars:
             #validate axis assignments
             with open(Path(args.change_detection_outputs), "r") as file:
@@ -131,12 +171,17 @@ def read_path() -> list:
                     if not is_dim_assignment_valid(len(shape), key, axis_options[3]):
                         parser.error(f'layer assigned to {value} for output variable ({changed_var}) with no layer dimension')
             #validate index assignments
-                upper_bound = dataset[changed_var].shape[dim_index_dict[args.fixed_1]]
+                upper_bound = shape[dim_index_dict[args.fixed_1]]
                 if not is_index_assignment_valid(args.indices_1, upper_bound):
-                    parser.error(f'index assigned to fixed_1 ({args.fixed_1}) outside the boundaries for that dimension (0-{upper_bound})')
-                if len(dataset[changed_var].shape) == 4:
+                    parser.error(f'index ({args.indices_1[0]}) assigned to fixed_1 ({args.fixed_1}) for output variable ({changed_var}) outside the boundaries for that dimension (0-{upper_bound-1})')
+                if len(shape) == 4:
+                    upper_bound = shape[dim_index_dict[args.fixed_2]]
                     if not is_index_assignment_valid(args.indices_2, upper_bound):
-                        parser.error(f'index assigned to fixed_1 ({args.fixed_2}) outside the boundaries for that dimension (0-{upper_bound})')
+                        parser.error(f'index ({args.indices_2[0]}) assigned to fixed_2 ({args.fixed_2}) for output variable ({changed_var}) outside the boundaries for that dimension (0-{upper_bound-1})')
+                    second_fixed_dim_index_unused = False
+
+    if second_fixed_dim_index_unused:
+        parser.error(f'Value given to 2nd fixed dimension index but no variables require a 2nd fixed dimension')
 
     return [Paths(
         Path(args.netcdf4_output),
@@ -206,8 +251,10 @@ def is_user_confirmed(
                 else:
                     var_graph_num *= len(indexing_args.indices_2)
             graph_num += var_graph_num
-    size, size_unit = convert_size(81.2*graph_num*0.000001)
-    time, time_unit = convert_time(0.08783483877*graph_num)
+    space_per_graph = 0.0000812 #GB
+    size, size_unit = convert_size(graph_num*space_per_graph)
+    time_per_graph = 0.0878348 #seconds
+    time, time_unit = convert_time(graph_num*time_per_graph)
     confirmation = input("Your current presets will save %i graphs. This will be an estimated %.2f %s and take approximately %.2f %s. If you would like to continue, enter y or yes: " % (graph_num, size, size_unit, time, time_unit))
     if confirmation == 'y' or confirmation == 'yes':
         return True
@@ -232,7 +279,6 @@ def main() -> None:
     changed_model_consts = ds_op.get_changed_model_consts(paths.netcdf4_output)
 
     if misc_args.confirm:
-        # import pdb; pdb.set_trace()
         do_graphing_loop = False
         if misc_args.confirm:
             do_graphing_loop = is_user_confirmed(paths.netcdf4_output, indexing_args, perspective_args, output_vars, dim_args)
@@ -270,19 +316,21 @@ def main() -> None:
                     indices_2 = None
 
                 for index_1 in indices_1:
-                    fixed_dat1 = FixedDimension(dim_args.fixed_1, np.array(index_1), fixed_1_name)
+                    #TODO come up with better formatting for FixedDimension.mapped_dim_name
+                    fixed_dat1 = FixedDimension(dim_args.fixed_1, np.array(index_1), str(fixed_1_name))
                     for elevation in perspective_args.elevation:
                         for azimuth in perspective_args.azimuth:
                             for roll in perspective_args.roll:
                                 
                                 # graph all the model constants and fixed dims for each output var
                                 if indices_2 is None:
-                                    dat = GraphData(output_var, x_dat, y_dat, [fixed_dat1])
+                                    dat = GraphData(output_var, x_dat, y_dat, [fixed_dat1])                                    
                                     dir_path = paths.graphing_output_dir.joinpath(dat.var_name, fixed_dat1.mapped_dim_name+' '+str(fixed_dat1.value))
                                     graphing.graph(dir_path, ds, dat, elevation, azimuth, roll, misc_args.preview)
                                 else:
                                     for index_2 in indices_2:
-                                        fixed_dat2 = FixedDimension(dim_args.fixed_2, np.array(index_2), fixed_2_name)
+                                        #TODO come up with better formatting for FixedDimension.mapped_dim_name
+                                        fixed_dat2 = FixedDimension(dim_args.fixed_2, np.array(index_2), str(fixed_2_name))
                                         dat = GraphData(output_var, x_dat, y_dat, [fixed_dat1, fixed_dat2])
                                         dir_path = paths.graphing_output_dir.joinpath(dat.var_name, fixed_dat1.mapped_dim_name+' '+str(fixed_dat1.value), fixed_dat2.mapped_dim_name+' '+str(fixed_dat2.value))
                                         graphing.graph(dir_path, ds, dat, elevation, azimuth, roll, misc_args.preview)    
